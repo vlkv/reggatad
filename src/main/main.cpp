@@ -56,7 +56,7 @@ int MAIN(int argc, char** argv) {
   std::cout << "main()" << std::endl;
 
   Client* c = new Client();
-  Poco::DirectoryWatcher* watcher = new Poco::DirectoryWatcher(std::string("/home/vvolkov/"), Poco::DirectoryWatcher::DW_FILTER_ENABLE_ALL, 2);
+  Poco::DirectoryWatcher* watcher = new Poco::DirectoryWatcher(std::string("~"), Poco::DirectoryWatcher::DW_FILTER_ENABLE_ALL, 2);
   watcher->itemAdded += Poco::delegate(c, &Client::onFileAdded);
   watcher->itemModified += Poco::delegate(c, &Client::onFileChanged);
 

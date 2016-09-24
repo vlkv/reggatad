@@ -1,9 +1,7 @@
 cmake_minimum_required(VERSION 2.8) # setting this is required
 project(example_project)            # this sets the project name
 
-file(GLOB_RECURSE sources      src/main/*.cpp src/main/*.h)
-file(GLOB_RECURSE sources      src/main/scanner/*.cc src/main/scanner/*.h src/main/scanner/*.hh src/main/scanner/*.ih)
-file(GLOB_RECURSE sources      src/main/parser/*.cc src/main/parser/*.h src/main/parser/*.ih)
+file(GLOB_RECURSE sources      src/main/*.cpp src/main/scanner/*.cc src/main/parser/*.cc)
 file(GLOB_RECURSE sources_test src/test/*.cpp)
 file(GLOB_RECURSE data resources/*)
 
