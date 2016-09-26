@@ -1,18 +1,19 @@
 cmake_minimum_required(VERSION 2.8) # setting this is required
-project(example_project)            # this sets the project name
+project(reggatad)            # this sets the project name
 
 file(GLOB_RECURSE sources      src/main/*.cpp src/main/scanner/*.cc src/main/parser/*.cc)
 file(GLOB_RECURSE sources_test src/test/*.cpp)
 file(GLOB_RECURSE data resources/*)
 
 
-add_executable(example ${sources} ${data})
+add_executable(reggatad ${sources} ${data})
 
-target_compile_options(example PUBLIC -std=c++1y -Wall)
+target_compile_options(reggatad PUBLIC -std=c++1y -Wall)
 
-target_include_directories(example PUBLIC src/main src/main/scanner src/main/parser)
+target_include_directories(reggatad PUBLIC src/main src/main/scanner src/main/parser)
 
 file(COPY ${data} DESTINATION resources)
+file(COPY reggatad.conf DESTINATION ".")
 
 ###############################################################################
 ## dependencies ###############################################################
@@ -32,10 +33,10 @@ set(POCO_LIBS        "${POCO_LIB_DIR}/libPocoNetd.so"
                      "${POCO_LIB_DIR}/libPocoFoundationd.so"
                      "pthread")
 
-target_include_directories(example PRIVATE "${POCO_INCLUDE_DIR}")
+target_include_directories(reggatad PRIVATE "${POCO_INCLUDE_DIR}")
 
 
-target_link_libraries(example PUBLIC
+target_link_libraries(reggatad PUBLIC
   ${Boost_LIBRARIES}
   ${POCO_LIBS}
 )
@@ -58,11 +59,11 @@ if(GTEST_FOUND)
 
   # This allows us to use the executable as a link library, and inherit all 
   # linker options and library dependencies from it, by simply adding it as dependency.
-  set_target_properties(example PROPERTIES ENABLE_EXPORTS on)
+  set_target_properties(reggatad PROPERTIES ENABLE_EXPORTS on)
 
   target_link_libraries(unit_tests PUBLIC
     ${GTEST_BOTH_LIBRARIES}
-    example
+    reggatad
   )
 
   target_include_directories(unit_tests PUBLIC
@@ -75,11 +76,11 @@ endif()
 ## packaging ##################################################################
 ###############################################################################
 
-install(TARGETS example DESTINATION example_destination)
+install(TARGETS reggatad DESTINATION reggatad_destination)
 
-install(DIRECTORY resources DESTINATION example_destination)
+install(DIRECTORY resources DESTINATION reggatad_destination)
 
-set(CPACK_PACKAGE_NAME "MyExample")
+set(CPACK_PACKAGE_NAME "ReggataDaemon")
 set(CPACK_PACKAGE_VERSION "1.0.0")
 
 set(CPACK_MONOLITHIC_INSTALL 1)

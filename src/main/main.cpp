@@ -12,6 +12,13 @@ using std::endl;
 #include <boost/filesystem.hpp>
 using boost::filesystem::absolute;
 
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
+#include <boost/foreach.hpp>
+#include <set>
+#include <exception>
+namespace pt = boost::property_tree;
+
 #include "Poco/DirectoryWatcher.h"
 #include "Poco/Delegate.h"
 
@@ -45,15 +52,11 @@ void Client::onFileChanged(const Poco::DirectoryWatcher::DirectoryEvent& event) 
 int MAIN(int argc, char** argv) {
   // this way you can have a path relative to the executable
   // the absolute also gets rid o*f symlinks, so it should work pretty stable
-  auto resource_path = absolute(argv[0]).parent_path() / "resources";
-  std::fstream resource1((resource_path / "resource1").string());
-  std::string line;
-  while(resource1) {
-    std::getline(resource1, line);
-    cout << line << endl;
-  }
-
-  std::cout << "main()" << std::endl;
+  auto executable_path = absolute(argv[0]).parent_path();
+  pt::ptree tree;
+  pt::read_json((executable_path / "reggatad.conf").string(), tree);
+  std::string key = tree.get<std::string>("key");
+  std::cout << "key value is " << key << std::endl;
 
   Client* c = new Client();
   Poco::DirectoryWatcher* watcher = new Poco::DirectoryWatcher(std::string("~"), Poco::DirectoryWatcher::DW_FILTER_ENABLE_ALL, 2);
