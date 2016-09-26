@@ -1,9 +1,13 @@
 reggatad --- is a daemon (service) process that's main purpose is to watch for changes in filesystem and update tags database correspondingly. Also it manages the tags database (SQLite?) and provides an API for all operations with tagged files. This API uses reggata_client.
 
-Instead of SQLite we may use:
-- RocksDB http://rocksdb.org/docs/getting-started.html C++ simple key value store
-- EJDB http://ejdb.org/doc/ql/ql.html C++ JSON database, very good query language, not maintained
-
+It would use
+- Flexc++ and Bisonc++ to implement query language parsing
+- Embedded database, there are several options here:
+    * RocksDB http://rocksdb.org/docs/getting-started.html C++ simple key value store
+    * EJDB http://ejdb.org/doc/ql/ql.html C++ JSON database, very good query language, not maintained
+    * SQLite
+- POCO FileWatcher class (implemented with inotify on Linux)
+- Boost for everything else
 
 Repository should have a list of required fileds. Every file with tags should have these fields set. E.g. 'rating'
 
@@ -21,39 +25,25 @@ Repository should have a list of required fileds. Every file with tags should ha
 ### file_removed - remove file tags and fields from DB
 ### file_moved (renamed) - update file path
 ### file_modified - do nothing
-### dir_created - do nothing
+### dir_created - create a filewatch for it
 ### dir_removed - remove all files tags and fields from DB recursively. Remove filewathes from dir and subdirs
 ### dir_moved (renamed) - update files paths for all files recursively
 
 ## Query String Language
 ### Examples:
-tag1 AND tag2 AND tag3
-tag1 OR tag2 OR tag3
-tag1 AND (tag2 OR tag3)
-tag1 OR tag2 AND tag3
-field1==val1 => same as: field1 AND field1==val1, where field1 is a tag name.
-field1==val1 OR field1==val2 ===>equivalent===> field1 AND (field1==val1 OR field1==val2)
-
-tag1 | tag1 != NULL | all files with tag1
-NOT tag1 | tag1 == NULL | all files without tag1
+tag1 | tag1 != NULL => all files with tag1
+NOT tag1 | tag1 == NULL => all files without tag1
 
 Fields are just tags with values. Values should be typed. Types supported are: string, number, datetime
 Operations with tags are: AND, OR and braces
 Operations with fields are: ==, !=, >, >=, <, <=, ~= (like)
 
-t1 t2 t3 => files which has all three tags: t1 and t2 and t3
-t1 t2|t3 => files with tag t1 and any of t2 or t3
-(t1 t2)|t3 => files with tags t1 and t2 or just one tag t3
-t1 f1>5 => files with tag t1 and field f1>5
-All these queries could be performed against the whole repository, or any of repository subdirs. Very often case is to
-perform a query on a subdir. So the mechanism for executing query to a repo root is just a particular case of "exec query in subdir"
-Very simple way of executing queries is just filter files by subdir (recursively), then iterate over them and 
-apply query predicate to every file.
-For simplicity we may permit only one level of () braces grouping. Otherwise it would be too difficult to implement.
+t1 t2 t3 => files which has all three tags: t1 AND t2 AND t3
+t1 t2|t3 => files with tag t1 AND any of t2 OR t3
+(t1 t2)|t3 => files with tags t1 AND t2 OR just one tag t3
+t1 f1>5 => files with tag t1 AND field f1>5
 
-For queries parsing we need ANTLR (maybe?..)
-
-
-
-
+The obvious way of executing queries is just filter files by subdir (recursively), then iterate over them and 
+apply query predicate to every file. Very often case is to perform a query in a subdir. The mechanism for executing 
+query in the repo root is just a particular case of "exec query in subdir".
 
