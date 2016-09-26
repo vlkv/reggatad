@@ -3,8 +3,6 @@
 
 #include <memory>
 #include <iostream>
-using std::cout;
-using std::endl;
 #include <fstream>
 #include <string>
 // there are other ways of getting a path relative to the executable, but this
@@ -51,15 +49,21 @@ void Client::onFileChanged(const Poco::DirectoryWatcher::DirectoryEvent& event) 
 
 int MAIN(int argc, char** argv) {
   // this way you can have a path relative to the executable
-  // the absolute also gets rid o*f symlinks, so it should work pretty stable
+  // the absolute also gets rid of symlinks, so it should work pretty stable
   auto executable_path = absolute(argv[0]).parent_path();
-  pt::ptree tree;
-  pt::read_json((executable_path / "reggatad.conf").string(), tree);
-  std::string key = tree.get<std::string>("key");
-  std::cout << "key value is " << key << std::endl;
+  pt::ptree conf;
+  pt::read_json((executable_path / "reggatad.conf").string(), conf);
+  auto key = conf.get<std::string>("key");
+  std::cout << "key value is 2 " << key << std::endl;
+
+  BOOST_FOREACH(pt::ptree::value_type &v, conf.get_child("repo_roots")) {
+      auto repo_root = v.second.data();
+      std::cout << "repo_root: " << repo_root << std::endl;
+  }
 
   Client* c = new Client();
-  Poco::DirectoryWatcher* watcher = new Poco::DirectoryWatcher(std::string("~"), Poco::DirectoryWatcher::DW_FILTER_ENABLE_ALL, 2);
+  Poco::DirectoryWatcher* watcher = new Poco::DirectoryWatcher(std::string("~"),
+		  Poco::DirectoryWatcher::DW_FILTER_ENABLE_ALL, 2);
   watcher->itemAdded += Poco::delegate(c, &Client::onFileAdded);
   watcher->itemModified += Poco::delegate(c, &Client::onFileChanged);
 
