@@ -54,7 +54,7 @@ int MAIN(int argc, char** argv) {
   pt::ptree conf;
   pt::read_json((executable_path / "reggatad.conf").string(), conf);
   auto key = conf.get<std::string>("key");
-  std::cout << "key value is 2 " << key << std::endl;
+  std::cout << "key value is " << key << std::endl;
 
   BOOST_FOREACH(pt::ptree::value_type &v, conf.get_child("repo_roots")) {
       auto repo_root = v.second.data();

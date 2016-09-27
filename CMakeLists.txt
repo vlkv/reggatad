@@ -1,5 +1,8 @@
-cmake_minimum_required(VERSION 2.8) # setting this is required
-project(reggatad)            # this sets the project name
+cmake_minimum_required(VERSION 2.8)
+project(ReggataDaemon)
+
+# To create Eclipse CDT project, follow instructions: https://cmake.org/Wiki/Eclipse_CDT4_Generator
+
 
 file(GLOB_RECURSE sources      src/main/*.cpp src/main/scanner/*.cc src/main/parser/*.cc)
 file(GLOB_RECURSE sources_test src/test/*.cpp)
