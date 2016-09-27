@@ -56,9 +56,12 @@ int MAIN(int argc, char** argv) {
   auto key = conf.get<std::string>("key");
   std::cout << "key value is " << key << std::endl;
 
-  BOOST_FOREACH(pt::ptree::value_type &v, conf.get_child("repo_roots")) {
+  for(pt::ptree::value_type &v : conf.get_child("repo_roots")) {
       auto repo_root = v.second.data();
-      std::cout << "repo_root: " << repo_root << std::endl;
+      std::cout << "Found repo_root: " << repo_root << std::endl;
+      for (auto&& entry : boost::filesystem::recursive_directory_iterator(repo_root)) {
+    	  std::cout << entry.path() << std::endl;
+      }
   }
 
   Client* c = new Client();
