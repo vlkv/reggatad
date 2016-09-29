@@ -1,0 +1,28 @@
+#ifndef REPO_H_
+#define REPO_H_
+
+#include "Poco/DirectoryWatcher.h"
+#include "Poco/Delegate.h"
+#include <string>
+#include <map>
+#include <memory>
+
+class Repo {
+	std::string _rootPath;
+	std::map<const std::string, std::unique_ptr<Poco::DirectoryWatcher>> _watchers;
+public:
+	Repo(const std::string& rootPath);
+	virtual ~Repo();
+
+private:
+	void createDirWatcher(const std::string& dirPath);
+
+	void onFileAdded(const Poco::DirectoryWatcher::DirectoryEvent& event);
+	void onFileRemoved(const Poco::DirectoryWatcher::DirectoryEvent& event);
+	void onFileChanged(const Poco::DirectoryWatcher::DirectoryEvent& event);
+	void onFileMovedFrom(const Poco::DirectoryWatcher::DirectoryEvent& event);
+	void onFileMovedTo(const Poco::DirectoryWatcher::DirectoryEvent& event);
+	void onScanError(const Poco::Exception& ex);
+};
+
+#endif /* REPO_H_ */
