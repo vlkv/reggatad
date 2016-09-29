@@ -5,6 +5,7 @@ It would use
 - Embedded database, there are several options here:
     * RocksDB http://rocksdb.org/docs/getting-started.html C++ simple key value store
     * EJDB http://ejdb.org/doc/ql/ql.html C++ JSON database, very good query language, not maintained
+    * LMDB https://en.wikipedia.org/wiki/Lightning_Memory-Mapped_Database
     * SQLite
 - POCO FileWatcher class (implemented with inotify on Linux)
 - Boost for everything else
