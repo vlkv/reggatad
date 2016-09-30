@@ -28,13 +28,25 @@ void Repo::createDirWatcher(const std::string& dirPath) {
 	std::cout << "DirWatcher created for " << dirPath << std::endl;
 }
 
+void Repo::destroyDirWatcherIfExists(const std::string& dirPath) {
+	auto f = _watchers.find(dirPath);
+	if (f != _watchers.end()) {
+		_watchers.erase(f);
+		std::cout << "DirWatcher destroyed for " << dirPath << std::endl;
+	}
+	// else silently do nothing
+}
+
 void Repo::onFileAdded(const Poco::DirectoryWatcher::DirectoryEvent& event) {
-	// TODO: createDirWatcher if item is a directory
     std::cout << "Added: " << event.item.path() << std::endl;
+    if (event.item.exists() && event.item.isDirectory()) {
+    	createDirWatcher(event.item.path());
+    }
 }
 
 void Repo::onFileRemoved(const Poco::DirectoryWatcher::DirectoryEvent& event) {
-	// TODO: remove dir watcher if item was a directory
+	const std::string& path = event.item.path();
+	destroyDirWatcherIfExists(path);
 	std::cout << "Removed: " << event.item.path() << std::endl;
 }
 

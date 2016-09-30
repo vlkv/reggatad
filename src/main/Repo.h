@@ -16,6 +16,7 @@ public:
 
 private:
 	void createDirWatcher(const std::string& dirPath);
+	void destroyDirWatcherIfExists(const std::string& dirPath);
 
 	void onFileAdded(const Poco::DirectoryWatcher::DirectoryEvent& event);
 	void onFileRemoved(const Poco::DirectoryWatcher::DirectoryEvent& event);
