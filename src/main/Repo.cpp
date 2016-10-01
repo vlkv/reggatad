@@ -1,29 +1,36 @@
 #include <Repo.h>
 #include <boost/filesystem.hpp>
-#include <rocksdb/db.h>
 #include <iostream>
 
-Repo::Repo(const std::string& rootPath) : _rootPath(rootPath) {
+Repo::Repo(const std::string& rootPath, const std::string& dbPath)
+: _rootPath(rootPath), _dbPath(dbPath) {
+
+	rocksdb::Options options;
+	options.create_if_missing = true;
+	rocksdb::Status status =
+	  rocksdb::DB::Open(options, _dbPath, &_db);
+	std::cout << "rocksdb status is OK=" << status.ok() << std::endl;
 
 	for (auto&& entry : boost::filesystem::recursive_directory_iterator(_rootPath)) {
 		if (entry.status().type() != boost::filesystem::file_type::directory_file) {
 			continue;
 		}
-		createDirWatcher(entry.path().string());
+		createDirWatcherIfNeeded(entry.path().string());
 	}
-	createDirWatcher(rootPath);
-
-	// This is just to check that project do compiles
-	rocksdb::DB* db;
-	rocksdb::Options options;
-	options.create_if_missing = true;
-	rocksdb::Status status =
-	  rocksdb::DB::Open(options, rootPath + "/.reggata", &db);
-	std::cout << "rocksdb status is OK=" << status.ok() << std::endl;
-
+	createDirWatcherIfNeeded(rootPath);
 }
 
-Repo::~Repo() {}
+Repo::~Repo() {
+	delete _db;
+}
+
+void Repo::createDirWatcherIfNeeded(const std::string& dirPath) {
+	if (dirPath == _dbPath) {
+		std::cout << "Skipping dir " << dirPath << std::endl;
+		return;
+	}
+	createDirWatcher(dirPath);
+}
 
 void Repo::createDirWatcher(const std::string& dirPath) {
 	std::unique_ptr<Poco::DirectoryWatcher> watcher(new Poco::DirectoryWatcher(dirPath,

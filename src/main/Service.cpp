@@ -14,7 +14,7 @@ Service::~Service() {
 }
 
 
-void Service::openRepo(const std::string& repoPath) {
-	_repos.push_back(std::unique_ptr<Repo>(new Repo(repoPath)));
+void Service::openRepo(const std::string& repoRootPath, const std::string& repoDbPath) {
+	_repos.push_back(std::unique_ptr<Repo>(new Repo(repoRootPath, repoDbPath)));
 }
 

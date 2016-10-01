@@ -15,7 +15,7 @@ public:
 	Service();
 	virtual ~Service();
 
-	void openRepo(const std::string& repoPath);
+	void openRepo(const std::string& repoRootPath, const std::string& repoDbPath);
 };
 
 #endif /* SERVICE_H_ */

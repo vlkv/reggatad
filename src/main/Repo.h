@@ -3,18 +3,22 @@
 
 #include "Poco/DirectoryWatcher.h"
 #include "Poco/Delegate.h"
+#include <rocksdb/db.h>
 #include <string>
 #include <map>
 #include <memory>
 
 class Repo {
 	std::string _rootPath;
+	std::string _dbPath;
+	rocksdb::DB* _db; // TODO: avoid raw ptr!
 	std::map<const std::string, std::unique_ptr<Poco::DirectoryWatcher>> _watchers;
 public:
-	Repo(const std::string& rootPath);
+	Repo(const std::string& rootPath, const std::string& dbPath);
 	virtual ~Repo();
 
 private:
+	void createDirWatcherIfNeeded(const std::string& dirPath);
 	void createDirWatcher(const std::string& dirPath);
 	void destroyDirWatcherIfExists(const std::string& dirPath);
 

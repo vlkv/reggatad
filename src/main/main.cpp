@@ -32,17 +32,18 @@ int MAIN(int argc, char** argv) {
 
   std::unique_ptr<Service> s(new Service());
 
-  for(pt::ptree::value_type &v : config.get_child("repo_roots")) {
-      auto repoRoot = v.second.data();
-      std::cout << "Found repo_root: " << repoRoot << std::endl;
-      s->openRepo(repoRoot);
+  for(pt::ptree::value_type &repo : config.get_child("repos")) {
+	  auto rootPath = repo.second.get<std::string>("root_path");
+	  auto dbPath = repo.second.get<std::string>("db_path", std::string(".reggata"));
+      std::cout << "Found repository: " << rootPath << std::endl;
+      s->openRepo(rootPath, absolute(dbPath, rootPath).string());
   }
 
-  // std::string anyKey;
-  // std::cin >> anyKey;
-  Parser parser;
+  Parser parser; // It's just to check that flex/bison do work
   parser.parse();
 
+  std::string anyKey;
+  std::cin >> anyKey;
 
   return EXIT_SUCCESS;
 }
