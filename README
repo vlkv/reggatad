@@ -28,7 +28,7 @@ Repository should have a list of required fileds. Every file with tags should ha
 ### file_modified - do nothing
 ### dir_created - create a filewatch for it
 ### dir_removed - remove all files tags and fields from DB recursively. Remove filewathes from dir and subdirs
-### dir_moved (renamed) - update files paths for all files recursively
+### dir_moved (renamed) - update files paths for all files recursively. Remove/Create a filewatcher for the dir
 
 ## Query String Language
 ### Examples:
@@ -36,7 +36,7 @@ tag1 | tag1 != NULL => all files with tag1
 NOT tag1 | tag1 == NULL => all files without tag1
 
 Fields are just tags with values. Values should be typed. Types supported are: string, number, datetime
-Operations with tags are: AND, OR and braces
+Operations with tags are: AND, OR, NOT and braces
 Operations with fields are: ==, !=, >, >=, <, <=, ~= (like)
 
 t1 t2 t3 => files which has all three tags: t1 AND t2 AND t3

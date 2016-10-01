@@ -1,5 +1,6 @@
 #include <Repo.h>
 #include <boost/filesystem.hpp>
+#include <rocksdb/db.h>
 #include <iostream>
 
 Repo::Repo(const std::string& rootPath) : _rootPath(rootPath) {
@@ -11,6 +12,15 @@ Repo::Repo(const std::string& rootPath) : _rootPath(rootPath) {
 		createDirWatcher(entry.path().string());
 	}
 	createDirWatcher(rootPath);
+
+	// This is just to check that project do compiles
+	rocksdb::DB* db;
+	rocksdb::Options options;
+	options.create_if_missing = true;
+	rocksdb::Status status =
+	  rocksdb::DB::Open(options, rootPath + "/.reggata", &db);
+	std::cout << "rocksdb status is OK=" << status.ok() << std::endl;
+
 }
 
 Repo::~Repo() {}

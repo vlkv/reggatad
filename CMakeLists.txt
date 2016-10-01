@@ -24,8 +24,6 @@ file(COPY reggatad.conf DESTINATION ".")
 
 find_package(Boost 1.61.0 COMPONENTS filesystem system REQUIRED)
 
-
-# set the POCO paths and libs
 set(POCO_PREFIX      "/usr/local")
 set(POCO_INCLUDE_DIR "${POCO_PREFIX}/include")
 set(POCO_LIB_DIR     "${POCO_PREFIX}/lib")
@@ -35,13 +33,22 @@ set(POCO_LIBS        "${POCO_LIB_DIR}/libPocoNetd.so"
                      "${POCO_LIB_DIR}/libPocoXMLd.so"
                      "${POCO_LIB_DIR}/libPocoFoundationd.so"
                      "pthread")
-
 target_include_directories(reggatad PRIVATE "${POCO_INCLUDE_DIR}")
 
+set(ROCKSDB_INCLUDE_DIR "/usr/local/include")
+target_include_directories(reggatad PRIVATE "${ROCKSDB_INCLUDE_DIR}")
+
+set(ROCKSDB_LIBS "/usr/local/lib/librocksdb.a"
+		"/usr/lib/x86_64-linux-gnu/libsnappy.a"
+		"/usr/lib/x86_64-linux-gnu/libbz2.a")
+
+set(USR_INCLUDE_DIR "/usr/include")
+target_include_directories(reggatad PRIVATE "${USR_INCLUDE_DIR}")
 
 target_link_libraries(reggatad PUBLIC
   ${Boost_LIBRARIES}
   ${POCO_LIBS}
+  ${ROCKSDB_LIBS}
 )
 
 
