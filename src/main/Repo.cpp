@@ -7,8 +7,9 @@ Repo::Repo(const std::string& rootPath, const std::string& dbPath)
 
 	rocksdb::Options options;
 	options.create_if_missing = true;
-	rocksdb::Status status =
-	  rocksdb::DB::Open(options, _dbPath, &_db);
+	rocksdb::DB* db;
+	rocksdb::Status status = rocksdb::DB::Open(options, _dbPath, &db);
+	_db.reset(db);
 	std::cout << "rocksdb status is OK=" << status.ok() << std::endl;
 
 	for (auto&& entry : boost::filesystem::recursive_directory_iterator(_rootPath)) {
@@ -20,9 +21,7 @@ Repo::Repo(const std::string& rootPath, const std::string& dbPath)
 	createDirWatcherIfNeeded(rootPath);
 }
 
-Repo::~Repo() {
-	delete _db;
-}
+Repo::~Repo() {}
 
 void Repo::createDirWatcherIfNeeded(const std::string& dirPath) {
 	if (dirPath == _dbPath) {

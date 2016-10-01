@@ -11,7 +11,7 @@
 class Repo {
 	std::string _rootPath;
 	std::string _dbPath;
-	rocksdb::DB* _db; // TODO: avoid raw ptr!
+	std::unique_ptr<rocksdb::DB> _db;
 	std::map<const std::string, std::unique_ptr<Poco::DirectoryWatcher>> _watchers;
 public:
 	Repo(const std::string& rootPath, const std::string& dbPath);
