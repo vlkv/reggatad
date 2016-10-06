@@ -30,7 +30,8 @@ int MAIN(int argc, char** argv) {
   pt::ptree config;
   pt::read_json((executable_path / "reggatad.conf").string(), config);
 
-  std::unique_ptr<Service> s(new Service());
+  auto port = config.get<int>("listen_port", 9100);
+  std::unique_ptr<Service> s(new Service(port));
 
   for(pt::ptree::value_type &repo : config.get_child("repos")) {
 	  auto rootPath = repo.second.get<std::string>("root_path");
@@ -38,6 +39,7 @@ int MAIN(int argc, char** argv) {
       std::cout << "Found repository: " << rootPath << std::endl;
       s->openRepo(rootPath, absolute(dbPath, rootPath).string());
   }
+  s->start();
 
   Parser parser; // It's just to check that flex/bison do work
   parser.parse();

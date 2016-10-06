@@ -20,6 +20,7 @@ Repository should have a list of required fileds. Every file with tags should ha
 ### remove_fields_from_file(file_path, field_key1, field_key2, ...)
 ### list_file_tags_fields(file_path)
 ### search(query_string)
+### TODO: maybe we should also provide add/remove tags/fields to all files in subdir recursively
 
 ## File watch actions
 ### file_created - do nothing
@@ -31,20 +32,19 @@ Repository should have a list of required fileds. Every file with tags should ha
 ### dir_moved (renamed) - update files paths for all files recursively. Remove/Create a filewatcher for the dir
 
 ## Query String Language
-### Examples:
-tag1 | tag1 != NULL => all files with tag1
-NOT tag1 | tag1 == NULL => all files without tag1
-
-Fields are just tags with values. Values should be typed. Types supported are: string, number, datetime
-Operations with tags are: AND, OR, NOT and braces
+Fields are just tags with values. Values should be typed. 
+Types supported are: string, number, datetime.
+Operations with tags are: AND (lowest priority), OR, NOT and braces (highest priority).
 Operations with fields are: ==, !=, >, >=, <, <=, ~= (like)
 
 t1 t2 t3 => files which has all three tags: t1 AND t2 AND t3
 t1 t2|t3 => files with tag t1 AND any of t2 OR t3
 (t1 t2)|t3 => files with tags t1 AND t2 OR just one tag t3
 t1 f1>5 => files with tag t1 AND field f1>5
+t1 | f1>5 => files with tag t1 OR field f1>5
+"tag1" eqiuvalent to "tag1 != NULL" => all files with tag1
+"NOT tag1" equivalent "tag1 == NULL" => all files without tag1
 
 The obvious way of executing queries is just filter files by subdir (recursively), then iterate over them and 
 apply query predicate to every file. Very often case is to perform a query in a subdir. The mechanism for executing 
 query in the repo root is just a particular case of "exec query in subdir".
-
