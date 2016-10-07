@@ -8,7 +8,6 @@ file(GLOB_RECURSE sources      src/main/*.cpp src/main/scanner/*.cc src/main/par
 file(GLOB_RECURSE sources_test src/test/*.cpp)
 file(GLOB_RECURSE data resources/*)
 
-
 add_executable(reggatad ${sources} ${data})
 
 target_compile_options(reggatad PUBLIC -std=c++1y -Wall)
@@ -22,7 +21,8 @@ file(COPY reggatad.conf DESTINATION ".")
 ## dependencies ###############################################################
 ###############################################################################
 
-find_package(Boost 1.61.0 COMPONENTS filesystem system REQUIRED)
+find_package(Boost 1.61.0 COMPONENTS filesystem system log REQUIRED)
+add_definitions(-DBOOST_LOG_DYN_LINK=1)
 
 set(POCO_PREFIX      "/usr/local")
 set(POCO_INCLUDE_DIR "${POCO_PREFIX}/include")

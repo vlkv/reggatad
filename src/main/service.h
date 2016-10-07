@@ -24,14 +24,14 @@ class Service : public boost::enable_shared_from_this<Service> {
 	enum Status { starting, started, stopping, stopped };
 	Status _status;
 
-	typedef std::list<std::unique_ptr<ClientConnection>> ListOfClients;
-	ListOfClients _clients;
+	typedef std::vector<std::unique_ptr<ClientConnection>> ClientConnections;
+	ClientConnections _clients;
 
 public:
 	Service(int port);
 	virtual ~Service() = default;
 
-	void openRepo(const std::string& repoRootPath, const std::string& repoDbPath);
+	void open_repo(const std::string& repoRootPath, const std::string& repoDbPath);
 	void start();
 	void stop_async();
 
