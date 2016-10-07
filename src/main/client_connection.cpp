@@ -1,7 +1,8 @@
-#include "ClientConnection.h"
+#include "client_connection.h"
 
-ClientConnection::ClientConnection(boost::asio::io_service& service, boost::weak_ptr<Service> server) :
-	_sock(service) {
+ClientConnection::ClientConnection(boost::asio::io_service& io_service, boost::shared_ptr<Service> service) :
+	_sock(io_service),
+	_service(service) {
 }
 
 ClientConnection::~ClientConnection() {

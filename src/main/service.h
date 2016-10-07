@@ -1,8 +1,8 @@
 #ifndef SERVICE_H_
 #define SERVICE_H_
 
-#include "Repo.h"
-#include "ClientConnection.h"
+#include "repo.h"
+#include "client_connection.h"
 
 #include <vector>
 #include <list>
@@ -32,11 +32,13 @@ public:
 
 	void openRepo(const std::string& repoRootPath, const std::string& repoDbPath);
 	void start();
+	void stop_async();
 
 private:
 	void service_run_loop();
 	void accept_client();
 	void on_accept(ClientConnection* client, const boost::system::error_code& err);
+	void stop();
 };
 
 #endif /* SERVICE_H_ */

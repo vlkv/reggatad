@@ -1,6 +1,6 @@
 #include "main.h"
 #include "parser/Parser.h"
-#include "Service.h"
+#include "service.h"
 
 #include <memory>
 #include <iostream>

@@ -5,7 +5,7 @@
  *      Author: vitvlkv
  */
 
-#include "Service.h"
+#include "service.h"
 #include "service_exceptions.h"
 #include <boost/bind.hpp>
 
@@ -31,11 +31,11 @@ void Service::start() {
 	}
 	catch (const std::exception &e) {
 		std::cout << "Unexpected std::exception: " << e.what();
-//		stop_finish();
+		stop();
 	}
 	catch (...) {
 		std::cout << "Unexpected unknown exception";
-//		stop_finish();
+		stop();
 	}
 }
 
@@ -60,7 +60,7 @@ void Service::accept_client() {
 		return;
 	}
 	std::cout << "Waiting for client...";
-	_clients.push_back(std::unique_ptr<ClientConnection>(new ClientConnection(_service, weak_from_this())));
+	_clients.push_back(std::unique_ptr<ClientConnection>(new ClientConnection(_service, shared_from_this())));
 	auto client = _clients.back().get();
 	_acceptor.async_accept(client->sock(), boost::bind(&Service::on_accept, shared_from_this(), client, _1));
 }
@@ -77,4 +77,25 @@ void Service::on_accept(ClientConnection* client, const boost::system::error_cod
 	std::cout << "Client accepted!";
 	client->start();
 	accept_client();
+}
+
+void Service::stop_async() {
+	_service.dispatch(boost::bind(&Service::stop, shared_from_this()));
+}
+
+void Service::stop() {
+	if (_status != Service::Status::started) {
+		return;
+	}
+	std::cout << "Stopping server...";
+	_status = Service::Status::stopping;
+
+	_acceptor.close();
+	std::cout << "tcp acceptor closed";
+
+	// TODO: wait for clients to stop?..
+
+	_clients.clear();
+	_service.stop();
+	_status = Service::Status::stopped;
 }
