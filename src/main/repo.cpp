@@ -21,8 +21,6 @@ Repo::Repo(const std::string& rootPath, const std::string& dbPath)
 	createDirWatcherIfNeeded(rootPath);
 }
 
-Repo::~Repo() {}
-
 void Repo::createDirWatcherIfNeeded(const std::string& dirPath) {
 	if (dirPath == _dbPath) {
 		std::cout << "Skipping dir " << dirPath << std::endl;

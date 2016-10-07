@@ -10,6 +10,7 @@
 #include <string>
 #include <boost/asio.hpp>
 #include <boost/enable_shared_from_this.hpp>
+#include <boost/shared_ptr.hpp>
 #include <iostream>
 
 
@@ -28,7 +29,7 @@ class Service : public boost::enable_shared_from_this<Service> {
 
 public:
 	Service(int port);
-	virtual ~Service();
+	virtual ~Service() = default;
 
 	void openRepo(const std::string& repoRootPath, const std::string& repoDbPath);
 	void start();

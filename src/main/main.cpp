@@ -8,7 +8,7 @@
 #include <string>
 #include <boost/filesystem.hpp>
 using boost::filesystem::absolute;
-
+#include <boost/shared_ptr.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
 #include <boost/foreach.hpp>
@@ -31,9 +31,9 @@ int MAIN(int argc, char** argv) {
   pt::read_json((executable_path / "reggatad.conf").string(), config);
 
   auto port = config.get<int>("listen_port", 9100);
-  std::unique_ptr<Service> s(new Service(port));
+  boost::shared_ptr<Service> s(new Service(port));
 
-  for(pt::ptree::value_type &repo : config.get_child("repos")) {
+  for(auto &repo : config.get_child("repos")) {
 	  auto rootPath = repo.second.get<std::string>("root_path");
 	  auto dbPath = repo.second.get<std::string>("db_path", std::string(".reggata"));
       std::cout << "Found repository: " << rootPath << std::endl;

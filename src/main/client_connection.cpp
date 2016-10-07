@@ -5,9 +5,6 @@ ClientConnection::ClientConnection(boost::asio::io_service& io_service, boost::s
 	_service(service) {
 }
 
-ClientConnection::~ClientConnection() {
-}
-
 void ClientConnection::start() {
 
 }

@@ -14,7 +14,7 @@ public:
 	typedef boost::shared_ptr<ClientConnection> ptr;
 
 	ClientConnection(boost::asio::io_service& io_service, boost::shared_ptr<Service> service);
-	virtual ~ClientConnection();
+	virtual ~ClientConnection() = default;
 
 	void start();
 	void stop();

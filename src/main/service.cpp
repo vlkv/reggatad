@@ -14,9 +14,6 @@ Service::Service(int port) :
 	_status(Service::Status::stopped) {
 }
 
-Service::~Service() {
-}
-
 
 void Service::openRepo(const std::string& repoRootPath, const std::string& repoDbPath) {
 	_repos.push_back(std::unique_ptr<Repo>(new Repo(repoRootPath, repoDbPath)));
@@ -60,7 +57,9 @@ void Service::accept_client() {
 		return;
 	}
 	std::cout << "Waiting for client...";
-	_clients.push_back(std::unique_ptr<ClientConnection>(new ClientConnection(_service, shared_from_this())));
+	auto cc_ptr = shared_from_this();
+	std::cout << "Created shared from this...";
+	_clients.push_back(std::unique_ptr<ClientConnection>(new ClientConnection(_service, cc_ptr)));
 	auto client = _clients.back().get();
 	_acceptor.async_accept(client->sock(), boost::bind(&Service::on_accept, shared_from_this(), client, _1));
 }
