@@ -46,7 +46,6 @@ void ClientConnection::on_read(const boost::system::error_code &err, size_t byte
 }
 
 void ClientConnection::handle_msg(const std::string &msg) {
-	std::cout << "TODO: process message " << msg;
-
+	std::cout << "TODO: parse request and delegate it to Processor. Then take results, serialize them and send response." << msg;
 }
 

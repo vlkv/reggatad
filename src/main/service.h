@@ -3,20 +3,25 @@
 
 #include "repo.h"
 #include "client_connection.h"
+#include "processor.h"
+#include "service_exceptions.h"
 
 #include <vector>
 #include <list>
 #include <memory>
 #include <string>
+#include <iostream>
+
+#include <boost/bind.hpp>
 #include <boost/asio.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/shared_ptr.hpp>
-#include <iostream>
+
 
 
 
 class Service : public boost::enable_shared_from_this<Service> {
-	std::vector<std::unique_ptr<Repo>> _repos;
+	std::unique_ptr<Processor> _proc;
 
 	boost::asio::io_service _service; // TODO: rename to _io_service
 	boost::asio::ip::tcp::acceptor _acceptor;
@@ -28,10 +33,9 @@ class Service : public boost::enable_shared_from_this<Service> {
 	ClientConnections _clients;
 
 public:
-	Service(int port);
+	Service(int port, std::unique_ptr<Processor> proc);
 	virtual ~Service() = default;
 
-	void open_repo(const std::string& repoRootPath, const std::string& repoDbPath);
 	void start();
 	void stop_async();
 

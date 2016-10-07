@@ -1,6 +1,7 @@
 #include "main.h"
 #include "parser/Parser.h"
 #include "service.h"
+#include "processor.h"
 
 #include <memory>
 #include <iostream>
@@ -10,7 +11,7 @@
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/filesystem.hpp>
-using boost::filesystem::absolute;
+namespace fs = boost::filesystem;
 #include <boost/shared_ptr.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
@@ -30,26 +31,28 @@ namespace pt = boost::property_tree;
 int MAIN(int argc, char** argv) {
 	boost::log::add_console_log();
 	BOOST_LOG_TRIVIAL(info) << "=== Reggata Daemon start ===";
-	auto executable_path = absolute(argv[0]).parent_path();
+	auto executable_path = fs::absolute(argv[0]).parent_path();
 	pt::ptree config;
 	pt::read_json((executable_path / "reggatad.conf").string(), config);
 
-	auto port = config.get<int>("listen_port", 9100);
-	boost::shared_ptr<Service> s(new Service(port));
-
+	std::unique_ptr<Processor> proc(new Processor());
 	for(auto &repo : config.get_child("repos")) {
 		auto rootPath = repo.second.get<std::string>("root_path");
 		auto dbPath = repo.second.get<std::string>("db_path", std::string(".reggata"));
 		std::cout << "Found repository: " << rootPath << std::endl;
-		s->open_repo(rootPath, absolute(dbPath, rootPath).string());
+		proc->openRepo(rootPath, fs::absolute(dbPath, rootPath).string());
 	}
+
+	auto port = config.get<int>("listen_port", 9100);
+	boost::shared_ptr<Service> s(new Service(port, std::move(proc)));
 	s->start();
+	// TODO: implement a way to stop server
 
 	// TODO: remove this
 	Parser parser;// It's just to check that flex/bison do work
 	parser.parse();
 
-	// TODO: implement a way to stop server
+
 
 	return EXIT_SUCCESS;
 }

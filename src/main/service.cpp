@@ -6,18 +6,14 @@
  */
 
 #include "service.h"
-#include "service_exceptions.h"
-#include <boost/bind.hpp>
 
-Service::Service(int port) :
+
+Service::Service(int port, std::unique_ptr<Processor> proc) :
+	_proc(std::move(proc)),
 	_acceptor(_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)),
 	_status(Service::Status::stopped) {
 }
 
-
-void Service::open_repo(const std::string& repoRootPath, const std::string& repoDbPath) {
-	_repos.push_back(std::unique_ptr<Repo>(new Repo(repoRootPath, repoDbPath)));
-}
 
 void Service::start() {
 	std::cout << "Service start";
