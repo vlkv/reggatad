@@ -19,8 +19,8 @@ void Service::start() {
 	std::cout << "Service start";
 	_status = Service::Status::started;
 	try {
-		accept_client();
-		service_run_loop();
+		acceptClient();
+		serviceRunLoop();
 	}
 	catch (const std::exception &e) {
 		std::cout << "Unexpected std::exception: " << e.what();
@@ -32,7 +32,7 @@ void Service::start() {
 	}
 }
 
-void Service::service_run_loop() {
+void Service::serviceRunLoop() {
 	while (_status != Service::Status::stopped) {
 		try {
 			_service.run();
@@ -48,7 +48,7 @@ void Service::service_run_loop() {
 	}
 }
 
-void Service::accept_client() {
+void Service::acceptClient() {
 	if (!_acceptor.is_open()) {
 		return;
 	}
@@ -57,10 +57,10 @@ void Service::accept_client() {
 	std::cout << "Created shared from this...";
 	_clients.push_back(std::unique_ptr<ClientConnection>(new ClientConnection(_service, cc_ptr)));
 	auto client = _clients.back().get();
-	_acceptor.async_accept(client->sock(), boost::bind(&Service::on_accept, shared_from_this(), client, _1));
+	_acceptor.async_accept(client->sock(), boost::bind(&Service::onAccept, shared_from_this(), client, _1));
 }
 
-void Service::on_accept(ClientConnection* client, const boost::system::error_code& err) {
+void Service::onAccept(ClientConnection* client, const boost::system::error_code& err) {
 	if (err.value() == boost::asio::error::operation_aborted) {
 		throw ServiceException("Accept operation aborted");
 	}
@@ -71,10 +71,10 @@ void Service::on_accept(ClientConnection* client, const boost::system::error_cod
 	}
 	std::cout << "Client accepted!";
 	client->start();
-	accept_client();
+	acceptClient();
 }
 
-void Service::stop_async() {
+void Service::stopAsync() {
 	_service.dispatch(boost::bind(&Service::stop, shared_from_this()));
 }
 

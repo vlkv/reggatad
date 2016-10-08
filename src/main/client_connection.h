@@ -33,10 +33,10 @@ public:
 	boost::asio::ip::tcp::socket& sock();
 
 private:
-	void do_read();
-	size_t is_read_complete(const boost::system::error_code& err, size_t bytes);
-	void on_read(const boost::system::error_code& err, size_t bytes);
-	void handle_msg(const std::string &msg);
+	void doRead();
+	size_t isReadComplete(const boost::system::error_code& err, size_t bytes);
+	void onRead(const boost::system::error_code& err, size_t bytes);
+	void handleMsg(const std::string &msg);
 };
 
 #endif /* CLIENTCONNECTION_H_ */

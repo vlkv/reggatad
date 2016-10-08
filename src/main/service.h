@@ -37,12 +37,12 @@ public:
 	virtual ~Service() = default;
 
 	void start();
-	void stop_async();
+	void stopAsync();
 
 private:
-	void service_run_loop();
-	void accept_client();
-	void on_accept(ClientConnection* client, const boost::system::error_code& err);
+	void serviceRunLoop();
+	void acceptClient();
+	void onAccept(ClientConnection* client, const boost::system::error_code& err);
 	void stop();
 };
 
