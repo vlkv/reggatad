@@ -3,6 +3,7 @@
 
 #include "Poco/DirectoryWatcher.h"
 #include "Poco/Delegate.h"
+#include <boost/log/trivial.hpp>
 #include <rocksdb/db.h>
 #include <string>
 #include <map>

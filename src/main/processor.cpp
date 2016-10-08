@@ -14,5 +14,6 @@ Processor::Processor() {
 
 
 void Processor::openRepo(const std::string& repoRootPath, const std::string& repoDbPath) {
+	BOOST_LOG_TRIVIAL(info) << "Open repo, path=" << repoRootPath << " dbPath=" << repoDbPath;
 	_repos.push_back(std::unique_ptr<Repo>(new Repo(repoRootPath, repoDbPath)));
 }

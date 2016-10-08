@@ -39,7 +39,6 @@ int MAIN(int argc, char** argv) {
 	for(auto &repo : config.get_child("repos")) {
 		auto rootPath = repo.second.get<std::string>("root_path");
 		auto dbPath = repo.second.get<std::string>("db_path", std::string(".reggata"));
-		std::cout << "Found repository: " << rootPath << std::endl;
 		proc->openRepo(rootPath, fs::absolute(dbPath, rootPath).string());
 	}
 

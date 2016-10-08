@@ -1,4 +1,5 @@
 #include "repo.h"
+#include <boost/log/trivial.hpp>
 
 #ifndef PROCESSOR_H_
 #define PROCESSOR_H_

@@ -4,6 +4,7 @@ class Service;
 #include <boost/weak_ptr.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/bind.hpp>
+#include <boost/log/trivial.hpp>
 #include <iostream>
 #include "service_exceptions.h"
 
