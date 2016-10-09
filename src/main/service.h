@@ -6,7 +6,6 @@
 
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
-#include <boost/enable_shared_from_this.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/log/trivial.hpp>
 
@@ -18,7 +17,7 @@
 #include <iostream>
 
 
-class Service : public boost::enable_shared_from_this<Service> {
+class Service {
 	std::unique_ptr<Processor> _proc;
 
 	boost::asio::io_service _service; // TODO: rename to _io_service

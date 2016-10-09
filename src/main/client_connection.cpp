@@ -2,9 +2,8 @@
 
 int ClientConnection::_next_id = 1;
 
-ClientConnection::ClientConnection(boost::asio::io_service& io_service, boost::weak_ptr<Service> service) :
+ClientConnection::ClientConnection(boost::asio::io_service& io_service) :
 		_id(ClientConnection::_next_id++),
-		_service(service),
 		_sock(io_service),
 		_pingTimer(io_service) {
 }

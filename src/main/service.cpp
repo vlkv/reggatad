@@ -53,11 +53,11 @@ void Service::acceptClient() {
 		return;
 	}
 	BOOST_LOG_TRIVIAL(info) << "Waiting for client...";
-	auto conn = std::unique_ptr<ClientConnection>(new ClientConnection(_service, shared_from_this()));
+	auto conn = std::unique_ptr<ClientConnection>(new ClientConnection(_service));
 	auto connId = conn->id();
 	_clients.insert(ClientConnections::value_type(connId, std::move(conn)));
 	auto client = _clients.at(connId).get();
-	_acceptor.async_accept(client->sock(), boost::bind(&Service::onAccept, shared_from_this(), client, _1));
+	_acceptor.async_accept(client->sock(), boost::bind(&Service::onAccept, this, client, _1));
 }
 
 void Service::onAccept(ClientConnection* client, const boost::system::error_code& err) {
@@ -75,7 +75,7 @@ void Service::onAccept(ClientConnection* client, const boost::system::error_code
 }
 
 void Service::stopAsync() {
-	_service.dispatch(boost::bind(&Service::stop, shared_from_this()));
+	_service.dispatch(boost::bind(&Service::stop, this));
 }
 
 void Service::stop() {

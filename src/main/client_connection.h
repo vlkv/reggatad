@@ -16,7 +16,6 @@ class ClientConnection {
 	int _id;
 	static int _next_id;
 
-	boost::weak_ptr<Service> _service;
 	boost::asio::ip::tcp::socket _sock;
 	boost::asio::deadline_timer _pingTimer;
 
@@ -27,7 +26,7 @@ class ClientConnection {
 public:
 	typedef boost::shared_ptr<ClientConnection> ptr;
 
-	ClientConnection(boost::asio::io_service& io_service, boost::weak_ptr<Service> service);
+	ClientConnection(boost::asio::io_service& io_service);
 	virtual ~ClientConnection() = default;
 
 	void start();
