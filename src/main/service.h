@@ -1,16 +1,8 @@
-#ifndef SERVICE_H_
-#define SERVICE_H_
-
+#pragma once
 #include "repo.h"
 #include "client_connection.h"
 #include "processor.h"
-#include "service_exceptions.h"
-
-#include <vector>
-#include <list>
-#include <memory>
-#include <string>
-#include <iostream>
+#include "reggata_exceptions.h"
 
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
@@ -18,6 +10,12 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/log/trivial.hpp>
 
+#include <map>
+#include <vector>
+#include <list>
+#include <memory>
+#include <string>
+#include <iostream>
 
 
 class Service : public boost::enable_shared_from_this<Service> {
@@ -29,7 +27,7 @@ class Service : public boost::enable_shared_from_this<Service> {
 	enum Status { starting, started, stopping, stopped };
 	Status _status;
 
-	typedef std::vector<std::unique_ptr<ClientConnection>> ClientConnections;
+	typedef std::map<int, std::unique_ptr<ClientConnection>> ClientConnections;
 	ClientConnections _clients;
 
 public:
@@ -45,5 +43,3 @@ private:
 	void onAccept(ClientConnection* client, const boost::system::error_code& err);
 	void stop();
 };
-
-#endif /* SERVICE_H_ */

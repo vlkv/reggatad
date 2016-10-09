@@ -1,18 +1,19 @@
+#pragma once
+
+#include "reggata_exceptions.h"
 class Service;
 #include <boost/asio.hpp>
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/weak_ptr.hpp>
 #include <boost/shared_ptr.hpp>
+#include <boost/enable_shared_from_this.hpp>
 #include <boost/bind.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/function.hpp>
 #include <iostream>
-#include "service_exceptions.h"
 
-#ifndef CLIENTCONNECTION_H_
-#define CLIENTCONNECTION_H_
 
-class ClientConnection {
+class ClientConnection : public boost::enable_shared_from_this<ClientConnection> {
 	int _id;
 	static int _next_id;
 
@@ -27,13 +28,14 @@ class ClientConnection {
 public:
 	typedef boost::shared_ptr<ClientConnection> ptr;
 
-	ClientConnection(boost::asio::io_service& io_service, boost::shared_ptr<Service> service);
+	ClientConnection(boost::asio::io_service& io_service, boost::weak_ptr<Service> service);
 	virtual ~ClientConnection() = default;
 
 	void start();
 	void stop();
 
 	boost::asio::ip::tcp::socket& sock();
+	int id() const;
 
 private:
 	void doRead();
@@ -48,5 +50,3 @@ private:
 	void onPingTimer(const boost::system::error_code& err);
 	void onPingSent(const boost::system::error_code& err, size_t bytes);
 };
-
-#endif /* CLIENTCONNECTION_H_ */

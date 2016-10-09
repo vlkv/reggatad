@@ -30,15 +30,16 @@ namespace pt = boost::property_tree;
 
 int MAIN(int argc, char** argv) {
 	boost::log::add_console_log();
-	BOOST_LOG_TRIVIAL(info) << "=== Reggata Daemon start ===";
+	BOOST_LOG_TRIVIAL(info)<< "=== Reggata Daemon start ===";
 	auto executable_path = fs::absolute(argv[0]).parent_path();
 	pt::ptree config;
 	pt::read_json((executable_path / "reggatad.conf").string(), config);
 
 	std::unique_ptr<Processor> proc(new Processor());
-	for(auto &repo : config.get_child("repos")) {
+	for (auto &repo : config.get_child("repos")) {
 		auto rootPath = repo.second.get<std::string>("root_path");
-		auto dbPath = repo.second.get<std::string>("db_path", std::string(".reggata"));
+		auto dbPath = repo.second.get<std::string>("db_path",
+				std::string(".reggata"));
 		proc->openRepo(rootPath, fs::absolute(dbPath, rootPath).string());
 	}
 
@@ -48,10 +49,8 @@ int MAIN(int argc, char** argv) {
 	// TODO: implement a way to stop server
 
 	// TODO: remove this
-	Parser parser;// It's just to check that flex/bison do work
+	Parser parser; // It's just to check that flex/bison do work
 	parser.parse();
-
-
 
 	return EXIT_SUCCESS;
 }

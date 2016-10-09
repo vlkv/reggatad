@@ -37,10 +37,10 @@ void Service::serviceRunLoop() {
 		try {
 			_service.run();
 		}
-		catch (const ServiceException &e) {
+		catch (const ConnException &e) {
 			BOOST_LOG_TRIVIAL(error) << "Service fail: " << e.what();
-			/*e.client()->stop();
-			_clients.remove(e.client());*/
+			e.client().lock()->stop();
+			_clients.erase(e.client().lock()->id());
 		}
 		catch (...) {
 			throw;
@@ -53,19 +53,21 @@ void Service::acceptClient() {
 		return;
 	}
 	BOOST_LOG_TRIVIAL(info) << "Waiting for client...";
-	_clients.push_back(std::unique_ptr<ClientConnection>(new ClientConnection(_service, shared_from_this())));
-	auto client = _clients.back().get();
+	auto conn = std::unique_ptr<ClientConnection>(new ClientConnection(_service, shared_from_this()));
+	auto connId = conn->id();
+	_clients.insert(ClientConnections::value_type(connId, std::move(conn)));
+	auto client = _clients.at(connId).get();
 	_acceptor.async_accept(client->sock(), boost::bind(&Service::onAccept, shared_from_this(), client, _1));
 }
 
 void Service::onAccept(ClientConnection* client, const boost::system::error_code& err) {
 	if (err.value() == boost::asio::error::operation_aborted) {
-		throw ServiceException("Accept operation aborted");
+		throw ReggataException("Accept operation aborted");
 	}
 	if (err) {
 		std::ostringstream oss;
 		oss << "on_accept error: " << err;
-		throw ServiceException(oss.str());
+		throw ReggataException(oss.str());
 	}
 	BOOST_LOG_TRIVIAL(info) << "Client accepted!";
 	client->start();

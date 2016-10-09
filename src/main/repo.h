@@ -1,6 +1,4 @@
-#ifndef REPO_H_
-#define REPO_H_
-
+#pragma once
 #include "Poco/DirectoryWatcher.h"
 #include "Poco/Delegate.h"
 #include <boost/log/trivial.hpp>
@@ -30,5 +28,3 @@ private:
 	void onFileMovedTo(const Poco::DirectoryWatcher::DirectoryEvent& event);
 	void onScanError(const Poco::Exception& ex);
 };
-
-#endif /* REPO_H_ */

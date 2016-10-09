@@ -2,7 +2,7 @@
 
 int ClientConnection::_next_id = 1;
 
-ClientConnection::ClientConnection(boost::asio::io_service& io_service, boost::shared_ptr<Service> service) :
+ClientConnection::ClientConnection(boost::asio::io_service& io_service, boost::weak_ptr<Service> service) :
 		_id(ClientConnection::_next_id++),
 		_service(service),
 		_sock(io_service),
@@ -31,6 +31,10 @@ boost::asio::ip::tcp::socket& ClientConnection::sock() {
 	return _sock;
 }
 
+int ClientConnection::id() const {
+	return _id;
+}
+
 void ClientConnection::doRead() {
 	BOOST_LOG_TRIVIAL(debug) << "doRead";
 	boost::asio::async_read(_sock, boost::asio::buffer(_read_buffer),
@@ -52,7 +56,7 @@ void ClientConnection::onRead(const boost::system::error_code &err, size_t bytes
 	BOOST_LOG_TRIVIAL(debug) << "onRead";
 	if (err) {
 		BOOST_LOG_TRIVIAL(error) << "onRead error: " << err << " client id=" << _id;
-		throw ServiceException("onRead error");
+		throw ConnException("onRead error", weak_from_this());
 	}
 	std::string msg(_read_buffer, bytes);
 	BOOST_LOG_TRIVIAL(info) << "Received from client id=" << _id << " msg: " << msg;
@@ -73,7 +77,7 @@ void ClientConnection::onPingSent(const boost::system::error_code& err, size_t b
 	if (err) {
 		std::ostringstream oss;
 		oss << "Could not send ping, error: " << err << " client id=" << _id;
-		throw ServiceException(oss.str());
+		throw ConnException(oss.str(), weak_from_this());
 	}
 	startPingTimer();
 }
