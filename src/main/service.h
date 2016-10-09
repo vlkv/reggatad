@@ -6,7 +6,6 @@
 
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
-#include <boost/shared_ptr.hpp>
 #include <boost/log/trivial.hpp>
 
 #include <map>
@@ -18,7 +17,7 @@
 
 
 class Service {
-	std::unique_ptr<Processor> _proc;
+	std::shared_ptr<Processor> _proc;
 
 	boost::asio::io_service _service; // TODO: rename to _io_service
 	boost::asio::ip::tcp::acceptor _acceptor;
@@ -30,7 +29,7 @@ class Service {
 	ClientConnections _clients;
 
 public:
-	Service(int port, std::unique_ptr<Processor> proc);
+	Service(int port, std::shared_ptr<Processor> proc);
 	virtual ~Service() = default;
 
 	void start();

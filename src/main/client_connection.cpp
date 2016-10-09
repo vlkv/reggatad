@@ -2,10 +2,11 @@
 
 int ClientConnection::_next_id = 1;
 
-ClientConnection::ClientConnection(boost::asio::io_service& io_service) :
+ClientConnection::ClientConnection(boost::asio::io_service& io_service, std::shared_ptr<Processor> proc) :
 		_id(ClientConnection::_next_id++),
 		_sock(io_service),
-		_pingTimer(io_service) {
+		_pingTimer(io_service),
+		_proc(proc) {
 }
 
 void ClientConnection::start() {
@@ -67,6 +68,7 @@ void ClientConnection::onRead(const boost::system::error_code &err, size_t bytes
 
 void ClientConnection::handleMsg(const std::string &msg) {
 	BOOST_LOG_TRIVIAL(debug) << "TODO: parse request and delegate it to Processor. Then take results, serialize them and send response." << msg;
+	// TODO: Delegate it to _proc
 }
 
 void ClientConnection::doWrite(const std::string &msg, OnWriteHandler onWriteHandler) {

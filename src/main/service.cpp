@@ -8,8 +8,8 @@
 #include "service.h"
 
 
-Service::Service(int port, std::unique_ptr<Processor> proc) :
-	_proc(std::move(proc)),
+Service::Service(int port, std::shared_ptr<Processor> proc) :
+	_proc(proc),
 	_acceptor(_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)),
 	_status(Service::Status::stopped) {
 }
@@ -53,7 +53,7 @@ void Service::acceptClient() {
 		return;
 	}
 	BOOST_LOG_TRIVIAL(info) << "Waiting for client...";
-	auto conn = std::unique_ptr<ClientConnection>(new ClientConnection(_service));
+	auto conn = std::unique_ptr<ClientConnection>(new ClientConnection(_service, _proc));
 	auto connId = conn->id();
 	_clients.insert(ClientConnections::value_type(connId, std::move(conn)));
 	auto client = _clients.at(connId).get();

@@ -3,22 +3,21 @@
 #include "service.h"
 #include "processor.h"
 
-#include <memory>
-#include <iostream>
-#include <fstream>
-#include <string>
 #include <boost/log/core.hpp>
 #include <boost/log/utility/setup/console.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/filesystem.hpp>
 namespace fs = boost::filesystem;
-#include <boost/shared_ptr.hpp>
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/json_parser.hpp>
-#include <boost/foreach.hpp>
+namespace pt = boost::property_tree;
+
 #include <set>
 #include <exception>
-namespace pt = boost::property_tree;
+#include <memory>
+#include <iostream>
+#include <fstream>
+#include <string>
 
 // when testing, the main of gtest and this main function will collide,
 // this prevents the collision, but it's an ugly hack like all ifdef branches
@@ -35,7 +34,7 @@ int MAIN(int argc, char** argv) {
 	pt::ptree config;
 	pt::read_json((executable_path / "reggatad.conf").string(), config);
 
-	std::unique_ptr<Processor> proc(new Processor());
+	auto proc = std::make_shared<Processor>();
 	for (auto &repo : config.get_child("repos")) {
 		auto rootPath = repo.second.get<std::string>("root_path");
 		auto dbPath = repo.second.get<std::string>("db_path",
@@ -44,7 +43,7 @@ int MAIN(int argc, char** argv) {
 	}
 
 	auto port = config.get<int>("listen_port", 9100);
-	boost::shared_ptr<Service> s(new Service(port, std::move(proc)));
+	std::unique_ptr<Service> s(new Service(port, proc));
 	s->start();
 	// TODO: implement a way to stop server
 
