@@ -4,16 +4,27 @@ int ClientConnection::_next_id = 1;
 
 ClientConnection::ClientConnection(boost::asio::io_service& io_service, boost::shared_ptr<Service> service) :
 		_id(ClientConnection::_next_id++),
+		_service(service),
 		_sock(io_service),
-		_service(service) {
+		_pingTimer(io_service) {
 }
 
 void ClientConnection::start() {
+	startPingTimer();
 	doRead();
 }
 
 void ClientConnection::stop() {
+}
 
+void ClientConnection::onPingTimer(const boost::system::error_code& err) {
+	BOOST_LOG_TRIVIAL(debug) << "onPingTimer, err=" << err;
+	doWrite("{cmd:\"ping\"}\n", boost::bind(&ClientConnection::onPingSent, this, _1, _2));
+}
+
+void ClientConnection::startPingTimer() {
+	_pingTimer.expires_from_now(boost::posix_time::seconds(5));
+	_pingTimer.async_wait(boost::bind(&ClientConnection::onPingTimer, this, _1));
 }
 
 boost::asio::ip::tcp::socket& ClientConnection::sock() {
@@ -52,3 +63,17 @@ void ClientConnection::handleMsg(const std::string &msg) {
 	BOOST_LOG_TRIVIAL(debug) << "TODO: parse request and delegate it to Processor. Then take results, serialize them and send response." << msg;
 }
 
+void ClientConnection::doWrite(const std::string &msg, OnWriteHandler onWriteHandler) {
+	BOOST_LOG_TRIVIAL(info) << "Sending to client id=" << _id << " msg: " << msg;
+	std::copy(msg.begin(), msg.end(), _write_buffer);
+	boost::asio::async_write(_sock, boost::asio::buffer(_write_buffer, msg.size()), onWriteHandler);
+}
+
+void ClientConnection::onPingSent(const boost::system::error_code& err, size_t bytes) {
+	if (err) {
+		std::ostringstream oss;
+		oss << "Could not send ping, error: " << err << " client id=" << _id;
+		throw ServiceException(oss.str());
+	}
+	startPingTimer();
+}
