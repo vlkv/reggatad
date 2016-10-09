@@ -39,8 +39,8 @@ void Service::serviceRunLoop() {
 		}
 		catch (const ConnException &e) {
 			BOOST_LOG_TRIVIAL(error) << "Service fail: " << e.what();
-			e.client().lock()->stop();
-			_clients.erase(e.client().lock()->id());
+			_clients.at(e.clientId())->stop();
+			_clients.erase(e.clientId());
 		}
 		catch (...) {
 			throw;

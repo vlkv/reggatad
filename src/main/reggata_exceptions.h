@@ -20,14 +20,14 @@ protected:
 class ClientConnection;
 
 class ConnException : public ReggataException {
-	boost::weak_ptr<ClientConnection> _client;
+	int _clientId;
 public:
-	explicit ConnException(const std::string& msg, boost::weak_ptr<ClientConnection> client) :
+	explicit ConnException(const std::string& msg, int clientId) :
 		ReggataException(msg),
-		_client(client) {
+		_clientId(clientId) {
 	}
 
-	boost::weak_ptr<ClientConnection> client() const {
-		return _client;
+	int clientId() const {
+		return _clientId;
 	}
 };

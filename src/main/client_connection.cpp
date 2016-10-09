@@ -15,6 +15,9 @@ void ClientConnection::start() {
 }
 
 void ClientConnection::stop() {
+	BOOST_LOG_TRIVIAL(info) << "Stopping ClientConnection id=" << _id;
+	_pingTimer.cancel();
+	_sock.close();
 }
 
 void ClientConnection::onPingTimer(const boost::system::error_code& err) {
@@ -56,7 +59,7 @@ void ClientConnection::onRead(const boost::system::error_code &err, size_t bytes
 	BOOST_LOG_TRIVIAL(debug) << "onRead";
 	if (err) {
 		BOOST_LOG_TRIVIAL(error) << "onRead error: " << err << " client id=" << _id;
-		throw ConnException("onRead error", weak_from_this());
+		throw ConnException("onRead error", _id);
 	}
 	std::string msg(_read_buffer, bytes);
 	BOOST_LOG_TRIVIAL(info) << "Received from client id=" << _id << " msg: " << msg;
@@ -77,7 +80,7 @@ void ClientConnection::onPingSent(const boost::system::error_code& err, size_t b
 	if (err) {
 		std::ostringstream oss;
 		oss << "Could not send ping, error: " << err << " client id=" << _id;
-		throw ConnException(oss.str(), weak_from_this());
+		throw ConnException(oss.str(), _id);
 	}
 	startPingTimer();
 }
