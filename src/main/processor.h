@@ -3,7 +3,8 @@
 #include <boost/log/trivial.hpp>
 
 class Processor {
-	std::vector<std::unique_ptr<Repo>> _repos;
+	typedef std::map<std::string, std::unique_ptr<Repo>> Repos;
+	Repos _repos;
 
 public:
 	Processor();

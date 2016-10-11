@@ -13,7 +13,21 @@ It would use
 Repository should have a list of required fileds. Every file with tags should have these fields set. E.g. 'rating'
 
 ## API
-### init_repo(path_to_root_dir)
+### open_repo(path_to_root_dir, path_to_db_dir, init_if_not_exists)
+	Request: {
+		cmd: "open_repo",
+		args: {
+			path_to_root_dir: "/home/repo",
+			path_to_db_dir: "home/repo/.reggata",
+			init_if_not_exists: true
+		}
+	}
+	Response:
+	{ok: true}
+	{ok: false, msg: "Reason"}
+	
+### close_repo(path_to_root_dir)
+	
 ### add_tags_to_file(file_path, tag1, tag2, ...)
 	Request:
 	{
