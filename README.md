@@ -17,8 +17,8 @@ Request:
 {
 	cmd: "open_repo",
 	args: {
-		root_dir: "/home/repo",
-		db_dir: "home/repo/.reggata",
+		root_dir: "/home/repo/",
+		db_dir: "home/repo/.reggata/",
 		init_if_not_exists: true
 	}
 }
@@ -29,6 +29,15 @@ Responses:
 {ok: false, msg: "Reason"}
 ```	
 ### close_repo(path_to_root_dir)
+Request:
+```json
+{
+	cmd: "close_repo",
+	args: {
+		root_dir: "/home/repo/"
+	}
+}
+```
 	
 ### add_tags_to_file(file_path, tag1, tag2, ...)
 Request:
@@ -36,7 +45,7 @@ Request:
 {
 	cmd: "add_tags",
 	args: {
-		file: "/home/user/file.txt",
+		file: "/home/repo/file.txt",
 		tags: ["tag1", "tag2"]
 	}
 }
@@ -47,7 +56,7 @@ Request:
 {
 	cmd: "remove_tags",
 	args: {
-		file: "/home/user/file.txt",
+		file: "/home/repo/file.txt",
 		tags: ["tag1", "tag2"]
 	}
 }
@@ -66,7 +75,7 @@ Request:
 {
 	cmd: "file_info",
 	args: {
-		file: "/home/user/file.txt"
+		file: "/home/repo/file.txt"
 	}
 }
 ```
@@ -77,7 +86,7 @@ Request:
 {
 	cmd: "search",
 	args: {
-		path: "/home/user/",
+		path: "/home/repo/",
 		query: "tag1 tag2|tag3"
 	}
 }
