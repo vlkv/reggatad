@@ -45,7 +45,7 @@ Repository should have a list of required fileds. Every file with tags should ha
 ### add_fields_to_file(file_path, field1(key1,val1), field2(key2,val2), ...)
 ### remove_fields_from_file(file_path, field_key1, field_key2, ...)
 ### list_file_tags_fields(file_path)
-### search(query_string)
+### search(dir_path, query_string)
 ### TODO: maybe we should also provide add/remove tags/fields to all files in subdir recursively
 
 ## File watch actions
@@ -74,3 +74,7 @@ t1 | f1>5 => files with tag t1 OR field f1>5
 The obvious way of executing queries is just filter files by subdir (recursively), then iterate over them and 
 apply query predicate to every file. Very often case is to perform a query in a subdir. The mechanism for executing 
 query in the repo root is just a particular case of "exec query in subdir".
+
+
+## Useful links
+* https://github.com/eliben/code-for-blog/blob/master/2011/asio_protobuf_sample/db_server.cpp

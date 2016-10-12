@@ -49,10 +49,14 @@ public:
 	}
 
 	boost::system::error_code sendMsg(const std::string& message) {
-		boost::array<char, 128> buf;
-		std::copy(message.begin(), message.end(), buf.begin());
+		std::vector<char> buf;
+		buf.resize(4 + message.size());
+		uint32_t header = message.size();
+		std::cout << "message size is " << header << std::endl;
+		std::copy((char*)&header, (char*)&header+4, buf.begin());
+		std::copy(message.begin(), message.end(), buf.begin()+4);
 		boost::system::error_code error;
-		_socket.write_some(boost::asio::buffer(buf, message.size()), error);
+		_socket.write_some(boost::asio::buffer(buf), error);
 		return error;
 	}
 
@@ -78,8 +82,8 @@ TEST_F (myTestFixture1, UnitTest1) {
 
 	std::cout << "sendMsg" << std::endl;
 	auto err = sendMsg("Hello World!\n");
+	ASSERT_EQ(nullptr, err) << "sendMsg failed, error: " << err;
 	boost::this_thread::sleep(boost::posix_time::seconds(2));
-	ASSERT_EQ(nullptr, err) << "blah blah";
 	auto resp = recvMsg();
-	std::cout << "resp=" << resp << std::endl;
+	std::cout << "recvMsg resp: " << resp << std::endl;
 }

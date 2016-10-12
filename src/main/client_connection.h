@@ -14,6 +14,7 @@ class Service;
 
 #include <iostream>
 #include <memory>
+#include <string>
 
 
 class ClientConnection {
@@ -23,8 +24,10 @@ class ClientConnection {
 	boost::asio::ip::tcp::socket _sock;
 	boost::asio::deadline_timer _pingTimer;
 
+	const size_t HEADER_SIZE = 4;
+
 	enum { max_msg = 1024 };
-	char _read_buffer[max_msg];
+	std::vector<char> _read_buffer;
 	char _write_buffer[max_msg];
 
 	std::shared_ptr<Processor> _proc;
@@ -42,9 +45,11 @@ public:
 	int id() const;
 
 private:
-	void doRead();
-	size_t isReadComplete(const boost::system::error_code& err, size_t bytes);
-	void onRead(const boost::system::error_code& err, size_t bytes);
+	void doReadHeader();
+	void doReadBody(int bodyLength);
+	void onReadHeader(const boost::system::error_code& err);
+	void onReadBody(const boost::system::error_code& err);
+	uint32_t decodeHeader(const std::vector<char>& buf) const;
 	void handleMsg(const std::string &msg);
 
 	typedef boost::function<void(const boost::system::error_code &, size_t)> OnWriteHandler;
