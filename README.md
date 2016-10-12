@@ -1,30 +1,29 @@
-reggatad --- is a daemon (service) process that's main purpose is to watch for changes in filesystem and update tags database correspondingly. Also it manages the tags database (SQLite?) and provides an API for all operations with tagged files. This API uses reggata_client.
+## About
+Reggatad --- is a service (daemon process) that makes it possible to add/remove/modify `tags` to regular files and search by tags. Beside the `tags` there are `fields` (key-value pairs) that are also searchable. Reggatad also watches for changes in filesystem and updates tags database correspondingly. It stores all tags/fields information in database and provides an API (TCP sockets) for all operations with tags/fields. This API uses reggata_client.
 
-It would use
+It uses
 - Flexc++ and Bisonc++ to implement query language parsing
-- Embedded database, there are several options here:
-    * RocksDB http://rocksdb.org/docs/getting-started.html C++ simple key value store
-    * EJDB http://ejdb.org/doc/ql/ql.html C++ JSON database, very good query language, not maintained
-    * LMDB https://en.wikipedia.org/wiki/Lightning_Memory-Mapped_Database
-    * SQLite
-- POCO FileWatcher class (implemented with inotify on Linux)
-- Boost for everything else
-
-Repository should have a list of required fileds. Every file with tags should have these fields set. E.g. 'rating'
+- RocksDB http://rocksdb.org/docs/getting-started.html an embedded database (key value store)
+- POCO DirWatcher class (implemented with inotify on Linux)
+- gtest as unit testing framework
+- boost for anything else
 
 ## API
+Every message should have a header with length of the message.
+
 ### open_repo(path_to_root_dir, path_to_db_dir, init_if_not_exists)
-	Request: {
+	Request: 
+	```{
 		cmd: "open_repo",
 		args: {
 			path_to_root_dir: "/home/repo",
 			path_to_db_dir: "home/repo/.reggata",
 			init_if_not_exists: true
 		}
-	}
+	}```
 	Response:
-	{ok: true}
-	{ok: false, msg: "Reason"}
+	```{ok: true}```
+	```{ok: false, msg: "Reason"}```
 	
 ### close_repo(path_to_root_dir)
 	
@@ -63,14 +62,27 @@ Types supported are: string, number, datetime.
 Operations with tags are: AND (lowest priority), OR, NOT and braces (highest priority).
 Operations with fields are: ==, !=, >, >=, <, <=, ~= (like)
 
-t1 t2 t3 => files which has all three tags: t1 AND t2 AND t3
-t1 t2|t3 => files with tag t1 AND any of t2 OR t3
-(t1 t2)|t3 => files with tags t1 AND t2 OR just one tag t3
-t1 f1>5 => files with tag t1 AND field f1>5
-t1 | f1>5 => files with tag t1 OR field f1>5
+files which has all three tags: t1 AND t2 AND t3:
+```t1 t2 t3```
+
+files with tag t1 AND any of t2 OR t3:
+```t1 t2|t3```
+
+files with tags t1 AND t2 OR just one tag t3
+```(t1 t2)|t3``` 
+
+files with tag t1 AND field f1>5:
+```t1 f1>5``` 
+
+files with tag t1 OR field f1>5:
+```t1 | f1>5``` 
+
 "tag1" eqiuvalent to "tag1 != NULL" => all files with tag1
 "NOT tag1" equivalent "tag1 == NULL" => all files without tag1
 
 The obvious way of executing queries is just filter files by subdir (recursively), then iterate over them and 
 apply query predicate to every file. Very often case is to perform a query in a subdir. The mechanism for executing 
 query in the repo root is just a particular case of "exec query in subdir".
+
+## Some NOTEs and thoughts
+Repository should have a list of required fileds. Every file with tags should have these fields set. E.g. 'rating'.
