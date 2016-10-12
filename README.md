@@ -9,21 +9,21 @@ It uses
 - boost for anything else
 
 ## API
-Every message has a 4 byte header that contains length of the message. The message is a JSON.
+Every message has a 4 byte header that contains length of the message. The message is a JSON string.
 
 ### open_repo(path_to_root_dir, path_to_db_dir, init_if_not_exists)
-	Request: 
-	```{
-		cmd: "open_repo",
-		args: {
-			path_to_root_dir: "/home/repo",
-			path_to_db_dir: "home/repo/.reggata",
-			init_if_not_exists: true
-		}
-	}```
-	Response:
-	```{ok: true}```
-	```{ok: false, msg: "Reason"}```
+Request: 
+```{
+	cmd: "open_repo",
+	args: {
+		path_to_root_dir: "/home/repo",
+		path_to_db_dir: "home/repo/.reggata",
+		init_if_not_exists: true
+	}
+}```
+Response:
+{ok: true}
+{ok: false, msg: "Reason"}
 	
 ### close_repo(path_to_root_dir)
 	
