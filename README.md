@@ -4,7 +4,7 @@ Reggatad --- is a service (daemon process) that makes it possible to add/remove/
 It uses
 - Flexc++ and Bisonc++ to implement query language parsing
 - RocksDB http://rocksdb.org/docs/getting-started.html an embedded database (key value store)
-- POCO DirWatcher class (implemented with inotify on Linux)
+- POCO DirectoryWatcher class (implemented with inotify on Linux)
 - gtest as unit testing framework
 - boost for anything else
 
@@ -13,22 +13,22 @@ Every message has a 4 byte header that contains length of the message. The messa
 
 ### open_repo(path_to_root_dir, path_to_db_dir, init_if_not_exists)
 Request: 
-```{
-	cmd: "open_repo",
-	args: {
-		path_to_root_dir: "/home/repo",
-		path_to_db_dir: "home/repo/.reggata",
-		init_if_not_exists: true
+	{
+		cmd: "open_repo",
+		args: {
+			path_to_root_dir: "/home/repo",
+			path_to_db_dir: "home/repo/.reggata",
+			init_if_not_exists: true
+		}
 	}
-}```
-Response:
-{ok: true}
-{ok: false, msg: "Reason"}
+Responses:
+	{ok: true}
+	{ok: false, msg: "Reason"}
 	
 ### close_repo(path_to_root_dir)
 	
 ### add_tags_to_file(file_path, tag1, tag2, ...)
-	Request:
+Request:
 	{
 		cmd: "add_tags_to_file",
 		args: {
@@ -36,7 +36,7 @@ Response:
 			tags: ["tag1", "tag2"]
 		}
 	}
-	Responses:
+Responses:
 	{ok: true}
 	{ok: false, msg: "Some reason"}
 
@@ -45,7 +45,7 @@ Response:
 ### remove_fields_from_file(file_path, field_key1, field_key2, ...)
 ### list_file_tags_fields(file_path)
 ### search(dir_path, query_string)
-### TODO: maybe we should also provide add/remove tags/fields to all files in subdir recursively
+### TODO: maybe we should also provide add/remove tags/fields to all files in subdir recursively. Or this would be a task for reggata_client?..
 
 ## File watch actions
 ### file_created - do nothing
