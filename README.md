@@ -9,7 +9,7 @@ It uses
 - boost for anything else
 
 ## API
-Every message has a 4 byte header that contains length of the message. The message is a JSON string.
+Every message has a **4 byte header** that contains length of the message. The message is a JSON string.
 
 ### open_repo(path_to_root_dir, path_to_db_dir, init_if_not_exists)
 Request:
@@ -17,8 +17,8 @@ Request:
 {
 	cmd: "open_repo",
 	args: {
-		path_to_root_dir: "/home/repo",
-		path_to_db_dir: "home/repo/.reggata",
+		root_dir: "/home/repo",
+		db_dir: "home/repo/.reggata",
 		init_if_not_exists: true
 	}
 }
@@ -34,7 +34,7 @@ Responses:
 Request:
 ```json
 {
-	cmd: "add_tags_to_file",
+	cmd: "add_tags",
 	args: {
 		file: "/home/user/file.txt",
 		tags: ["tag1", "tag2"]
@@ -42,10 +42,46 @@ Request:
 }
 ```
 ### remove_tags_from_file(file_path, tag1, tag2, ...)
+Request:
+```json
+{
+	cmd: "remove_tags",
+	args: {
+		file: "/home/user/file.txt",
+		tags: ["tag1", "tag2"]
+	}
+}
+```
+TODO: do we need a request to remove all tags from file?..
+
 ### add_fields_to_file(file_path, field1(key1,val1), field2(key2,val2), ...)
+TODO: implement after tags
+
 ### remove_fields_from_file(file_path, field_key1, field_key2, ...)
+TODO: implement after tags
+
 ### list_file_tags_fields(file_path)
+Request:
+```json
+{
+	cmd: "file_info",
+	args: {
+		file: "/home/user/file.txt"
+	}
+}
+```
+
 ### search(dir_path, query_string)
+Request:
+```json
+{
+	cmd: "search",
+	args: {
+		path: "/home/user/",
+		query: "tag1 tag2|tag3"
+	}
+}
+```
 ### TODO: maybe we should also provide add/remove tags/fields to all files in subdir recursively. Or this would be a task for reggata_client?..
 
 ## File watch actions
