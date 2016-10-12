@@ -58,7 +58,9 @@ void ClientConnection::onReadHeader(const boost::system::error_code& err) {
 
 uint32_t ClientConnection::decodeHeader(const std::vector<char>& buf) const {
 	if (buf.size() != HEADER_SIZE) {
-		throw new ConnException("Bad buffer size != HEADER_SIZE");
+		std::ostringstream ost;
+		ost << "Bad buffer size=" << buf.size() << " should be equal to " << HEADER_SIZE;
+		throw new ConnException(ost.str(), _id);
 	}
 	uint32_t msgSize = 0;
 	char* dst = (char*)&msgSize;

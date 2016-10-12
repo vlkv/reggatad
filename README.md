@@ -9,7 +9,7 @@ It uses
 - boost for anything else
 
 ## API
-Every message should have a header with length of the message.
+Every message has a 4 byte header that contains length of the message. The message is a JSON.
 
 ### open_repo(path_to_root_dir, path_to_db_dir, init_if_not_exists)
 	Request: 
