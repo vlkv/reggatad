@@ -21,26 +21,26 @@ Request:
 		path_to_db_dir: "home/repo/.reggata",
 		init_if_not_exists: true
 	}
-}```
+}
+```
 Responses:
-	{ok: true}
-	{ok: false, msg: "Reason"}
-	
+```json
+{ok: true}
+{ok: false, msg: "Reason"}
+```	
 ### close_repo(path_to_root_dir)
 	
 ### add_tags_to_file(file_path, tag1, tag2, ...)
 Request:
-	{
-		cmd: "add_tags_to_file",
-		args: {
-			file: "/home/user/file.txt",
-			tags: ["tag1", "tag2"]
-		}
+```json
+{
+	cmd: "add_tags_to_file",
+	args: {
+		file: "/home/user/file.txt",
+		tags: ["tag1", "tag2"]
 	}
-Responses:
-	{ok: true}
-	{ok: false, msg: "Some reason"}
-
+}
+```
 ### remove_tags_from_file(file_path, tag1, tag2, ...)
 ### add_fields_to_file(file_path, field1(key1,val1), field2(key2,val2), ...)
 ### remove_fields_from_file(file_path, field_key1, field_key2, ...)
@@ -64,19 +64,25 @@ Operations with tags are: AND (lowest priority), OR, NOT and braces (highest pri
 Operations with fields are: ==, !=, >, >=, <, <=, ~= (like)
 
 files which has all three tags: t1 AND t2 AND t3:
-```t1 t2 t3```
-
+```
+t1 t2 t3
+```
 files with tag t1 AND any of t2 OR t3:
-```t1 t2|t3```
-
-files with tags t1 AND t2 OR just one tag t3
-```(t1 t2)|t3``` 
-
+```
+t1 t2|t3
+```
+files with tags t1 AND t2 OR just one tag t3:
+```
+(t1 t2)|t3
+``` 
 files with tag t1 AND field f1>5:
-```t1 f1>5``` 
-
+```
+t1 f1>5
+``` 
 files with tag t1 OR field f1>5:
-```t1 | f1>5``` 
+```
+t1 | f1>5
+``` 
 
 "tag1" eqiuvalent to "tag1 != NULL" => all files with tag1
 "NOT tag1" equivalent "tag1 == NULL" => all files without tag1
