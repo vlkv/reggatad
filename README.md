@@ -1,5 +1,5 @@
 ## About
-Reggatad --- is a service (daemon process) that makes it possible to add/remove/modify `tags` to regular files and search by tags. Beside the `tags` there are `fields` (key-value pairs) that are also searchable. Reggatad also watches for changes in filesystem and updates tags database correspondingly. It stores all tags/fields information in database and provides an API (TCP sockets) for all operations with tags/fields. This API uses reggata_client.
+Reggatad --- is a service (daemon process) that makes it possible to add/remove/modify `tags` to regular files and search by tags. Beside the `tags` there are `fields` (key-value pairs) that are also searchable. Reggatad also watches for changes in filesystem and updates tags database correspondingly. It stores all tags/fields information in database and provides an API (TCP sockets) for all operations with tags/fields. This API uses reggata_client. This project is a second try of https://github.com/vlkv/reggata.
 
 It uses
 - Flexc++ and Bisonc++ to implement query language parsing
@@ -140,4 +140,5 @@ query in the repo root is just a particular case of "exec query in subdir".
 * https://github.com/eliben/code-for-blog/blob/master/2011/asio_protobuf_sample/db_server.cpp
 
 ## Some NOTEs and thoughts
-Repository should have a list of required fileds. Every file with tags should have these fields set. E.g. 'rating'.
+* Repository should have a list of required fileds. Every file with tags should have these fields set. E.g. 'rating'.
+* Reggatad should have some recovery request in API. For example, by some reason reggatad wasn't running. And during that time user moved (or anything) files withing repository... This recovery could be a simple one. For example we try to find files in different location withing the repo by name...
