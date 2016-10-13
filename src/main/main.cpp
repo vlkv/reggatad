@@ -1,7 +1,5 @@
-#include "main.h"
+#include "application.h"
 #include "parser/Parser.h"
-#include "service.h"
-#include "processor.h"
 
 #include <boost/log/core.hpp>
 #include <boost/log/utility/setup/console.hpp>
@@ -30,35 +28,26 @@ namespace pt = boost::property_tree;
 int MAIN(int argc, char** argv) {
 	boost::log::add_console_log();
 	BOOST_LOG_TRIVIAL(info)<< "=== Reggata Daemon start ===";
+
 	auto executable_path = fs::absolute(argv[0]).parent_path();
 	pt::ptree config;
 	pt::read_json((executable_path / "reggatad.conf").string(), config);
 
-	auto proc = std::make_shared<Processor>();
+	auto port = config.get<int>("listen_port", 9100);
+	Application app(port);
+
 	for (auto &repo : config.get_child("repos")) {
 		auto rootPath = repo.second.get<std::string>("root_path");
-		auto dbPath = repo.second.get<std::string>("db_path",
-				std::string(".reggata"));
-		proc->openRepo(rootPath, fs::absolute(dbPath, rootPath).string());
+		auto dbPath = repo.second.get<std::string>("db_path", std::string(".reggata"));
+		app.openRepo(rootPath, fs::absolute(dbPath, rootPath).string());
 	}
-
-	auto port = config.get<int>("listen_port", 9100);
-	std::unique_ptr<Service> s(new Service(port, proc));
-	s->start();
-	// TODO: implement a way to stop server
+	app.start();
+	// TODO: implement a way to stop application
 
 	// TODO: remove this
 	Parser parser; // It's just to check that flex/bison do work
 	parser.parse();
 
 	return EXIT_SUCCESS;
-}
-
-// just some function to have something that can be test
-#include <exception>
-
-void GetFrobnicationInterval() {
-	throw std::string(
-			"InvalidOperation: frobnication interval can't be retrieved");
 }
 
