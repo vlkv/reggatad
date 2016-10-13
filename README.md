@@ -1,5 +1,5 @@
 ## About
-Reggatad --- is a service (daemon process) that makes it possible to add/remove/modify `tags` to regular files and search by tags. Beside the `tags` there are `fields` (key-value pairs) that are also searchable. Reggatad also watches for changes in filesystem and updates tags database correspondingly. It stores all tags/fields information in database and provides an API (TCP sockets) for all operations with tags/fields. This API uses reggata_client. This project is a second try of https://github.com/vlkv/reggata.
+Reggatad --- is a service (daemon process) that makes it possible to add/remove/modify `tags` to regular files and search by tags. Beside the `tags` there are `fields` (key-value pairs) that are also searchable. Reggatad also watches for changes in filesystem and updates tags database correspondingly. It stores all tags/fields information in database and provides an API (TCP sockets) for all operations with tags/fields. This API uses reggata_client. This project is a second try of https://github.com/vlkv/reggata. At the moment, reggatad is a **work in progress**.
 
 It uses
 - Flexc++ and Bisonc++ to implement query language parsing
@@ -11,7 +11,7 @@ It uses
 ## API
 Every message has a **4 byte header** that contains length of the message. The message is a JSON string.
 
-### open_repo(path_to_root_dir, path_to_db_dir, init_if_not_exists)
+### open_repo(root_dir, db_dir, init_if_not_exists)
 Request:
 ```json
 {
@@ -28,7 +28,7 @@ Responses:
 {ok: true}
 {ok: false, msg: "Reason"}
 ```	
-### close_repo(path_to_root_dir)
+### close_repo(root_dir)
 Request:
 ```json
 {
@@ -39,7 +39,7 @@ Request:
 }
 ```
 	
-### add_tags_to_file(file_path, tag1, tag2, ...)
+### add_tags(file_path, tag1, tag2, ...)
 Request:
 ```json
 {
@@ -50,7 +50,7 @@ Request:
 	}
 }
 ```
-### remove_tags_from_file(file_path, tag1, tag2, ...)
+### remove_tags(file_path, tag1, tag2, ...)
 Request:
 ```json
 {
@@ -63,13 +63,13 @@ Request:
 ```
 TODO: do we need a request to remove all tags from file?..
 
-### add_fields_to_file(file_path, field1(key1,val1), field2(key2,val2), ...)
+### add_fields(file_path, field1(key1,val1), field2(key2,val2), ...)
 TODO: implement after tags
 
-### remove_fields_from_file(file_path, field_key1, field_key2, ...)
+### remove_fields(file_path, field_key1, field_key2, ...)
 TODO: implement after tags
 
-### list_file_tags_fields(file_path)
+### file_info(file_path)
 Request:
 ```json
 {
@@ -80,7 +80,7 @@ Request:
 }
 ```
 
-### search(dir_path, query_string)
+### search(path, query_string)
 Request:
 ```json
 {
@@ -91,8 +91,6 @@ Request:
 	}
 }
 ```
-### TODO: maybe we should also provide add/remove tags/fields to all files in subdir recursively. Or this would be a task for reggata_client?..
-
 ## File watch actions
 ### file_created - do nothing
 ### file_removed - remove file tags and fields from DB
@@ -102,7 +100,7 @@ Request:
 ### dir_removed - remove all files tags and fields from DB recursively. Remove filewathes from dir and subdirs
 ### dir_moved (renamed) - update files paths for all files recursively. Remove/Create a filewatcher for the dir
 
-## Query String Language
+## Query Language
 Fields are just tags with values. Values should be typed. 
 Types supported are: string, number, datetime.
 Operations with tags are: AND (lowest priority), OR, NOT and braces (highest priority).
@@ -136,9 +134,12 @@ The obvious way of executing queries is just filter files by subdir (recursively
 apply query predicate to every file. Very often case is to perform a query in a subdir. The mechanism for executing 
 query in the repo root is just a particular case of "exec query in subdir".
 
-## Useful links
-* https://github.com/eliben/code-for-blog/blob/master/2011/asio_protobuf_sample/db_server.cpp
+The old grammar of reggata is https://github.com/vlkv/reggata/wiki/Query-language-grammar. In reggatad we should improve it.
 
 ## Some NOTEs and thoughts
 * Repository should have a list of required fileds. Every file with tags should have these fields set. E.g. 'rating'.
 * Reggatad should have some recovery request in API. For example, by some reason reggatad wasn't running. And during that time user moved (or anything) files withing repository... This recovery could be a simple one. For example we try to find files in different location withing the repo by name...
+* Maybe we should also provide add/remove tags/fields to all files in subdir recursively. Or this would be a task for reggata_client?..
+
+## Useful links
+* https://github.com/eliben/code-for-blog/blob/master/2011/asio_protobuf_sample/db_server.cpp
