@@ -69,11 +69,11 @@ TODO: implement after tags
 ### remove_fields(file_path, field_key1, field_key2, ...)
 TODO: implement after tags
 
-### file_info(file_path)
+### get_file_info(file_path)
 Request:
 ```json
 {
-	cmd: "file_info",
+	cmd: "get_file_info",
 	args: {
 		file: "/home/repo/file.txt"
 	}

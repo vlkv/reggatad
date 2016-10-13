@@ -3,6 +3,7 @@
 #include "reggata_exceptions.h"
 class Service;
 #include "processor.h"
+#include "cmds.h"
 
 #include <boost/asio.hpp>
 #include <boost/asio/ip/tcp.hpp>
@@ -11,8 +12,12 @@ class Service;
 #include <boost/bind.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/function.hpp>
+#include <boost/property_tree/ptree.hpp>
+#include <boost/property_tree/json_parser.hpp>
+namespace pt = boost::property_tree;
 
 #include <iostream>
+#include <sstream>
 #include <memory>
 #include <string>
 

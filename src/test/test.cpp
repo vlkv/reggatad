@@ -41,7 +41,7 @@ public:
 TEST_F (TestFixture, UnitTest1) {
 	Client c(PORT);
 	std::cout << "sendMsg" << std::endl;
-	auto err = c.send("{msg:\"Hello World\"}");
+	auto err = c.send("{\"cmd\":\"add_tags\",\"file\":\"file.txt\"}");
 	ASSERT_EQ(nullptr, err) << "sendMsg failed, error: " << err;
 	auto resp = c.recv();
 	std::cout << "recvMsg resp: " << resp << std::endl;
