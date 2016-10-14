@@ -5,7 +5,7 @@
  *      Author: vitvlkv
  */
 
-#include <processor.h>
+#include "processor.h"
 
 Processor::Processor() {
 	// TODO Auto-generated constructor stub
