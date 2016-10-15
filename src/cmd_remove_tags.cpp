@@ -1,10 +1,22 @@
 #include "cmd_remove_tags.h"
 
-CmdRemoveTags::CmdRemoveTags() {
-	// TODO Auto-generated constructor stub
+CmdRemoveTags::CmdRemoveTags(const std::string& id) :
+	Cmd(id) {
 }
 
-std::unique_ptr<CmdRemoveTags> CmdRemoveTags::parse(const boost::property_tree::ptree& pt) {
-	// TODO
-	return std::unique_ptr<CmdRemoveTags>(new CmdRemoveTags());
+const std::string CmdRemoveTags::NAME = "remove_tags";
+
+std::unique_ptr<CmdRemoveTags> CmdRemoveTags::parse(const json::json& j) {
+	std::string cmd = j["cmd"];
+	BOOST_ASSERT_MSG(cmd == CmdRemoveTags::NAME, "Bad cmd");
+
+	std::string id = j["id"];
+	auto res = std::unique_ptr<CmdRemoveTags>(new CmdRemoveTags(id));
+
+	auto args = j["args"];
+	res->_file = args["file"];
+	for (auto& tag : args["tags"]) {
+		res->_tags.push_back(tag);
+	}
+	return res;
 }

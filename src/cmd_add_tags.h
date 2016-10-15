@@ -3,11 +3,14 @@
 
 class CmdAddTags: public Cmd {
 public:
+
+	static const std::string NAME;
+
 	std::string _file;
 	std::vector<std::string> _tags;
 
-	CmdAddTags();
+	CmdAddTags(const std::string& id);
 	virtual ~CmdAddTags() = default;
 
-	static std::unique_ptr<CmdAddTags> parse(const boost::property_tree::ptree& pt);
+	static std::unique_ptr<CmdAddTags> parse(const json::json& j);
 };

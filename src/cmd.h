@@ -1,10 +1,16 @@
 #pragma once
-#include <boost/property_tree/ptree.hpp>
+#include "json.hpp"
+namespace json = nlohmann;
+#include <boost/assert.hpp>
+
+#include <string>
 
 class Cmd {
 public:
-	Cmd();
+	std::string _id;
+
+	Cmd(const std::string& id);
 	virtual ~Cmd() = default;
 
-	static std::unique_ptr<Cmd> parse(const boost::property_tree::ptree& pt);
+	static std::unique_ptr<Cmd> parse(const json::json& j);
 };

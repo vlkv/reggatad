@@ -89,11 +89,8 @@ void ClientConnection::onReadBody(const boost::system::error_code& err) {
 
 void ClientConnection::handleMsg(const std::string &msg) {
 	BOOST_LOG_TRIVIAL(debug) << "Received msg: " << msg;
-	std::stringstream sstream;
-	sstream << msg;
-	pt::ptree ptree;
-	pt::read_json(sstream, ptree);
-	std::unique_ptr<Cmd> cmd = Cmd::parse(ptree);
+	auto j = json::json::parse(msg);
+	std::unique_ptr<Cmd> cmd = Cmd::parse(j);
 	// TODO: Delegate cmd to _proc
 	doReadHeader();
 }

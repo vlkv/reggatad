@@ -5,6 +5,7 @@ It uses
 - Flexc++ and Bisonc++ to implement query language parsing
 - RocksDB http://rocksdb.org/docs/getting-started.html an embedded database (key value store)
 - POCO DirectoryWatcher class (implemented with inotify on Linux)
+- https://github.com/nlohmann/json as JSON library
 - gtest as unit testing framework
 - boost for anything else
 

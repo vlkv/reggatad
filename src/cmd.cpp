@@ -5,18 +5,16 @@
 
 #include <boost/log/trivial.hpp>
 
-Cmd::Cmd() {
-	// TODO Auto-generated constructor stub
-
+Cmd::Cmd(const std::string& id) : _id(id) {
 }
 
-std::unique_ptr<Cmd> Cmd::parse(const boost::property_tree::ptree& pt) {
+std::unique_ptr<Cmd> Cmd::parse(const json::json& j) {
 	BOOST_LOG_TRIVIAL(debug) << "Cmd::parse";
-	auto cmdStr = pt.get<std::string>("cmd");
-	if (cmdStr == "add_tags") {
-		return CmdAddTags::parse(pt);
-	} else if (cmdStr == "remove_tags") {
-		return CmdRemoveTags::parse(pt);
+	std::string cmdStr = j["cmd"];
+	if (cmdStr == CmdAddTags::NAME) {
+		return CmdAddTags::parse(j);
+	} else if (cmdStr == CmdRemoveTags::NAME) {
+		return CmdRemoveTags::parse(j);
 	} else {
 		throw new ReggataException(std::string("Unexpected command: ") + cmdStr);
 	}

@@ -3,11 +3,13 @@
 
 class CmdRemoveTags: public Cmd {
 public:
+	static const std::string NAME;
+
 	std::string _file;
 	std::vector<std::string> _tags;
 
-	CmdRemoveTags();
+	CmdRemoveTags(const std::string& id);
 	virtual ~CmdRemoveTags() = default;
 
-	static std::unique_ptr<CmdRemoveTags> parse(const boost::property_tree::ptree& pt);
+	static std::unique_ptr<CmdRemoveTags> parse(const json::json& j);
 };
