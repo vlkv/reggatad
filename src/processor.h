@@ -1,5 +1,6 @@
 #pragma once
 #include "repo.h"
+#include "cmds.h"
 #include <boost/log/trivial.hpp>
 
 class Processor {
@@ -10,5 +11,7 @@ public:
 	Processor();
 	virtual ~Processor() = default;
 
-	void openRepo(const std::string& repoRootPath, const std::string& repoDbPath);
+	void openRepo(const std::string& repoRootDir, const std::string& repoDbDir);
+	void routeCmd(Cmd* cmd);
+	Repo* findRepo(const std::string& path);
 };

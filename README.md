@@ -11,11 +11,18 @@ It uses
 
 ## API
 Every message has a **4 byte header** that contains length of the message. The message is a JSON string.
+Every message has an 'id' member. This 'id' is always inserted in the response.
+All commands are divided into two categories:
+* operations with the repos as a whole (open_repo/close_repo), search across the all opened repos 
+(search without 'path' param), cancellation of another command (cancel_cmd).
+* operations with files withing one repo (add_tags/remove_tags/get_file_info/search with 'path').
+
 
 ### open_repo(root_dir, db_dir, init_if_not_exists)
 Request:
 ```json
 {
+	id: "1",
 	cmd: "open_repo",
 	args: {
 		root_dir: "/home/repo/",
@@ -26,13 +33,14 @@ Request:
 ```
 Responses:
 ```json
-{ok: true}
-{ok: false, msg: "Reason"}
+{ok: true, id: "1"}
+{ok: false, msg: "Reason", id: "1"}
 ```	
 ### close_repo(root_dir)
 Request:
 ```json
 {
+	id: "1",
 	cmd: "close_repo",
 	args: {
 		root_dir: "/home/repo/"
@@ -44,6 +52,7 @@ Request:
 Request:
 ```json
 {
+	id: "1",
 	cmd: "add_tags",
 	args: {
 		file: "/home/repo/file.txt",
@@ -55,6 +64,7 @@ Request:
 Request:
 ```json
 {
+	id: "1",
 	cmd: "remove_tags",
 	args: {
 		file: "/home/repo/file.txt",
@@ -74,6 +84,7 @@ TODO: implement after tags
 Request:
 ```json
 {
+	id: "1",
 	cmd: "get_file_info",
 	args: {
 		file: "/home/repo/file.txt"
@@ -85,6 +96,7 @@ Request:
 Request:
 ```json
 {
+	id: "1",
 	cmd: "search",
 	args: {
 		path: "/home/repo/",
@@ -92,6 +104,20 @@ Request:
 	}
 }
 ```
+
+### cancel_cmd(cmd_id)
+Client is able to cancel any other long running command.
+Request:
+```json
+{
+	id: "2",
+	cmd: "cancel_cmd",
+	args: {
+		cmd_id: "1"
+	}
+}
+```
+
 ## File watch actions
 ### file_created - do nothing
 ### file_removed - remove file tags and fields from DB

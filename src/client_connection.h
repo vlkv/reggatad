@@ -19,6 +19,7 @@ namespace json = nlohmann;
 #include <string>
 
 
+
 class ClientConnection {
 	int _id;
 	static int _next_id;
@@ -53,9 +54,11 @@ private:
 	void onReadBody(const boost::system::error_code& err);
 	uint32_t decodeHeader(const std::vector<char>& buf) const;
 	void handleMsg(const std::string &msg);
+	void handleCmdResult(const std::string& result);
 
 	typedef boost::function<void(const boost::system::error_code &, size_t)> OnWriteHandler;
 	void doWrite(const std::string &msg, OnWriteHandler onWriteHandler);
+	void onCmdResultWritten(const boost::system::error_code& err, size_t bytes);
 
 	void startPingTimer();
 	void onPingTimer(const boost::system::error_code& err);

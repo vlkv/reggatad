@@ -21,6 +21,14 @@ Repo::Repo(const std::string& rootPath, const std::string& dbPath)
 	createDirWatcherIfNeeded(rootPath);
 }
 
+std::string Repo::rootPath() const {
+	return _rootPath;
+}
+
+void Repo::enqueueCmd(Cmd* cmd) {
+	// TODO
+}
+
 void Repo::createDirWatcherIfNeeded(const std::string& dirPath) {
 	if (dirPath == _dbPath) {
 		BOOST_LOG_TRIVIAL(debug) << "Skipping dir " << dirPath;

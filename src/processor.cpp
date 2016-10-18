@@ -1,19 +1,23 @@
-/*
- * processor.cpp
- *
- *  Created on: Oct 7, 2016
- *      Author: vitvlkv
- */
-
 #include "processor.h"
 
 Processor::Processor() {
-	// TODO Auto-generated constructor stub
-
 }
 
+void Processor::openRepo(const std::string& repoRootDir, const std::string& repoDbDir) {
+	// TODO: forbid open nested repos
+	BOOST_LOG_TRIVIAL(info) << "Open repo, rootDir=" << repoRootDir << " dbDir=" << repoDbDir;
+	_repos.insert(Repos::value_type(repoRootDir, std::unique_ptr<Repo>(new Repo(repoRootDir, repoDbDir))));
+}
 
-void Processor::openRepo(const std::string& repoRootPath, const std::string& repoDbPath) {
-	BOOST_LOG_TRIVIAL(info) << "Open repo, path=" << repoRootPath << " dbPath=" << repoDbPath;
-	_repos.insert(Repos::value_type(repoRootPath, std::unique_ptr<Repo>(new Repo(repoRootPath, repoDbPath))));
+void Processor::routeCmd(Cmd* cmd) {
+	cmd->enqueueTo(this);
+}
+
+Repo* Processor::findRepo(const std::string& path) {
+	for (Repos::iterator kv = _repos.begin(); kv != _repos.end(); ++kv) {
+		if (path.find(kv->first) == 0) {
+			return kv->second.get();
+		}
+	}
+	return nullptr;
 }

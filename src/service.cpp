@@ -22,7 +22,11 @@ void Service::start() {
 		acceptClient();
 		serviceRunLoop();
 	}
-	catch (const std::exception &e) {
+	catch (const ReggataException& e) {
+		BOOST_LOG_TRIVIAL(error) << "Unexpected ReggataException: " << e.what();
+		stop();
+	}
+	catch (const std::exception& e) {
 		BOOST_LOG_TRIVIAL(error) << "Unexpected std::exception: " << e.what();
 		stop();
 	}

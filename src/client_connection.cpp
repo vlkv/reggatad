@@ -90,9 +90,22 @@ void ClientConnection::onReadBody(const boost::system::error_code& err) {
 void ClientConnection::handleMsg(const std::string &msg) {
 	BOOST_LOG_TRIVIAL(debug) << "Received msg: " << msg;
 	auto j = json::json::parse(msg);
-	std::unique_ptr<Cmd> cmd = Cmd::parse(j);
-	// TODO: Delegate cmd to _proc
+	auto* cmd = Cmd::fromJson(j,
+			boost::bind(&ClientConnection::handleCmdResult, this, _1));
+	_proc->routeCmd(cmd);
 	doReadHeader();
+}
+
+void ClientConnection::handleCmdResult(const std::string& result) {
+	doWrite(result, boost::bind(&ClientConnection::onCmdResultWritten, this, _1, _2));
+}
+
+void ClientConnection::onCmdResultWritten(const boost::system::error_code& err, size_t bytes) {
+	if (err) {
+		std::ostringstream oss;
+		oss << "Could not send cmd result, error: " << err << " client id=" << _id;
+		throw ConnException(oss.str(), _id);
+	}
 }
 
 void ClientConnection::doWrite(const std::string &msg, OnWriteHandler onWriteHandler) {

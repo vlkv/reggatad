@@ -6,6 +6,7 @@
 #include <string>
 #include <map>
 #include <memory>
+class Cmd;
 
 class Repo {
 	std::string _rootPath;
@@ -15,6 +16,8 @@ class Repo {
 public:
 	Repo(const std::string& rootPath, const std::string& dbPath);
 	virtual ~Repo() = default;
+	std::string rootPath() const;
+	void enqueueCmd(Cmd* cmd);
 
 private:
 	void createDirWatcherIfNeeded(const std::string& dirPath);

@@ -5,16 +5,18 @@
 
 #include <boost/log/trivial.hpp>
 
-Cmd::Cmd(const std::string& id) : _id(id) {
+Cmd::Cmd(const std::string& id, Cmd::SendResult sendResult) :
+	_id(id),
+	_sendResult(sendResult) {
 }
 
-std::unique_ptr<Cmd> Cmd::parse(const json::json& j) {
+Cmd* Cmd::fromJson(const json::json& j, Cmd::SendResult sendResult) {
 	BOOST_LOG_TRIVIAL(debug) << "Cmd::parse";
 	std::string cmdStr = j["cmd"];
 	if (cmdStr == CmdAddTags::NAME) {
-		return CmdAddTags::parse(j);
+		return CmdAddTags::fromJson(j, sendResult);
 	} else if (cmdStr == CmdRemoveTags::NAME) {
-		return CmdRemoveTags::parse(j);
+		return CmdRemoveTags::fromJson(j, sendResult);
 	} else {
 		throw new ReggataException(std::string("Unexpected command: ") + cmdStr);
 	}
