@@ -4,9 +4,6 @@ namespace json = nlohmann;
 #include <boost/assert.hpp>
 
 #include <string>
-#include <functional>
-
-class Processor;
 
 struct Cmd {
 	std::string _id;
@@ -19,6 +16,5 @@ struct Cmd {
 
 	static Cmd* fromJson(const json::json& j, SendResult sendResult);
 
-	virtual void enqueueTo(Processor* proc) = 0;
 	virtual void execute() = 0;
 };

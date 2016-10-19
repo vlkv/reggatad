@@ -1,9 +1,7 @@
 #pragma once
-#include "cmd.h"
+#include "cmd_repo.h"
 
-class Processor;
-
-struct CmdRemoveTags: public Cmd { // TODO: inherit from CmdRepo
+struct CmdRemoveTags: public CmdRepo {
 	static const std::string NAME;
 
 	std::string _file;
@@ -14,6 +12,7 @@ struct CmdRemoveTags: public Cmd { // TODO: inherit from CmdRepo
 
 	static CmdRemoveTags* fromJson(const json::json& j, Cmd::SendResult sendResult);
 
-	virtual void enqueueTo(Processor* proc);
 	virtual void execute();
+
+	virtual std::string path() const;
 };

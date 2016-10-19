@@ -1,7 +1,7 @@
 #include "cmd_remove_tags.h"
 
 CmdRemoveTags::CmdRemoveTags(const std::string& id, Cmd::SendResult sendResult) :
-	Cmd(id, sendResult) {
+	CmdRepo(id, sendResult) {
 }
 
 const std::string CmdRemoveTags::NAME = "remove_tags";
@@ -21,10 +21,10 @@ CmdRemoveTags* CmdRemoveTags::fromJson(const json::json& j, Cmd::SendResult send
 	return res.release();
 }
 
-void CmdRemoveTags::enqueueTo(Processor* proc) {
-
+std::string CmdRemoveTags::path() const {
+	return _file;
 }
 
 void CmdRemoveTags::execute() {
-
+	// TODO
 }

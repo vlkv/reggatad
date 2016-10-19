@@ -51,7 +51,7 @@ TEST_F (TestFixture, UnitTest1) {
 			{"id", "123"},
 			{"cmd", "add_tags"},
 			{"args", {
-				{"file", "/tmp/file.txt"},
+				{"file", "/home/vitvlkv/Pictures/image.png"},
 				{"tags", {"tag1", "tag2"}}
 			}}
 	};

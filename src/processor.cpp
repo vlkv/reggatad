@@ -1,4 +1,6 @@
 #include "processor.h"
+#include "reggata_exceptions.h"
+#include "cmds.h"
 
 Processor::Processor() {
 }
@@ -10,7 +12,26 @@ void Processor::openRepo(const std::string& repoRootDir, const std::string& repo
 }
 
 void Processor::routeCmd(Cmd* cmd) {
-	cmd->enqueueTo(this);
+	CmdRepo* cmdRepo = dynamic_cast<CmdRepo*>(cmd);
+	if (cmdRepo != nullptr) {
+		auto p = cmdRepo->path();
+		auto* repo = findRepo(p);
+		if (repo == nullptr) {
+			throw new ReggataException(std::string("Could not find repo for path=") + p);
+		}
+		cmdRepo->setContext(repo);
+		repo->enqueueCmd(cmdRepo);
+		return;
+	}
+
+	CmdProc* cmdProc = dynamic_cast<CmdProc*>(cmd);
+	if (cmdProc != nullptr) {
+		cmdProc->setContext(this);
+		enqueueCmd(cmdProc);
+		return;
+	}
+
+	throw new ReggataException(std::string("Unknown command") + cmd->_id);
 }
 
 Repo* Processor::findRepo(const std::string& path) {
@@ -20,4 +41,8 @@ Repo* Processor::findRepo(const std::string& path) {
 		}
 	}
 	return nullptr;
+}
+
+void Processor::enqueueCmd(CmdProc* cmd) {
+	// TODO
 }
