@@ -2,16 +2,16 @@
 #include "client.h"
 #include "json.hpp"
 namespace json = nlohmann;
+
 #include <gtest/gtest.h>
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
 #include <boost/timer.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
-#include <boost/property_tree/ptree.hpp>
-namespace pt = boost::property_tree;
-#include <boost/property_tree/json_parser.hpp>
-#include <Poco/JSON/JSON.h>
-#include <Poco/JSON/Object.h>
+#include <boost/filesystem.hpp>
+#include <boost/filesystem/path.hpp>
+namespace fs = boost::filesystem;
+
 #include <memory>
 #include <iostream>
 #include <sstream>
@@ -22,14 +22,17 @@ public:
 	const int PORT = 9100;
 	boost::thread _t;
 
+	fs::path REPO_ROOT;
+
 	TestFixture() :
-		_t(&TestFixture::startReggataApp, this) {
+		_t(&TestFixture::startReggataApp, this),
+		REPO_ROOT("/home/vitvlkv/Pictures/") {
 		boost::this_thread::sleep(boost::posix_time::seconds(1));
 	}
 
 	void startReggataApp() {
 		Application app(PORT);
-		app.openRepo(std::string("/home/vitvlkv/Pictures"), std::string("/home/vitvlkv/Pictures/.reggata"));
+		app.openRepo(REPO_ROOT.string(), (REPO_ROOT/".reggata").string());
 		app.start();
 	}
 
@@ -51,7 +54,7 @@ TEST_F (TestFixture, UnitTest1) {
 			{"id", "123"},
 			{"cmd", "add_tags"},
 			{"args", {
-				{"file", "/home/vitvlkv/Pictures/image.png"},
+				{"file", (REPO_ROOT/"image.png").c_str()},
 				{"tags", {"tag1", "tag2"}}
 			}}
 	};
