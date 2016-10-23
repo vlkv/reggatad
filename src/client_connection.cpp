@@ -110,8 +110,11 @@ void ClientConnection::onCmdResultWritten(const boost::system::error_code& err, 
 
 void ClientConnection::doWrite(const std::string &msg, OnWriteHandler onWriteHandler) {
 	BOOST_LOG_TRIVIAL(info) << "Sending to client id=" << _id << " msg: " << msg;
-	std::copy(msg.begin(), msg.end(), _write_buffer);
-	boost::asio::async_write(_sock, boost::asio::buffer(_write_buffer, msg.size()), onWriteHandler);
+	_write_buffer.resize(4 + msg.size());
+	uint32_t header = msg.size();
+	std::copy((char*)&header, (char*)&header+4, _write_buffer.begin());
+	std::copy(msg.begin(), msg.end(), _write_buffer.begin()+4);
+	boost::asio::async_write(_sock, boost::asio::buffer(_write_buffer), onWriteHandler);
 }
 
 void ClientConnection::onPingSent(const boost::system::error_code& err, size_t bytes) {
