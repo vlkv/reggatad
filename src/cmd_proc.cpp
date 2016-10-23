@@ -1,4 +1,5 @@
 #include "cmd_proc.h"
+#include "processor.h"
 
 CmdProc::CmdProc(const std::string& id, Cmd::SendResult sendResult) :
 	Cmd(id, sendResult) {
