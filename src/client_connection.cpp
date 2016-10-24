@@ -22,7 +22,8 @@ void ClientConnection::stop() {
 
 void ClientConnection::onPingTimer(const boost::system::error_code& err) {
 	BOOST_LOG_TRIVIAL(debug) << "onPingTimer, err=" << err;
-	doWrite("{\"cmd\":\"ping\"}\n", boost::bind(&ClientConnection::onPingSent, this, _1, _2));
+	json::json pingMsg {{"cmd", "ping"}};
+	doWrite(pingMsg.dump(), boost::bind(&ClientConnection::onPingSent, this, _1, _2));
 }
 
 void ClientConnection::startPingTimer() {
