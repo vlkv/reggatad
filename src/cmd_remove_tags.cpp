@@ -6,7 +6,7 @@ CmdRemoveTags::CmdRemoveTags(const std::string& id, Cmd::SendResult sendResult) 
 
 const std::string CmdRemoveTags::NAME = "remove_tags";
 
-CmdRemoveTags* CmdRemoveTags::fromJson(const json::json& j, Cmd::SendResult sendResult) {
+std::unique_ptr<CmdRemoveTags> CmdRemoveTags::fromJson(const json::json& j, Cmd::SendResult sendResult) {
 	std::string cmd = j["cmd"];
 	BOOST_ASSERT_MSG(cmd == CmdRemoveTags::NAME, "Bad cmd");
 
@@ -18,7 +18,7 @@ CmdRemoveTags* CmdRemoveTags::fromJson(const json::json& j, Cmd::SendResult send
 	for (auto& tag : args["tags"]) {
 		res->_tags.push_back(tag);
 	}
-	return res.release();
+	return res;
 }
 
 std::string CmdRemoveTags::path() const {

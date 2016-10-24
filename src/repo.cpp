@@ -29,9 +29,8 @@ std::string Repo::rootPath() const {
 	return _rootPath;
 }
 
-void Repo::enqueueCmd(CmdRepo* cmd) {
-	std::unique_ptr<CmdRepo> c(cmd);
-	_queue.enqueue(std::move(c));
+void Repo::enqueueCmd(std::unique_ptr<CmdRepo> cmd) {
+	_queue.enqueue(std::move(cmd));
 }
 
 void Repo::createDirWatcherIfNeeded(const std::string& dirPath) {

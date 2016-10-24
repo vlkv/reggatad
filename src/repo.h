@@ -21,7 +21,7 @@ public:
 	virtual ~Repo() = default;
 	void start();
 	std::string rootPath() const;
-	void enqueueCmd(CmdRepo* cmd);
+	void enqueueCmd(std::unique_ptr<CmdRepo> cmd);
 
 private:
 	void createDirWatcherIfNeeded(const std::string& dirPath);

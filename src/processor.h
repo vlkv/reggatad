@@ -19,9 +19,9 @@ public:
 
 	void start();
 	void openRepo(const std::string& repoRootDir, const std::string& repoDbDir);
-	void routeCmd(Cmd* cmd);
+	void routeCmd(std::unique_ptr<Cmd> cmd);
 
 private:
 	Repo* findRepo(const std::string& path);
-	void enqueueCmd(CmdProc* cmd);
+	void enqueueCmd(std::unique_ptr<CmdProc> cmd);
 };

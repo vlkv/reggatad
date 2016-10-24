@@ -6,7 +6,7 @@ CmdAddTags::CmdAddTags(const std::string& id, Cmd::SendResult sendResult) :
 
 const std::string CmdAddTags::NAME = "add_tags";
 
-CmdAddTags* CmdAddTags::fromJson(const json::json& j, Cmd::SendResult sendResult) {
+std::unique_ptr<CmdAddTags> CmdAddTags::fromJson(const json::json& j, Cmd::SendResult sendResult) {
 	std::string cmd = j["cmd"];
 	BOOST_ASSERT_MSG(cmd == CmdAddTags::NAME, "Bad cmd");
 
@@ -18,7 +18,7 @@ CmdAddTags* CmdAddTags::fromJson(const json::json& j, Cmd::SendResult sendResult
 	for (auto& tag : args["tags"]) {
 		res->_tags.push_back(tag);
 	}
-	return res.release();
+	return res;
 }
 
 std::string CmdAddTags::path() const {

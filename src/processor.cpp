@@ -16,23 +16,27 @@ void Processor::openRepo(const std::string& repoRootDir, const std::string& repo
 	_repos.insert(Repos::value_type(repoRootDir, std::unique_ptr<Repo>(new Repo(repoRootDir, repoDbDir))));
 }
 
-void Processor::routeCmd(Cmd* cmd) {
-	CmdRepo* cmdRepo = dynamic_cast<CmdRepo*>(cmd);
+void Processor::routeCmd(std::unique_ptr<Cmd> cmd) {
+	auto* cmdRepo = dynamic_cast<CmdRepo*>(cmd.get());
 	if (cmdRepo != nullptr) {
-		auto p = cmdRepo->path();
+		std::unique_ptr<CmdRepo> cmdRepo1(cmdRepo);
+		cmd.release();
+		auto p = cmdRepo1->path();
 		auto* repo = findRepo(p);
 		if (repo == nullptr) {
 			throw new ReggataException(std::string("Could not find repo for path=") + p);
 		}
-		cmdRepo->setContext(repo);
-		repo->enqueueCmd(cmdRepo);
+		cmdRepo1->setContext(repo);
+		repo->enqueueCmd(std::move(cmdRepo1));
 		return;
 	}
 
-	CmdProc* cmdProc = dynamic_cast<CmdProc*>(cmd);
+	auto* cmdProc = dynamic_cast<CmdProc*>(cmd.get());
 	if (cmdProc != nullptr) {
-		cmdProc->setContext(this);
-		enqueueCmd(cmdProc);
+		std::unique_ptr<CmdProc> cmdProc1(cmdProc);
+		cmd.release();
+		cmdProc1->setContext(this);
+		enqueueCmd(std::move(cmdProc1));
 		return;
 	}
 
@@ -48,7 +52,6 @@ Repo* Processor::findRepo(const std::string& path) {
 	return nullptr;
 }
 
-void Processor::enqueueCmd(CmdProc* cmd) {
-	std::unique_ptr<CmdProc> c(cmd);
-	_queue.enqueue(std::move(c));
+void Processor::enqueueCmd(std::unique_ptr<CmdProc> cmd) {
+	_queue.enqueue(std::move(cmd));
 }
