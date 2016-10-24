@@ -20,6 +20,7 @@ boost::system::error_code Client::send(const std::string& message) {
 }
 
 std::string Client::recv() {
+	// TODO: read header with the msg length then read the message
 	boost::array<char, 128> buf;
 	boost::system::error_code error;
 	_socket.read_some(boost::asio::buffer(buf), error);

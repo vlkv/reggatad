@@ -21,12 +21,17 @@ Repo::Repo(const std::string& rootPath, const std::string& dbPath)
 	createDirWatcherIfNeeded(rootPath);
 }
 
+void Repo::start() {
+	// TODO: start a thread that reads cmds from _queue and executes them...
+}
+
 std::string Repo::rootPath() const {
 	return _rootPath;
 }
 
-void Repo::enqueueCmd(Cmd* cmd) {
-	// TODO
+void Repo::enqueueCmd(CmdRepo* cmd) {
+	std::unique_ptr<CmdRepo> c(cmd);
+	_queue.enqueue(std::move(c));
 }
 
 void Repo::createDirWatcherIfNeeded(const std::string& dirPath) {

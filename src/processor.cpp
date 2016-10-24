@@ -5,6 +5,11 @@
 Processor::Processor() {
 }
 
+void Processor::start() {
+	// TODO: start a new thread and execute cmds from _queue
+	// ATTN: after start is called, it's not thread-safe to call openRepo! Do not call it. Instead, enqueue a command open_repo
+}
+
 void Processor::openRepo(const std::string& repoRootDir, const std::string& repoDbDir) {
 	// TODO: forbid open nested repos
 	BOOST_LOG_TRIVIAL(info) << "Open repo, rootDir=" << repoRootDir << " dbDir=" << repoDbDir;
@@ -44,5 +49,6 @@ Repo* Processor::findRepo(const std::string& path) {
 }
 
 void Processor::enqueueCmd(CmdProc* cmd) {
-	// TODO
+	std::unique_ptr<CmdProc> c(cmd);
+	_queue.enqueue(std::move(c));
 }

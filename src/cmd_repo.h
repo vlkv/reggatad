@@ -1,9 +1,9 @@
 #pragma once
 #include "cmd.h"
-#include "repo.h"
+class Repo;
 
 struct CmdRepo : public Cmd {
-	Repo* _repo;
+	Repo* _repo; // TODO: use shared_ptr
 	CmdRepo(const std::string& id, Cmd::SendResult sendResult);
 	virtual ~CmdRepo() = default;
 

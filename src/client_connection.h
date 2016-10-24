@@ -29,9 +29,8 @@ class ClientConnection {
 
 	const size_t HEADER_SIZE = 4;
 
-	enum { max_msg = 1024 };
 	std::vector<char> _read_buffer;
-	char _write_buffer[max_msg];
+	std::vector<char> _write_buffer;
 
 	std::shared_ptr<Processor> _proc;
 
