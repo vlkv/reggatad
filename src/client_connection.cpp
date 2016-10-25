@@ -50,6 +50,7 @@ void ClientConnection::doReadHeader() {
 void ClientConnection::onReadHeader(const boost::system::error_code& err) {
 	if (err) {
 		BOOST_LOG_TRIVIAL(debug) << "onReadHeader error=" << err;
+		doReadHeader();
 		return;
 	}
 	auto bodySize = decodeHeader(_read_buffer);
@@ -81,6 +82,7 @@ void ClientConnection::doReadBody(int bodySize) {
 void ClientConnection::onReadBody(const boost::system::error_code& err) {
 	if (err) {
 		BOOST_LOG_TRIVIAL(debug) << "onReadBody error=" << err;
+		doReadHeader();
 		return;
 	}
 	std::string msg(_read_buffer.begin(), _read_buffer.end());

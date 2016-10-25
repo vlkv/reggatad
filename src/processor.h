@@ -7,8 +7,8 @@ class Cmd;
 class CmdRepo;
 class CmdProc;
 
-class Processor {
-	typedef std::map<std::string, std::unique_ptr<Repo>> Repos; // TODO: use shared_ptr
+class Processor : public std::enable_shared_from_this<Processor> {
+	typedef std::map<std::string, std::shared_ptr<Repo>> Repos;
 	Repos _repos;
 
 	SafeQueue<std::unique_ptr<CmdProc>> _queue;
@@ -22,6 +22,6 @@ public:
 	void routeCmd(std::unique_ptr<Cmd> cmd);
 
 private:
-	Repo* findRepo(const std::string& path);
+	std::shared_ptr<Repo> findRepo(const std::string& path);
 	void enqueueCmd(std::unique_ptr<CmdProc> cmd);
 };

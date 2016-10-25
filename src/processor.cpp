@@ -13,7 +13,8 @@ void Processor::start() {
 void Processor::openRepo(const std::string& repoRootDir, const std::string& repoDbDir) {
 	// TODO: forbid open nested repos
 	BOOST_LOG_TRIVIAL(info) << "Open repo, rootDir=" << repoRootDir << " dbDir=" << repoDbDir;
-	_repos.insert(Repos::value_type(repoRootDir, std::unique_ptr<Repo>(new Repo(repoRootDir, repoDbDir))));
+	auto repo = std::make_shared<Repo>(repoRootDir, repoDbDir);
+	_repos.insert(Repos::value_type(repoRootDir, repo));
 }
 
 void Processor::routeCmd(std::unique_ptr<Cmd> cmd) {
@@ -22,8 +23,8 @@ void Processor::routeCmd(std::unique_ptr<Cmd> cmd) {
 		std::unique_ptr<CmdRepo> cmdRepo1(cmdRepo);
 		cmd.release();
 		auto p = cmdRepo1->path();
-		auto* repo = findRepo(p);
-		if (repo == nullptr) {
+		auto repo = findRepo(p);
+		if (repo.use_count() == 0) {
 			throw new ReggataException(std::string("Could not find repo for path=") + p);
 		}
 		cmdRepo1->setContext(repo);
@@ -35,7 +36,7 @@ void Processor::routeCmd(std::unique_ptr<Cmd> cmd) {
 	if (cmdProc != nullptr) {
 		std::unique_ptr<CmdProc> cmdProc1(cmdProc);
 		cmd.release();
-		cmdProc1->setContext(this);
+		cmdProc1->setContext(shared_from_this());
 		enqueueCmd(std::move(cmdProc1));
 		return;
 	}
@@ -43,13 +44,14 @@ void Processor::routeCmd(std::unique_ptr<Cmd> cmd) {
 	throw new ReggataException(std::string("Unknown command") + cmd->_id);
 }
 
-Repo* Processor::findRepo(const std::string& path) {
+std::shared_ptr<Repo> Processor::findRepo(const std::string& path) {
 	for (Repos::iterator kv = _repos.begin(); kv != _repos.end(); ++kv) {
 		if (path.find(kv->first) == 0) {
-			return kv->second.get();
+			return kv->second;
 		}
 	}
-	return nullptr;
+	std::shared_ptr<Repo> nullPtr;
+	return nullPtr;
 }
 
 void Processor::enqueueCmd(std::unique_ptr<CmdProc> cmd) {

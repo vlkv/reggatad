@@ -7,6 +7,6 @@ CmdRepo::CmdRepo(const std::string& id, Cmd::SendResult sendResult) :
 	Cmd(id, sendResult) {
 }
 
-void CmdRepo::setContext(Repo* repo) {
+void CmdRepo::setContext(std::shared_ptr<Repo> repo) {
 	_repo = repo;
 }
