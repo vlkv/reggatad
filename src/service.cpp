@@ -15,7 +15,7 @@ Service::Service(int port, std::shared_ptr<Processor> proc) :
 }
 
 
-void Service::start() {
+void Service::startListenPort() {
 	BOOST_LOG_TRIVIAL(info) << "Service start";
 	_status = Service::Status::started;
 	try {

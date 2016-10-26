@@ -10,6 +10,11 @@ void Application::openRepo(const std::string& repoPath, const std::string& dbPat
 }
 
 void Application::start() {
-	_service->start();
+	_proc->start();
+	_service->startListenPort();
+}
+
+void Application::stop() {
+	// TODO
 }
 

@@ -47,6 +47,25 @@ Request:
 	}
 }
 ```
+
+### get_repos_info()
+Request:
+```json
+{
+	id: "1",
+	cmd: "get_repos_info"
+}
+```
+Response:
+```json
+{
+	ok: true,
+	repos: [
+		{root_dir:"/home/repo1/"},
+		{root_dir:"/home/repo2/"}
+	]
+}
+```
 	
 ### add_tags(file_path, tag1, tag2, ...)
 Request:
@@ -73,6 +92,7 @@ Request:
 }
 ```
 TODO: do we need a request to remove all tags from file?..
+TODO: do we need a request to get info about "tag cloud"? It's a N most popular tags with their usage counts.
 
 ### add_fields(file_path, field1(key1,val1), field2(key2,val2), ...)
 TODO: implement after tags

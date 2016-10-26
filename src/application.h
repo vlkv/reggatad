@@ -13,4 +13,5 @@ public:
 	virtual ~Application() = default;
 	void openRepo(const std::string& rootPath, const std::string& dbPath);
 	void start();
+	void stop();
 };

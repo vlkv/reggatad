@@ -14,7 +14,7 @@ struct Cmd {
 	Cmd(const std::string& id, SendResult sendResult);
 	virtual ~Cmd() = default;
 
-	static std::unique_ptr<Cmd> fromJson(const json::json& j, SendResult sendResult); // TODO: use unique_ptr<Cmd> for result
+	static std::unique_ptr<Cmd> fromJson(const json::json& j, SendResult sendResult);
 
 	virtual void execute() = 0;
 };

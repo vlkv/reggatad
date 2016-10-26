@@ -6,8 +6,26 @@ Processor::Processor() {
 }
 
 void Processor::start() {
-	// TODO: start a new thread and execute cmds from _queue
+	_thread = std::thread(&Processor::run, this);
 	// ATTN: after start is called, it's not thread-safe to call openRepo! Do not call it. Instead, enqueue a command open_repo
+}
+
+void Processor::stop() {
+	_stopCalled = true;
+}
+
+void Processor::run() {
+	BOOST_LOG_TRIVIAL(info) << "Processor started";
+	while (!_stopCalled) {
+		try {
+			auto cmd = _queue.dequeue();
+			cmd->execute();
+		} catch (const std::exception& ex) {
+			BOOST_LOG_TRIVIAL(error) << "std::exception " << ex.what();
+		} catch (...) {
+			BOOST_LOG_TRIVIAL(error) << "Unexpected exception";
+		}
+	}
 }
 
 void Processor::openRepo(const std::string& repoRootDir, const std::string& repoDbDir) {

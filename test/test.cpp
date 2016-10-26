@@ -22,11 +22,13 @@ public:
 	const int PORT = 9100;
 	boost::thread _t;
 
+	fs::path HOME;
 	fs::path REPO_ROOT;
 
 	TestFixture() :
 		_t(&TestFixture::startReggataApp, this),
-		REPO_ROOT("/home/vitvlkv/Pictures/") {
+		HOME("/home/vitvlkv/"),
+		REPO_ROOT(HOME/"Pictures/") {
 		boost::this_thread::sleep(boost::posix_time::seconds(1));
 	}
 
@@ -52,10 +54,11 @@ TEST_F (TestFixture, UnitTest1) {
 	std::cout << "sendMsg" << std::endl;
 	json::json cmd = {
 			{"id", "123"},
-			{"cmd", "add_tags"},
+			{"cmd", "open_repo"},
 			{"args", {
-				{"file", (REPO_ROOT/"image.png").c_str()},
-				{"tags", {"tag1", "tag2"}}
+				{"root_dir", (HOME/"Downloads").c_str()},
+				{"db_dir", (HOME/"Downloads/.reggata").c_str()},
+				{"init_if_not_exists", true}
 			}}
 	};
 	auto err = c.send(cmd.dump());

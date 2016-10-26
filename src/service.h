@@ -32,7 +32,7 @@ public:
 	Service(int port, std::shared_ptr<Processor> proc);
 	virtual ~Service() = default;
 
-	void start();
+	void startListenPort();
 	void stopAsync();
 
 private:
