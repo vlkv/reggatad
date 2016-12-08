@@ -1,6 +1,6 @@
 #!/bin/bash
 
-mkdir -p ../reggatad_build 
-cd ../reggatad_build
+mkdir -p ./eclipse_project 
+cd ./eclipse_project
 # rm -rvf *
-cmake -G"Eclipse CDT4 - Unix Makefiles" -D CMAKE_BUILD_TYPE=Debug ../reggatad
+cmake -G"Eclipse CDT4 - Unix Makefiles" -D CMAKE_BUILD_TYPE=Debug ..

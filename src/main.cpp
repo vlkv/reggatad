@@ -34,7 +34,7 @@ int MAIN(int argc, char** argv) {
 	pt::read_json((executable_path / "reggatad.conf").string(), config);
 
 	auto port = config.get<int>("listen_port", 9100);
-	Application app(port);
+	Application app(port, true);
 
 	for (auto &repo : config.get_child("repos")) {
 		auto rootPath = repo.second.get<std::string>("root_path");

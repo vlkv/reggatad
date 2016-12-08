@@ -2,11 +2,13 @@
 
 int ClientConnection::_next_id = 1;
 
-ClientConnection::ClientConnection(boost::asio::io_service& io_service, std::shared_ptr<Processor> proc) :
+ClientConnection::ClientConnection(boost::asio::io_service& io_service, std::shared_ptr<Processor> proc,
+		bool pingClient) :
 		_id(ClientConnection::_next_id++),
 		_sock(io_service),
 		_pingTimer(io_service),
-		_proc(proc) {
+		_proc(proc),
+		_pingClient(pingClient) {
 }
 
 void ClientConnection::start() {
@@ -27,6 +29,9 @@ void ClientConnection::onPingTimer(const boost::system::error_code& err) {
 }
 
 void ClientConnection::startPingTimer() {
+	if (!_pingClient) {
+		return;
+	}
 	_pingTimer.expires_from_now(boost::posix_time::seconds(5));
 	_pingTimer.async_wait(boost::bind(&ClientConnection::onPingTimer, this, _1));
 }

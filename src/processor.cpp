@@ -20,6 +20,7 @@ void Processor::run() {
 		try {
 			auto cmd = _queue.dequeue();
 			cmd->execute();
+			// TODO: get cmd result and send it to client
 		} catch (const std::exception& ex) {
 			BOOST_LOG_TRIVIAL(error) << "std::exception " << ex.what();
 		} catch (...) {

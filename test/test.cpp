@@ -20,22 +20,20 @@ namespace fs = boost::filesystem;
 class TestFixture: public testing::Test {
 public:
 	const int PORT = 9100;
+	std::unique_ptr<Application> _app;
 	boost::thread _t;
 
-	fs::path HOME;
-	fs::path REPO_ROOT;
+
 
 	TestFixture() :
-		_t(&TestFixture::startReggataApp, this),
-		HOME("/home/vitvlkv/"),
-		REPO_ROOT(HOME/"Pictures/") {
+		_app(new Application(PORT, false)),
+		_t(&TestFixture::startReggataApp, this) {
 		boost::this_thread::sleep(boost::posix_time::seconds(1));
 	}
 
 	void startReggataApp() {
-		Application app(PORT);
-		app.openRepo(REPO_ROOT.string(), (REPO_ROOT/".reggata").string());
-		app.start();
+		//_app->openRepo(REPO_ROOT.string(), (REPO_ROOT/".reggata").string());
+		_app->start();
 	}
 
 	void SetUp() {
@@ -46,18 +44,27 @@ public:
 
 	~TestFixture() {
 		// cleanup any pending stuff, but no exceptions allowed
+		try {
+			_app->stop();
+		} catch (const std::exception& ex) {
+			std::cout << "~TestFixture: std::exception, " << ex.what();
+		} catch (...) {
+			std::cout << "~TestFixture: unknown exception";
+		}
 	}
 };
 
 TEST_F (TestFixture, UnitTest1) {
+	fs::path HOME("./resources");
+	fs::path REPO_ROOT(HOME/"root1");
 	Client c(PORT);
 	std::cout << "sendMsg" << std::endl;
 	json::json cmd = {
 			{"id", "123"},
 			{"cmd", "open_repo"},
 			{"args", {
-				{"root_dir", (HOME/"Downloads").c_str()},
-				{"db_dir", (HOME/"Downloads/.reggata").c_str()},
+				{"root_dir", REPO_ROOT.c_str()},
+				{"db_dir", (REPO_ROOT/".reggata").c_str()},
 				{"init_if_not_exists", true}
 			}}
 	};
@@ -65,4 +72,5 @@ TEST_F (TestFixture, UnitTest1) {
 	ASSERT_EQ(nullptr, err) << "sendMsg failed, error: " << err;
 	auto resp = c.recv();
 	std::cout << "recvMsg resp: " << resp << std::endl;
+	// TODO: assert repo is opened
 }

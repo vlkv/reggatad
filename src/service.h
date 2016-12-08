@@ -28,8 +28,10 @@ class Service {
 	typedef std::map<int, std::unique_ptr<ClientConnection>> ClientConnections;
 	ClientConnections _clients;
 
+	bool _pingClients;
+
 public:
-	Service(int port, std::shared_ptr<Processor> proc);
+	Service(int port, std::shared_ptr<Processor> proc, bool pingClients);
 	virtual ~Service() = default;
 
 	void startListenPort();

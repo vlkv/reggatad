@@ -34,10 +34,12 @@ class ClientConnection {
 
 	std::shared_ptr<Processor> _proc;
 
+	bool _pingClient;
+
 public:
 	typedef boost::shared_ptr<ClientConnection> ptr;
 
-	ClientConnection(boost::asio::io_service& io_service, std::shared_ptr<Processor> proc);
+	ClientConnection(boost::asio::io_service& io_service, std::shared_ptr<Processor> proc, bool pingClient);
 	virtual ~ClientConnection() = default;
 
 	void start();
