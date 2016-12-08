@@ -11,7 +11,9 @@ void Processor::start() {
 }
 
 void Processor::stop() {
+	BOOST_LOG_TRIVIAL(info) << "Stopping Processor...";
 	_stopCalled = true;
+	_thread.join();
 }
 
 void Processor::run() {
@@ -27,6 +29,7 @@ void Processor::run() {
 			BOOST_LOG_TRIVIAL(error) << "Unexpected exception";
 		}
 	}
+	BOOST_LOG_TRIVIAL(info) << "Processor stopped";
 }
 
 void Processor::openRepo(const std::string& repoRootDir, const std::string& repoDbDir) {

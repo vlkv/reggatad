@@ -23,8 +23,6 @@ public:
 	std::unique_ptr<Application> _app;
 	boost::thread _t;
 
-
-
 	TestFixture() :
 		_app(new Application(PORT, false)),
 		_t(&TestFixture::startReggataApp, this) {
@@ -32,7 +30,6 @@ public:
 	}
 
 	void startReggataApp() {
-		//_app->openRepo(REPO_ROOT.string(), (REPO_ROOT/".reggata").string());
 		_app->start();
 	}
 
@@ -46,6 +43,7 @@ public:
 		// cleanup any pending stuff, but no exceptions allowed
 		try {
 			_app->stop();
+			_t.join();
 		} catch (const std::exception& ex) {
 			std::cout << "~TestFixture: std::exception, " << ex.what();
 		} catch (...) {
@@ -54,9 +52,8 @@ public:
 	}
 };
 
-TEST_F (TestFixture, UnitTest1) {
-	fs::path HOME("./resources");
-	fs::path REPO_ROOT(HOME/"root1");
+TEST_F (TestFixture, OpenRepo1) {
+	fs::path REPO_ROOT("./resources/root1");
 	Client c(PORT);
 	std::cout << "sendMsg" << std::endl;
 	json::json cmd = {
@@ -73,4 +70,24 @@ TEST_F (TestFixture, UnitTest1) {
 	auto resp = c.recv();
 	std::cout << "recvMsg resp: " << resp << std::endl;
 	// TODO: assert repo is opened
+}
+
+TEST_F (TestFixture, OpenNonExistentRepo) {
+	fs::path REPO_ROOT("./resources/non_existent_root");
+	Client c(PORT);
+	std::cout << "sendMsg" << std::endl;
+	json::json cmd = {
+			{"id", "123"},
+			{"cmd", "open_repo"},
+			{"args", {
+				{"root_dir", REPO_ROOT.c_str()},
+				{"db_dir", (REPO_ROOT/".reggata").c_str()},
+				{"init_if_not_exists", true}
+			}}
+	};
+	auto err = c.send(cmd.dump());
+	ASSERT_EQ(nullptr, err) << "sendMsg failed, error: " << err;
+	auto resp = c.recv();
+	std::cout << "recvMsg resp: " << resp << std::endl;
+	// TODO: assert client received an error
 }

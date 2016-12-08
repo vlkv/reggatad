@@ -25,5 +25,11 @@ std::unique_ptr<CmdOpenRepo> CmdOpenRepo::fromJson(const json::json& j, SendResu
 void CmdOpenRepo::execute() {
 	_proc->openRepo(_rootDir, _dbDir);
 	// TODO: use initIfNotExists flag
+
+	json::json res = {
+		{"id", _id},
+		{"ok", true}
+	};
+	_sendResult(res.dump()); // TODO: send result in case of fail
 }
 

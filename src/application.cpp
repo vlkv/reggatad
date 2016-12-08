@@ -15,6 +15,8 @@ void Application::start() {
 }
 
 void Application::stop() {
-	// TODO
+	BOOST_LOG_TRIVIAL(info) << "Application stop";
+	_service->stopAsync();
+	_proc->stop();
 }
 
