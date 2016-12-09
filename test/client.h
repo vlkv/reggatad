@@ -1,7 +1,6 @@
 #pragma once
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
-
 #include <memory>
 #include <iostream>
 

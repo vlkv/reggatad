@@ -6,14 +6,16 @@ Processor::Processor() {
 }
 
 void Processor::start() {
-	_thread = std::thread(&Processor::run, this);
+	_thread = boost::thread(&Processor::run, this);
 	// ATTN: after start is called, it's not thread-safe to call openRepo! Do not call it. Instead, enqueue a command open_repo
 }
 
 void Processor::stop() {
 	BOOST_LOG_TRIVIAL(info) << "Stopping Processor...";
 	_stopCalled = true;
+	_thread.interrupt();
 	_thread.join();
+	BOOST_LOG_TRIVIAL(info) << "Processor stopped";
 }
 
 void Processor::run() {

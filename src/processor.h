@@ -2,7 +2,7 @@
 #include "repo.h"
 #include "safe_queue.h"
 #include <boost/log/trivial.hpp>
-#include <thread>
+#include <boost/thread.hpp>
 
 class Cmd;
 class CmdRepo;
@@ -15,7 +15,7 @@ class Processor : public std::enable_shared_from_this<Processor> {
 	SafeQueue<std::unique_ptr<CmdProc>> _queue;
 
 	volatile bool _stopCalled = false;
-	std::thread _thread;
+	boost::thread _thread;
 
 public:
 	Processor();

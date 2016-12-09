@@ -67,9 +67,11 @@ TEST_F (TestFixture, OpenRepo1) {
 	};
 	auto err = c.send(cmd.dump());
 	ASSERT_EQ(nullptr, err) << "sendMsg failed, error: " << err;
-	auto resp = c.recv();
-	std::cout << "recvMsg resp: " << resp << std::endl;
-	// TODO: assert repo is opened
+	auto msg = c.recv();
+	std::cout << "recv msg: " << msg << std::endl;
+	auto obj = json::json::parse(msg);
+	ASSERT_EQ("123", obj["id"]);
+	ASSERT_EQ(true, obj["ok"]);
 }
 
 TEST_F (TestFixture, OpenNonExistentRepo) {

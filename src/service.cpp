@@ -87,7 +87,7 @@ void Service::stop() {
 	if (_status != Service::Status::started) {
 		return;
 	}
-	BOOST_LOG_TRIVIAL(info) << "Stopping server...";
+	BOOST_LOG_TRIVIAL(info) << "Stopping Service...";
 	_status = Service::Status::stopping;
 
 	_acceptor.close();
@@ -98,4 +98,6 @@ void Service::stop() {
 	_clients.clear();
 	_service.stop();
 	_status = Service::Status::stopped;
+
+	BOOST_LOG_TRIVIAL(info) << "Service stopped";
 }

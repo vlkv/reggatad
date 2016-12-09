@@ -3,6 +3,7 @@
 #include <queue>
 #include <mutex>
 #include <condition_variable>
+#include <boost/thread.hpp>
 
 template<class T>
 class SafeQueue {
@@ -33,7 +34,8 @@ template<class T>
 T SafeQueue<T>::dequeue() {
 	std::unique_lock<std::mutex> lock(m);
 	while (q.empty()) {
-		c.wait(lock);
+		c.wait_for(lock, std::chrono::milliseconds(25));
+		boost::this_thread::interruption_point();
 	}
 	return frontPop();
 }
