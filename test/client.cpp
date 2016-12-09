@@ -8,10 +8,10 @@ Client::Client(int port) :
 }
 
 boost::system::error_code Client::send(const std::string& message) {
+	std::cout << "Client send: " << message << std::endl;
 	std::vector<char> buf;
 	buf.resize(4 + message.size());
 	uint32_t header = message.size();
-	std::cout << "message size is " << header << std::endl;
 	std::copy((char*)&header, (char*)&header+4, buf.begin());
 	std::copy(message.begin(), message.end(), buf.begin()+4);
 	boost::system::error_code error;
@@ -35,5 +35,7 @@ std::string Client::recv() {
 	if (error) {
 		std::cout << "error reading message: " << error << std::endl;
 	}
-	return std::string(buf.begin(), buf.end());
+	auto message = std::string(buf.begin(), buf.end());
+	std::cout << "Client recv: " << message << std::endl;
+	return message;
 }
