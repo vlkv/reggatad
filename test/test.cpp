@@ -64,7 +64,7 @@ TEST_F (TestFixture, StartStop) {
 }
 
 TEST_F (TestFixture, OpenRepo1) {
-	fs::path REPO_ROOT("./resources/root1");
+	fs::path REPO_ROOT("./test_data/repo1");
 	Client c(PORT);
 	json::json cmd = {
 			{"id", "123"},
@@ -86,7 +86,7 @@ TEST_F (TestFixture, OpenRepo1) {
 TEST_F (TestFixture, OpenNonExistentRepo) {
 	Client c(PORT);
 	{
-		fs::path REPO_ROOT("./resources/non_existent_root");
+		fs::path REPO_ROOT("./test_data/non_existent_root");
 		json::json cmd = {
 				{"id", "123"},
 				{"cmd", "open_repo"},
@@ -102,7 +102,7 @@ TEST_F (TestFixture, OpenNonExistentRepo) {
 		auto obj = json::json::parse(msg);
 		ASSERT_EQ("123", obj["id"]);
 		ASSERT_EQ(false, obj["ok"]);
-		ASSERT_EQ("boost::filesystem::directory_iterator::construct: No such file or directory: \"./resources/non_existent_root\"", 
+		ASSERT_EQ("boost::filesystem::directory_iterator::construct: No such file or directory: \"./test_data/non_existent_root\"", 
                         obj["reason"]);
 	}
 }

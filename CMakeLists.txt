@@ -1,21 +1,19 @@
 cmake_minimum_required(VERSION 2.8)
 project(ReggataDaemon)
 
-# To create Eclipse CDT project, follow instructions: https://cmake.org/Wiki/Eclipse_CDT4_Generator
-
 
 file(GLOB_RECURSE sources      src/*.cpp src/scanner/*.cc src/parser/*.cc)
 file(GLOB_RECURSE sources_test test/*.cpp)
-file(GLOB_RECURSE data resources/*)
 
-add_executable(reggatad ${sources} ${data})
+add_executable(reggatad ${sources})
 
 target_compile_options(reggatad PUBLIC -std=c++1y -Wall)
 
 target_include_directories(reggatad PUBLIC src src/scanner src/parser)
 
-file(COPY ${data} DESTINATION resources)
 file(COPY reggatad.conf DESTINATION ".")
+file(COPY test_data DESTINATION ".")
+
 
 ###############################################################################
 ## dependencies ###############################################################
@@ -87,8 +85,6 @@ endif()
 ###############################################################################
 
 install(TARGETS reggatad DESTINATION reggatad_destination)
-
-install(DIRECTORY resources DESTINATION reggatad_destination)
 
 set(CPACK_PACKAGE_NAME "ReggataDaemon")
 set(CPACK_PACKAGE_VERSION "1.0.0")
