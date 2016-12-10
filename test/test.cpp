@@ -24,13 +24,13 @@ public:
 	boost::thread _t;
 
 	TestFixture() :
-		_app(new Application(PORT, false)),
-		_t(&TestFixture::startReggataApp, this) {
-		boost::this_thread::sleep(boost::posix_time::seconds(1));
+            _app(new Application(PORT, false)),
+            _t(&TestFixture::startReggataApp, this) {
+            boost::this_thread::sleep(boost::posix_time::seconds(1));
 	}
 
 	void startReggataApp() {
-		_app->start();
+            _app->start();
 	}
 
 	void SetUp() {
@@ -51,6 +51,13 @@ public:
 		}
 	}
 };
+
+namespace nlohmann {
+	// NOTE: this fixes segmentation fault
+    void PrintTo(const json& obj, ::std::ostream* os) {
+        *os << obj.dump();
+    }
+}
 
 TEST_F (TestFixture, StartStop) {
 	std::cout << "do nothing" << std::endl;
@@ -95,25 +102,7 @@ TEST_F (TestFixture, OpenNonExistentRepo) {
 		auto obj = json::json::parse(msg);
 		ASSERT_EQ("123", obj["id"]);
 		ASSERT_EQ(false, obj["ok"]);
-		//ASSERT_EQ("TODO", obj["reason"]);
-	}
-
-	{
-		fs::path REPO_ROOT("./resources/root1");
-		json::json cmd = {
-				{"id", "123"},
-				{"cmd", "open_repo"},
-				{"args", {
-					{"root_dir", REPO_ROOT.c_str()},
-					{"db_dir", (REPO_ROOT/".reggata").c_str()},
-					{"init_if_not_exists", true}
-				}}
-		};
-		auto err = c.send(cmd.dump());
-		ASSERT_EQ(nullptr, err) << "sendMsg failed, error: " << err;
-		auto msg = c.recv();
-		auto obj = json::json::parse(msg);
-		ASSERT_EQ("123", obj["id"]);
-		ASSERT_EQ(true, obj["ok"]);
+		ASSERT_EQ("boost::filesystem::directory_iterator::construct: No such file or directory: \"./resources/non_existent_root\"", 
+                        obj["reason"]);
 	}
 }
