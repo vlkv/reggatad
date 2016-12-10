@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configurationDescriptor version="100">
   <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <df root="main" name="2">
+      <in>main.cpp</in>
+    </df>
     <df root="src" name="0">
       <df name="parser">
         <in>parse.cc</in>
@@ -38,6 +41,7 @@
   <sourceRootList>
     <Elem>src</Elem>
     <Elem>test</Elem>
+    <Elem>main</Elem>
   </sourceRootList>
   <projectmakefile>build/Makefile</projectmakefile>
   <confs>
@@ -80,9 +84,6 @@
             <pElem>/usr/local/include</pElem>
             <pElem>build</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>reggatad_EXPORTS</Elem>
-          </preprocessorList>
         </ccTool>
       </folder>
       <folder path="1">
@@ -95,6 +96,17 @@
           </preprocessorList>
         </ccTool>
       </folder>
+      <folder path="2">
+        <ccTool>
+          <incDir>
+            <pElem>build</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <item path="main/main.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
       <item path="src/application.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>

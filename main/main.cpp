@@ -1,5 +1,4 @@
 #include "application.h"
-#include "parser/Parser.h"
 
 #include <boost/log/core.hpp>
 #include <boost/log/utility/setup/console.hpp>
@@ -42,11 +41,7 @@ int MAIN(int argc, char** argv) {
 		app.openRepo(rootPath, fs::absolute(dbPath, rootPath).string());
 	}
 	app.start();
-	// TODO: implement a way to stop application
-
-	// TODO: remove this
-	Parser parser; // It's just to check that flex/bison do work
-	parser.parse();
+	// TODO: implement a way to gracefully stop application
 
 	return EXIT_SUCCESS;
 }
