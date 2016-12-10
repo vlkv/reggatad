@@ -5,17 +5,20 @@
         <data xmlns="http://www.netbeans.org/ns/make-project/1">
             <name>reggatad</name>
             <c-extensions/>
-            <cpp-extensions/>
-            <header-extensions/>
+            <cpp-extensions>cc,cpp</cpp-extensions>
+            <header-extensions>h,hpp,ih</header-extensions>
+            <sourceEncoding>UTF-8</sourceEncoding>
             <make-dep-projects/>
-            <sourceRootList/>
+            <sourceRootList>
+                <sourceRootElem>src</sourceRootElem>
+                <sourceRootElem>test</sourceRootElem>
+            </sourceRootList>
             <confList>
                 <confElem>
                     <name>Default</name>
                     <type>0</type>
                 </confElem>
             </confList>
-            <sourceEncoding>UTF-8</sourceEncoding>
             <formatting>
                 <project-formatting-style>false</project-formatting-style>
             </formatting>

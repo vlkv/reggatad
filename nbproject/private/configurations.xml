@@ -1,5 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configurationDescriptor version="100">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
+    <df root="src" name="0">
+      <df name="parser">
+        <in>Parser.h</in>
+        <in>Parser.ih</in>
+        <in>Parserbase.h</in>
+        <in>parse.cc</in>
+      </df>
+      <df name="scanner">
+        <in>Scanner.h</in>
+        <in>Scanner.ih</in>
+        <in>Scannerbase.h</in>
+        <in>lex.cc</in>
+      </df>
+      <in>application.cpp</in>
+      <in>application.h</in>
+      <in>client_connection.cpp</in>
+      <in>client_connection.h</in>
+      <in>cmd.cpp</in>
+      <in>cmd.h</in>
+      <in>cmd_add_tags.cpp</in>
+      <in>cmd_add_tags.h</in>
+      <in>cmd_open_repo.cpp</in>
+      <in>cmd_open_repo.h</in>
+      <in>cmd_proc.cpp</in>
+      <in>cmd_proc.h</in>
+      <in>cmd_remove_tags.cpp</in>
+      <in>cmd_remove_tags.h</in>
+      <in>cmd_repo.cpp</in>
+      <in>cmd_repo.h</in>
+      <in>cmds.h</in>
+      <in>json.hpp</in>
+      <in>main.cpp</in>
+      <in>processor.cpp</in>
+      <in>processor.h</in>
+      <in>reggata_exceptions.h</in>
+      <in>repo.cpp</in>
+      <in>repo.h</in>
+      <in>safe_queue.h</in>
+      <in>service.cpp</in>
+      <in>service.h</in>
+    </df>
+    <df root="test" name="1">
+      <in>client.cpp</in>
+      <in>client.h</in>
+      <in>test.cpp</in>
+    </df>
+  </logicalFolder>
   <projectmakefile>build/Makefile</projectmakefile>
   <confs>
     <conf name="Default" type="0">
@@ -9,13 +57,13 @@
       </toolsSet>
       <compile>
         <compiledirpicklist>
-          <compiledirpicklistitem>${AUTO_FOLDER}</compiledirpicklistitem>
           <compiledirpicklistitem>.</compiledirpicklistitem>
+          <compiledirpicklistitem>${AUTO_FOLDER}</compiledirpicklistitem>
         </compiledirpicklist>
         <compiledir>${AUTO_FOLDER}</compiledir>
         <compilecommandpicklist>
-          <compilecommandpicklistitem>${AUTO_COMPILE}</compilecommandpicklistitem>
           <compilecommandpicklistitem>${MAKE} ${ITEM_NAME}.o</compilecommandpicklistitem>
+          <compilecommandpicklistitem>${AUTO_COMPILE}</compilecommandpicklistitem>
         </compilecommandpicklist>
         <compilecommand>${AUTO_COMPILE}</compilecommand>
       </compile>
@@ -25,6 +73,8 @@
         <gdb_interceptlist>
           <gdbinterceptoptions gdb_all="false" gdb_unhandled="true" gdb_unexpected="true"/>
         </gdb_interceptlist>
+        <gdb_signals>
+        </gdb_signals>
         <gdb_options>
           <DebugOptions>
           </DebugOptions>
