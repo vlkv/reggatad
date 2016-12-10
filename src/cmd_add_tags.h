@@ -13,5 +13,5 @@ struct CmdAddTags: public CmdRepo {
 	static std::unique_ptr<CmdAddTags> fromJson(const json::json& j, Cmd::SendResult sendResult); // TODO: use unique_ptr for result
 
 	virtual std::string path() const;
-	virtual void execute();
+	virtual json::json execute();
 };

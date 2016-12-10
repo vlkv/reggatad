@@ -25,6 +25,6 @@ std::string CmdAddTags::path() const {
 	return _file;
 }
 
-void CmdAddTags::execute() {
-
+json::json CmdAddTags::execute() {
+	return json::json{};
 }

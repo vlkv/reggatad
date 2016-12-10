@@ -52,10 +52,13 @@ public:
 	}
 };
 
+TEST_F (TestFixture, StartStop) {
+	std::cout << "do nothing" << std::endl;
+}
+
 TEST_F (TestFixture, OpenRepo1) {
 	fs::path REPO_ROOT("./resources/root1");
 	Client c(PORT);
-	std::cout << "sendMsg" << std::endl;
 	json::json cmd = {
 			{"id", "123"},
 			{"cmd", "open_repo"},
@@ -74,23 +77,43 @@ TEST_F (TestFixture, OpenRepo1) {
 }
 
 TEST_F (TestFixture, OpenNonExistentRepo) {
-	fs::path REPO_ROOT("./resources/non_existent_root");
 	Client c(PORT);
-	std::cout << "sendMsg" << std::endl;
-	json::json cmd = {
-			{"id", "123"},
-			{"cmd", "open_repo"},
-			{"args", {
-				{"root_dir", REPO_ROOT.c_str()},
-				{"db_dir", (REPO_ROOT/".reggata").c_str()},
-				{"init_if_not_exists", true}
-			}}
-	};
-	auto err = c.send(cmd.dump());
-	ASSERT_EQ(nullptr, err) << "sendMsg failed, error: " << err;
-	auto msg = c.recv();
-	auto obj = json::json::parse(msg);
-	ASSERT_EQ("123", obj["id"]);
-	ASSERT_EQ(false, obj["ok"]);
-	ASSERT_EQ("TODO", obj["reason"]);
+	{
+		fs::path REPO_ROOT("./resources/non_existent_root");
+		json::json cmd = {
+				{"id", "123"},
+				{"cmd", "open_repo"},
+				{"args", {
+					{"root_dir", REPO_ROOT.c_str()},
+					{"db_dir", (REPO_ROOT/".reggata").c_str()},
+					{"init_if_not_exists", true}
+				}}
+		};
+		auto err = c.send(cmd.dump());
+		ASSERT_EQ(nullptr, err) << "sendMsg failed, error: " << err;
+		auto msg = c.recv();
+		auto obj = json::json::parse(msg);
+		ASSERT_EQ("123", obj["id"]);
+		ASSERT_EQ(false, obj["ok"]);
+		//ASSERT_EQ("TODO", obj["reason"]);
+	}
+
+	{
+		fs::path REPO_ROOT("./resources/root1");
+		json::json cmd = {
+				{"id", "123"},
+				{"cmd", "open_repo"},
+				{"args", {
+					{"root_dir", REPO_ROOT.c_str()},
+					{"db_dir", (REPO_ROOT/".reggata").c_str()},
+					{"init_if_not_exists", true}
+				}}
+		};
+		auto err = c.send(cmd.dump());
+		ASSERT_EQ(nullptr, err) << "sendMsg failed, error: " << err;
+		auto msg = c.recv();
+		auto obj = json::json::parse(msg);
+		ASSERT_EQ("123", obj["id"]);
+		ASSERT_EQ(true, obj["ok"]);
+	}
 }

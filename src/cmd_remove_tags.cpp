@@ -25,6 +25,6 @@ std::string CmdRemoveTags::path() const {
 	return _file;
 }
 
-void CmdRemoveTags::execute() {
-	// TODO
+json::json CmdRemoveTags::execute() {
+	return json::json{};
 }

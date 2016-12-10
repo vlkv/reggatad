@@ -12,5 +12,5 @@ struct CmdOpenRepo: public CmdProc {
 	virtual ~CmdOpenRepo() = default;
 
 	static std::unique_ptr<CmdOpenRepo> fromJson(const json::json& j, SendResult sendResult);
-	virtual void execute();
+	virtual json::json execute();
 };

@@ -12,7 +12,7 @@ struct CmdRemoveTags: public CmdRepo {
 
 	static std::unique_ptr<CmdRemoveTags> fromJson(const json::json& j, Cmd::SendResult sendResult); // TODO: use unique_ptr for result
 
-	virtual void execute();
+	virtual json::json execute();
 
 	virtual std::string path() const;
 };

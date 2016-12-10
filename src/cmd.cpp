@@ -24,3 +24,9 @@ std::unique_ptr<Cmd> Cmd::fromJson(const json::json& j, Cmd::SendResult sendResu
 		throw new ReggataException(std::string("Unexpected command: ") + cmdStr);
 	}
 }
+
+void Cmd::sendResult(json::json& result) {
+	result["id"] = _id;
+	auto str = result.dump();
+	_sendResult(str);
+}

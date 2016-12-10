@@ -23,15 +23,24 @@ void Processor::run() {
 	while (!_stopCalled) {
 		try {
 			auto cmd = _queue.dequeue();
-			cmd->execute();
-			// TODO: get cmd result and send it to client
+			try {
+				auto result = cmd->execute();
+				//throw std::exception();
+				cmd->sendResult(result);
+			} catch (const std::exception& ex) {
+				json::json result = {
+					{"ok", false},
+					{"reason", ex.what()}
+				};
+				cmd->sendResult(result);
+			}
 		} catch (const std::exception& ex) {
 			BOOST_LOG_TRIVIAL(error) << "std::exception " << ex.what();
 		} catch (...) {
 			BOOST_LOG_TRIVIAL(error) << "Unexpected exception";
 		}
 	}
-	BOOST_LOG_TRIVIAL(info) << "Processor stopped";
+	BOOST_LOG_TRIVIAL(info) << "Processor:run exited";
 }
 
 void Processor::openRepo(const std::string& repoRootDir, const std::string& repoDbDir) {

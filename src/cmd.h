@@ -16,5 +16,7 @@ struct Cmd {
 
 	static std::unique_ptr<Cmd> fromJson(const json::json& j, SendResult sendResult);
 
-	virtual void execute() = 0;
+	virtual json::json execute() = 0;
+
+	void sendResult(json::json& result);
 };
