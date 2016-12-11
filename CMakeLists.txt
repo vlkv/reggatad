@@ -1,9 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(ReggataDaemon)
 
-
 file(GLOB_RECURSE sources_lib src/*.cpp src/scanner/*.cc src/parser/*.cc)
-#list(REMOVE_ITEM sources_lib src/main.cpp)
 file(GLOB_RECURSE sources_main main/main.cpp)
 file(GLOB_RECURSE sources_test test/*.cpp)
 

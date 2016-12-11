@@ -43,10 +43,10 @@ void Processor::run() {
 	BOOST_LOG_TRIVIAL(info) << "Processor:run exited";
 }
 
-void Processor::openRepo(const std::string& repoRootDir, const std::string& repoDbDir) {
+void Processor::openRepo(const std::string& repoRootDir, const std::string& repoDbDir, bool initIfNotExists=false) {
 	// TODO: forbid open nested repos
 	BOOST_LOG_TRIVIAL(info) << "Open repo, rootDir=" << repoRootDir << " dbDir=" << repoDbDir;
-	auto repo = std::make_shared<Repo>(repoRootDir, repoDbDir);
+	auto repo = std::make_shared<Repo>(repoRootDir, repoDbDir, initIfNotExists);
 	_repos.insert(Repos::value_type(repoRootDir, repo));
 }
 

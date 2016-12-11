@@ -1,12 +1,20 @@
 #include "repo.h"
+#include "reggata_exceptions.h"
 #include <boost/filesystem.hpp>
 #include <iostream>
 
-Repo::Repo(const std::string& rootPath, const std::string& dbPath)
+Repo::Repo(const std::string& rootPath, const std::string& dbPath, bool initIfNotExists=false)
 : _rootPath(rootPath), _dbPath(dbPath) {
 
+    if (initIfNotExists && !boost::filesystem::exists(rootPath)) {
+        auto ok = boost::filesystem::create_directories(rootPath);
+        if (!ok) {
+            throw ReggataException(std::string("Could not create directory ") + rootPath);
+        }
+    }
+    
 	rocksdb::Options options;
-	options.create_if_missing = true;
+	options.create_if_missing = initIfNotExists;
 	rocksdb::DB* db;
 	rocksdb::Status status = rocksdb::DB::Open(options, _dbPath, &db);
 	_db.reset(db);

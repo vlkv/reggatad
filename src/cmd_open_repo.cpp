@@ -18,14 +18,12 @@ std::unique_ptr<CmdOpenRepo> CmdOpenRepo::fromJson(const json::json& j, SendResu
 	auto args = j["args"];
 	res->_rootDir = args["root_dir"];
 	res->_dbDir = args["db_dir"];
-	res->_initIfNotExists = args["init_if_not_exists"];
+	res->_initIfNotExists = args.value("init_if_not_exists", false);
 	return res;
 }
 
 json::json CmdOpenRepo::execute() {
-	_proc->openRepo(_rootDir, _dbDir);
-	// TODO: use initIfNotExists flag
-
+	_proc->openRepo(_rootDir, _dbDir, _initIfNotExists);
 	json::json res = {
 		{"ok", true}
 	};

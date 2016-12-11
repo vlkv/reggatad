@@ -17,7 +17,7 @@ class Repo {
 
 	SafeQueue<std::unique_ptr<CmdRepo>> _queue;
 public:
-	Repo(const std::string& rootPath, const std::string& dbPath);
+	Repo(const std::string& rootPath, const std::string& dbPath, bool initIfNotExists);
 	virtual ~Repo() = default;
 	void start();
 	std::string rootPath() const;

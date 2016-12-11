@@ -1,4 +1,5 @@
 #include "application.h"
+#include "cmd_open_repo.h"
 
 Application::Application(int port, bool pingClients=true) :
 	_proc(new Processor()),
@@ -6,7 +7,12 @@ Application::Application(int port, bool pingClients=true) :
 }
 
 void Application::openRepo(const std::string& repoPath, const std::string& dbPath) {
-	_proc->openRepo(repoPath, dbPath);
+    std::unique_ptr<CmdOpenRepo> cmd(new CmdOpenRepo("_", [](const std::string& result){}));
+	// TODO: init all fields in ctor
+    cmd->_dbDir = repoPath;
+    cmd->_rootDir = repoPath;
+    cmd->_initIfNotExists = false;
+	_proc->routeCmd(std::unique_ptr<Cmd>(cmd.release()));
 }
 
 void Application::start() {
