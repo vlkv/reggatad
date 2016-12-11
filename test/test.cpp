@@ -122,7 +122,7 @@ TEST_F (TestFixture, OpenNonExistentRepoAndFail) {
 		auto obj = json::json::parse(msg);
 		ASSERT_EQ("123", obj["id"]);
 		ASSERT_EQ(false, obj["ok"]);
-		ASSERT_EQ("boost::filesystem::directory_iterator::construct: No such file or directory: \"./test_data/non_existent_repo\"", 
+		ASSERT_EQ("Could not open rocksdb database at ./test_data/non_existent_repo/.reggata", 
                   obj["reason"]);
 	}
 }
