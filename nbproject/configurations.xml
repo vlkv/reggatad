@@ -138,21 +138,17 @@
       <item path="src/cmd.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
           <incDir>
+            <pElem>/usr/local/include</pElem>
             <pElem>build</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>UNIT_TESTS</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/cmd_add_tags.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
           <incDir>
+            <pElem>/usr/local/include</pElem>
             <pElem>build</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>UNIT_TESTS</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/cmd_open_repo.cpp" ex="false" tool="1" flavor2="11">
@@ -174,11 +170,9 @@
       <item path="src/cmd_remove_tags.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
           <incDir>
+            <pElem>/usr/local/include</pElem>
             <pElem>build</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>UNIT_TESTS</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/cmd_repo.cpp" ex="false" tool="1" flavor2="11">

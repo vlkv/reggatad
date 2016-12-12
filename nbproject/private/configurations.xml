@@ -35,6 +35,7 @@
       <in>cmd_repo.h</in>
       <in>cmds.h</in>
       <in>json.hpp</in>
+      <in>json_map.h</in>
       <in>main.cpp</in>
       <in>processor.cpp</in>
       <in>processor.h</in>

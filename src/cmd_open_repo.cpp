@@ -1,5 +1,7 @@
 #include "cmd_open_repo.h"
 #include "processor.h"
+#include "json_map.h"
+#include <boost/assign.hpp>
 
 CmdOpenRepo::CmdOpenRepo(const std::string& id, Cmd::SendResult sendResult) :
 	CmdProc(id, sendResult) {
@@ -7,20 +9,10 @@ CmdOpenRepo::CmdOpenRepo(const std::string& id, Cmd::SendResult sendResult) :
 
 const std::string CmdOpenRepo::NAME = "open_repo";
 
-std::unique_ptr<CmdOpenRepo> CmdOpenRepo::fromJson(const json::json& j, SendResult sendResult) {
-	BOOST_LOG_TRIVIAL(debug) << "CmdOpenRepo::fromJson";
-	std::string cmd = j["cmd"];
-	BOOST_ASSERT_MSG(cmd == CmdOpenRepo::NAME, "Bad cmd");
-
-	const std::string id = j["id"];
-	auto res = std::unique_ptr<CmdOpenRepo>(new CmdOpenRepo(id, sendResult));
-
-	auto args = j["args"];
-	res->_rootDir = args["root_dir"];
-	res->_dbDir = args["db_dir"];
-	res->_initIfNotExists = args.value("init_if_not_exists", false);
-	return res;
-}
+const JsonMap::ParseMap<CmdOpenRepo> CmdOpenRepo::parseMap = boost::assign::list_of
+    (JsonMap::create("root_dir", &CmdOpenRepo::_rootDir))
+    (JsonMap::create("db_dir", &CmdOpenRepo::_dbDir))
+    (JsonMap::create("init_if_not_exists", &CmdOpenRepo::_initIfNotExists));
 
 json::json CmdOpenRepo::execute() {
 	_proc->openRepo(_rootDir, _dbDir, _initIfNotExists);

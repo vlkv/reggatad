@@ -19,7 +19,7 @@ std::unique_ptr<Cmd> Cmd::fromJson(const json::json& j, Cmd::SendResult sendResu
 	} else if (cmdStr == CmdRemoveTags::NAME) {
 		return CmdRemoveTags::fromJson(j, sendResult);
 	} else if (cmdStr == CmdOpenRepo::NAME) {
-		return CmdOpenRepo::fromJson(j, sendResult);
+		return Cmd::fromJson2<CmdOpenRepo>(j, sendResult);
 	} else {
 		throw new ReggataException(std::string("Unexpected command: ") + cmdStr);
 	}
