@@ -1,16 +1,16 @@
 #pragma once
 #include "cmd_repo.h"
+#include "json_map.h"
 
 struct CmdRemoveTags: public CmdRepo {
 	static const std::string NAME;
+        static const JsonMap::ParseMap<CmdRemoveTags> parseMap;
 
 	std::string _file;
 	std::vector<std::string> _tags;
 
 	CmdRemoveTags(const std::string& id, Cmd::SendResult sendResult);
 	virtual ~CmdRemoveTags() = default;
-
-	static std::unique_ptr<CmdRemoveTags> fromJson(const json::json& j, Cmd::SendResult sendResult); // TODO: use unique_ptr for result
 
 	virtual json::json execute();
 

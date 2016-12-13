@@ -15,11 +15,14 @@ std::unique_ptr<Cmd> Cmd::fromJson(const json::json& j, Cmd::SendResult sendResu
 	BOOST_LOG_TRIVIAL(debug) << "Cmd::fromJson";
 	std::string cmdStr = j["cmd"];
 	if (cmdStr == CmdAddTags::NAME) {
-		return CmdAddTags::fromJson(j, sendResult);
+		return Cmd::fromJson2<CmdAddTags>(j, sendResult);
+        
 	} else if (cmdStr == CmdRemoveTags::NAME) {
-		return CmdRemoveTags::fromJson(j, sendResult);
+		return Cmd::fromJson2<CmdRemoveTags>(j, sendResult);
+        
 	} else if (cmdStr == CmdOpenRepo::NAME) {
 		return Cmd::fromJson2<CmdOpenRepo>(j, sendResult);
+        
 	} else {
 		throw new ReggataException(std::string("Unexpected command: ") + cmdStr);
 	}

@@ -1,4 +1,5 @@
 #include "cmd_remove_tags.h"
+#include <boost/assign.hpp>
 
 CmdRemoveTags::CmdRemoveTags(const std::string& id, Cmd::SendResult sendResult) :
 	CmdRepo(id, sendResult) {
@@ -6,25 +7,15 @@ CmdRemoveTags::CmdRemoveTags(const std::string& id, Cmd::SendResult sendResult) 
 
 const std::string CmdRemoveTags::NAME = "remove_tags";
 
-std::unique_ptr<CmdRemoveTags> CmdRemoveTags::fromJson(const json::json& j, Cmd::SendResult sendResult) {
-	std::string cmd = j["cmd"];
-	BOOST_ASSERT_MSG(cmd == CmdRemoveTags::NAME, "Bad cmd");
-
-	std::string id = j["id"];
-	auto res = std::unique_ptr<CmdRemoveTags>(new CmdRemoveTags(id, sendResult));
-
-	auto args = j["args"];
-	res->_file = args["file"];
-	for (auto& tag : args["tags"]) {
-		res->_tags.push_back(tag);
-	}
-	return res;
-}
+const JsonMap::ParseMap<CmdRemoveTags> CmdRemoveTags::parseMap = boost::assign::list_of
+    (JsonMap::mapValue("file", &CmdRemoveTags::_file))
+    (JsonMap::mapArray("tags", &CmdRemoveTags::_tags));
 
 std::string CmdRemoveTags::path() const {
 	return _file;
 }
 
 json::json CmdRemoveTags::execute() {
+    // TODO
 	return json::json{};
 }

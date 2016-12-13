@@ -6,34 +6,35 @@ namespace json = nlohmann;
 #include <string>
 
 struct Cmd {
-	std::string _id;
+    std::string _id;
 
-	typedef std::function<void(const std::string&)> SendResult;
-	SendResult _sendResult;
+    typedef std::function<void(const std::string&)> SendResult;
+    SendResult _sendResult;
 
-	Cmd(const std::string& id, SendResult sendResult);
-	virtual ~Cmd() = default;
+    Cmd(const std::string& id, SendResult sendResult);
+    virtual ~Cmd() = default;
 
-	static std::unique_ptr<Cmd> fromJson(const json::json& j, SendResult sendResult);
+    static std::unique_ptr<Cmd> fromJson(const json::json& j, SendResult sendResult);
 
-	virtual json::json execute() = 0;
+    virtual json::json execute() = 0;
 
-	void sendResult(json::json& result);
-        
-        template<class T>
-        static std::unique_ptr<T> fromJson2(const json::json& j, SendResult sendResult) {
-            std::string cmd = j["cmd"];
-            BOOST_ASSERT_MSG(cmd == T::NAME, "Bad cmd");
+    void sendResult(json::json& result);
 
-            const std::string id = j["id"];
-            auto res = std::unique_ptr<T>(new T(id, sendResult));
+private:
+    template<class T>
+    static std::unique_ptr<T> fromJson2(const json::json& j, SendResult sendResult) {
+        std::string cmd = j["cmd"];
+        BOOST_ASSERT_MSG(cmd == T::NAME, "Bad cmd");
 
-            auto args = j["args"];
-            for (auto& jm : T::parseMap) {
-                jm.second(args, *res);
-            }
-            return res;
+        const std::string id = j["id"];
+        auto res = std::unique_ptr<T>(new T(id, sendResult));
+
+        auto args = j["args"];
+        for (auto& jm : T::parseMap) {
+            jm.second(args, *res);
         }
+        return res;
+    }
 };
 
 

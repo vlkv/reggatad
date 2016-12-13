@@ -1,4 +1,5 @@
 #include "cmd_add_tags.h"
+#include <boost/assign.hpp>
 
 CmdAddTags::CmdAddTags(const std::string& id, Cmd::SendResult sendResult) :
 	CmdRepo(id, sendResult) {
@@ -6,25 +7,15 @@ CmdAddTags::CmdAddTags(const std::string& id, Cmd::SendResult sendResult) :
 
 const std::string CmdAddTags::NAME = "add_tags";
 
-std::unique_ptr<CmdAddTags> CmdAddTags::fromJson(const json::json& j, Cmd::SendResult sendResult) {
-	std::string cmd = j["cmd"];
-	BOOST_ASSERT_MSG(cmd == CmdAddTags::NAME, "Bad cmd");
-
-	const std::string id = j["id"];
-	auto res = std::unique_ptr<CmdAddTags>(new CmdAddTags(id, sendResult));
-
-	auto args = j["args"];
-	res->_file = args["file"];
-	for (auto& tag : args["tags"]) {
-		res->_tags.push_back(tag);
-	}
-	return res;
-}
+const JsonMap::ParseMap<CmdAddTags> CmdAddTags::parseMap = boost::assign::list_of
+    (JsonMap::mapValue("file", &CmdAddTags::_file))
+    (JsonMap::mapArray("tags", &CmdAddTags::_tags));
 
 std::string CmdAddTags::path() const {
 	return _file;
 }
 
 json::json CmdAddTags::execute() {
+    // TODO
 	return json::json{};
 }

@@ -4,6 +4,7 @@
 
 struct CmdOpenRepo: public CmdProc {
 	static const std::string NAME;
+        static const JsonMap::ParseMap<CmdOpenRepo> parseMap;
 
 	std::string _rootDir;
 	std::string _dbDir;
@@ -13,6 +14,4 @@ struct CmdOpenRepo: public CmdProc {
 	virtual ~CmdOpenRepo() = default;
 
 	virtual json::json execute();
-        
-        static const JsonMap::ParseMap<CmdOpenRepo> parseMap;
 };
