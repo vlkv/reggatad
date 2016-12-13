@@ -28,6 +28,7 @@
     </df>
     <df root="test" name="2">
       <in>client.cpp</in>
+      <in>common.h</in>
       <in>test.cpp</in>
     </df>
     <logicalFolder name="ExternalFiles"
@@ -240,6 +241,8 @@
       <item path="test/client.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
+      </item>
+      <item path="test/common.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="test/test.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">

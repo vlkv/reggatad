@@ -24,7 +24,7 @@ std::unique_ptr<Cmd> Cmd::fromJson(const json::json& j, Cmd::SendResult sendResu
 		return Cmd::fromJson2<CmdOpenRepo>(j, sendResult);
         
 	} else {
-		throw new ReggataException(std::string("Unexpected command: ") + cmdStr);
+		throw ReggataException(std::string("Unexpected command: ") + cmdStr);
 	}
 }
 

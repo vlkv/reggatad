@@ -58,7 +58,7 @@ void Processor::routeCmd(std::unique_ptr<Cmd> cmd) {
 		auto p = cmdRepo1->path();
 		auto repo = findRepo(p);
 		if (repo.use_count() == 0) {
-			throw new ReggataException(std::string("Could not find repo for path=") + p);
+			throw ReggataException(std::string("Could not find repo for path=") + p);
 		}
 		cmdRepo1->setContext(repo);
 		repo->enqueueCmd(std::move(cmdRepo1));
@@ -74,7 +74,7 @@ void Processor::routeCmd(std::unique_ptr<Cmd> cmd) {
 		return;
 	}
 
-	throw new ReggataException(std::string("Unknown command") + cmd->_id);
+	throw ReggataException(std::string("Unknown command") + cmd->_id);
 }
 
 std::shared_ptr<Repo> Processor::findRepo(const std::string& path) {

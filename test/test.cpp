@@ -1,6 +1,7 @@
 #include "application.h"
 #include "client.h"
-#include "json.hpp"
+#include "common.h"
+#include <json.hpp>
 namespace json = nlohmann;
 
 #include <gtest/gtest.h>
@@ -52,12 +53,6 @@ public:
 	}
 };
 
-namespace nlohmann {
-	// NOTE: this fixes segmentation fault
-    void PrintTo(const json& obj, ::std::ostream* os) {
-        *os << obj.dump();
-    }
-}
 
 TEST_F (TestFixture, StartStop) {
 	std::cout << "do nothing" << std::endl;
@@ -125,4 +120,39 @@ TEST_F (TestFixture, OpenNonExistentRepoAndFail) {
 		ASSERT_EQ("Could not open rocksdb database at ./test_data/non_existent_repo/.reggata", 
                   obj["reason"]);
 	}
+}
+
+// TODO: move this test to separate cpp file
+TEST_F (TestFixture, OpenRepo1AddTag) {
+	fs::path REPO_ROOT("./test_data/repo1");
+	Client c(PORT);
+	json::json cmd = {
+			{"id", "123"},
+			{"cmd", "open_repo"},
+			{"args", {
+				{"root_dir", REPO_ROOT.c_str()},
+				{"db_dir", (REPO_ROOT/".reggata").c_str()}
+			}}
+	};
+	auto err = c.send(cmd.dump());
+	ASSERT_EQ(nullptr, err) << "sendMsg failed, error: " << err;
+	auto msg = c.recv();
+	auto obj = json::json::parse(msg);
+	ASSERT_EQ("123", obj["id"]);
+	ASSERT_EQ(true, obj["ok"]);
+    
+    json::json cmd2 = {
+        {"id", "124"},
+        {"cmd", "add_tags"},
+        {"args", {
+            {"file", (REPO_ROOT/"dir"/"file").c_str()},
+            {"tags", {"tag1", "tag2", "tag3"}}
+        }}
+    };
+    auto err2 = c.send(cmd2.dump());
+    ASSERT_EQ(nullptr, err2) << "sendMsg failed, error: " << err2;
+    auto msg2 = c.recv();
+	auto obj2 = json::json::parse(msg2);
+	ASSERT_EQ("124", obj["id"]);
+	ASSERT_EQ(true, obj["ok"]);
 }
