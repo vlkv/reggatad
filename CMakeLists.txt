@@ -1,13 +1,21 @@
 cmake_minimum_required(VERSION 2.8)
 project(ReggataDaemon)
 
-file(GLOB_RECURSE sources_lib src/*.cpp src/scanner/*.cc src/parser/*.cc)
+file(GLOB_RECURSE sources_lib 
+    src/*.cpp 
+    src/cmd/*.cpp 
+    src/scanner/*.cc 
+    src/parser/*.cc)
 file(GLOB_RECURSE sources_main main/main.cpp)
 file(GLOB_RECURSE sources_test test/*.cpp)
 
 add_library(reggata_lib STATIC ${sources_lib})
 target_compile_options(reggata_lib PUBLIC -std=c++1y -Wall)
-target_include_directories(reggata_lib PUBLIC src src/scanner src/parser)
+target_include_directories(reggata_lib PUBLIC
+    src
+    src/cmd
+    src/scanner
+    src/parser)
 
 add_executable(reggatad ${sources_main})
 target_compile_options(reggatad PUBLIC -std=c++1y -Wall)

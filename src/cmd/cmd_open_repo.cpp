@@ -1,6 +1,6 @@
 #include "cmd_open_repo.h"
-#include "processor.h"
-#include "json_map.h"
+#include <processor.h>
+#include <json_map.h>
 #include <boost/assign.hpp>
 
 CmdOpenRepo::CmdOpenRepo(const std::string& id, Cmd::SendResult sendResult) :

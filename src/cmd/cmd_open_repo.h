@@ -1,6 +1,6 @@
 #pragma once
 #include "cmd_proc.h"
-#include "json_map.h"
+#include <json_map.h>
 
 struct CmdOpenRepo: public CmdProc {
 	static const std::string NAME;

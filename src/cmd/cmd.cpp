@@ -2,7 +2,7 @@
 #include "cmd_add_tags.h"
 #include "cmd_remove_tags.h"
 #include "cmd_open_repo.h"
-#include "reggata_exceptions.h"
+#include <reggata_exceptions.h>
 
 #include <boost/log/trivial.hpp>
 

@@ -5,6 +5,14 @@
       <in>main.cpp</in>
     </df>
     <df root="src" name="1">
+      <df name="cmd">
+        <in>cmd.cpp</in>
+        <in>cmd_add_tags.cpp</in>
+        <in>cmd_open_repo.cpp</in>
+        <in>cmd_proc.cpp</in>
+        <in>cmd_remove_tags.cpp</in>
+        <in>cmd_repo.cpp</in>
+      </df>
       <df name="parser">
         <in>parse.cc</in>
       </df>
@@ -13,12 +21,6 @@
       </df>
       <in>application.cpp</in>
       <in>client_connection.cpp</in>
-      <in>cmd.cpp</in>
-      <in>cmd_add_tags.cpp</in>
-      <in>cmd_open_repo.cpp</in>
-      <in>cmd_proc.cpp</in>
-      <in>cmd_remove_tags.cpp</in>
-      <in>cmd_repo.cpp</in>
       <in>main.cpp</in>
       <in>processor.cpp</in>
       <in>repo.cpp</in>
@@ -65,8 +67,6 @@
           <ccTool>
             <incDir>
               <pElem>src</pElem>
-              <pElem>src/scanner</pElem>
-              <pElem>src/parser</pElem>
             </incDir>
             <preprocessorList>
               <Elem>BOOST_LOG_DYN_LINK=1</Elem>
@@ -81,6 +81,20 @@
       <folder path="0">
         <ccTool>
           <incDir>
+            <pElem>src/scanner</pElem>
+            <pElem>src/parser</pElem>
+            <pElem>src/cmd</pElem>
+            <pElem>build</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
+      <folder path="1/cmd">
+        <ccTool>
+          <incDir>
+            <pElem>src/cmd</pElem>
+            <pElem>src/scanner</pElem>
+            <pElem>src/parser</pElem>
+            <pElem>/usr/local/include</pElem>
             <pElem>build</pElem>
           </incDir>
         </ccTool>
@@ -88,26 +102,31 @@
       <folder path="1/parser">
         <ccTool>
           <incDir>
+            <pElem>src/cmd</pElem>
+            <pElem>src/scanner</pElem>
+            <pElem>src/parser</pElem>
+            <pElem>/usr/local/include</pElem>
             <pElem>build</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>UNIT_TESTS</Elem>
-          </preprocessorList>
         </ccTool>
       </folder>
       <folder path="1/scanner">
         <ccTool>
           <incDir>
+            <pElem>src/cmd</pElem>
+            <pElem>src/scanner</pElem>
+            <pElem>src/parser</pElem>
+            <pElem>/usr/local/include</pElem>
             <pElem>build</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>UNIT_TESTS</Elem>
-          </preprocessorList>
         </ccTool>
       </folder>
       <folder path="2">
         <ccTool>
           <incDir>
+            <pElem>src/cmd</pElem>
+            <pElem>src/scanner</pElem>
+            <pElem>src/parser</pElem>
             <pElem>build</pElem>
           </incDir>
           <preprocessorList>
@@ -122,6 +141,9 @@
       <item path="src/application.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
           <incDir>
+            <pElem>src/cmd</pElem>
+            <pElem>src/scanner</pElem>
+            <pElem>src/parser</pElem>
             <pElem>/usr/local/include</pElem>
             <pElem>build</pElem>
           </incDir>
@@ -130,62 +152,43 @@
       <item path="src/client_connection.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
           <incDir>
+            <pElem>src/cmd</pElem>
+            <pElem>src/scanner</pElem>
+            <pElem>src/parser</pElem>
             <pElem>/usr/local/include</pElem>
             <pElem>build</pElem>
           </incDir>
         </ccTool>
       </item>
-      <item path="src/cmd.cpp" ex="false" tool="1" flavor2="11">
+      <item path="src/cmd/cmd.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
-          <incDir>
-            <pElem>/usr/local/include</pElem>
-            <pElem>build</pElem>
-          </incDir>
         </ccTool>
       </item>
-      <item path="src/cmd_add_tags.cpp" ex="false" tool="1" flavor2="11">
+      <item path="src/cmd/cmd_add_tags.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
-          <incDir>
-            <pElem>/usr/local/include</pElem>
-            <pElem>build</pElem>
-          </incDir>
         </ccTool>
       </item>
-      <item path="src/cmd_open_repo.cpp" ex="false" tool="1" flavor2="11">
+      <item path="src/cmd/cmd_open_repo.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
-          <incDir>
-            <pElem>/usr/local/include</pElem>
-            <pElem>build</pElem>
-          </incDir>
         </ccTool>
       </item>
-      <item path="src/cmd_proc.cpp" ex="false" tool="1" flavor2="11">
+      <item path="src/cmd/cmd_proc.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
-          <incDir>
-            <pElem>/usr/local/include</pElem>
-            <pElem>build</pElem>
-          </incDir>
         </ccTool>
       </item>
-      <item path="src/cmd_remove_tags.cpp" ex="false" tool="1" flavor2="11">
+      <item path="src/cmd/cmd_remove_tags.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
-          <incDir>
-            <pElem>/usr/local/include</pElem>
-            <pElem>build</pElem>
-          </incDir>
         </ccTool>
       </item>
-      <item path="src/cmd_repo.cpp" ex="false" tool="1" flavor2="11">
+      <item path="src/cmd/cmd_repo.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
-          <incDir>
-            <pElem>/usr/local/include</pElem>
-            <pElem>build</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/main.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
           <incDir>
+            <pElem>src/scanner</pElem>
+            <pElem>src/parser</pElem>
             <pElem>build</pElem>
           </incDir>
           <preprocessorList>
@@ -200,6 +203,9 @@
       <item path="src/processor.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
           <incDir>
+            <pElem>src/cmd</pElem>
+            <pElem>src/scanner</pElem>
+            <pElem>src/parser</pElem>
             <pElem>/usr/local/include</pElem>
             <pElem>build</pElem>
           </incDir>
@@ -208,6 +214,9 @@
       <item path="src/repo.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
           <incDir>
+            <pElem>src/cmd</pElem>
+            <pElem>src/scanner</pElem>
+            <pElem>src/parser</pElem>
             <pElem>/usr/local/include</pElem>
             <pElem>build</pElem>
           </incDir>
@@ -220,6 +229,9 @@
       <item path="src/service.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
           <incDir>
+            <pElem>src/cmd</pElem>
+            <pElem>src/scanner</pElem>
+            <pElem>src/parser</pElem>
             <pElem>/usr/local/include</pElem>
             <pElem>build</pElem>
           </incDir>

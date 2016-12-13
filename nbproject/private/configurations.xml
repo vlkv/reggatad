@@ -5,6 +5,20 @@
       <in>main.cpp</in>
     </df>
     <df root="src" name="1">
+      <df name="cmd">
+        <in>cmd.cpp</in>
+        <in>cmd.h</in>
+        <in>cmd_add_tags.cpp</in>
+        <in>cmd_add_tags.h</in>
+        <in>cmd_open_repo.cpp</in>
+        <in>cmd_open_repo.h</in>
+        <in>cmd_proc.cpp</in>
+        <in>cmd_proc.h</in>
+        <in>cmd_remove_tags.cpp</in>
+        <in>cmd_remove_tags.h</in>
+        <in>cmd_repo.cpp</in>
+        <in>cmd_repo.h</in>
+      </df>
       <df name="parser">
         <in>Parser.h</in>
         <in>Parser.ih</in>
@@ -21,18 +35,6 @@
       <in>application.h</in>
       <in>client_connection.cpp</in>
       <in>client_connection.h</in>
-      <in>cmd.cpp</in>
-      <in>cmd.h</in>
-      <in>cmd_add_tags.cpp</in>
-      <in>cmd_add_tags.h</in>
-      <in>cmd_open_repo.cpp</in>
-      <in>cmd_open_repo.h</in>
-      <in>cmd_proc.cpp</in>
-      <in>cmd_proc.h</in>
-      <in>cmd_remove_tags.cpp</in>
-      <in>cmd_remove_tags.h</in>
-      <in>cmd_repo.cpp</in>
-      <in>cmd_repo.h</in>
       <in>cmds.h</in>
       <in>json.hpp</in>
       <in>json_map.h</in>

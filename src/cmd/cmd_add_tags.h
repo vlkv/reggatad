@@ -1,6 +1,6 @@
 #pragma once
 #include "cmd_repo.h"
-#include "json_map.h"
+#include <json_map.h>
 
 struct CmdAddTags: public CmdRepo {
 	static const std::string NAME;
