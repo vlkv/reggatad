@@ -7,7 +7,7 @@ It uses
 - POCO DirectoryWatcher class (implemented with inotify on Linux)
 - https://github.com/nlohmann/json as JSON library
 - GTest as unit testing framework
-- boost for anything else
+- Boost for anything else
 
 ## API
 Every message has a **4 byte header** that contains length of the message. The message is a JSON string.
