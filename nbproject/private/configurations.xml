@@ -52,7 +52,7 @@
       <in>client.cpp</in>
       <in>client.h</in>
       <in>common.h</in>
-      <in>test.cpp</in>
+      <in>open_close_repo_test.cpp</in>
     </df>
   </logicalFolder>
   <projectmakefile>build/Makefile</projectmakefile>
@@ -80,8 +80,6 @@
         <gdb_interceptlist>
           <gdbinterceptoptions gdb_all="false" gdb_unhandled="true" gdb_unexpected="true"/>
         </gdb_interceptlist>
-        <gdb_signals>
-        </gdb_signals>
         <gdb_options>
           <DebugOptions>
           </DebugOptions>

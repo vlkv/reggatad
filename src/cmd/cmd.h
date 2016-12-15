@@ -8,7 +8,7 @@ namespace json = nlohmann;
 struct Cmd {
     std::string _id;
 
-    typedef std::function<void(const std::string&)> SendResult;
+    typedef std::function<void(const std::string&) > SendResult;
     SendResult _sendResult;
 
     Cmd(const std::string& id, SendResult sendResult);
@@ -21,6 +21,7 @@ struct Cmd {
     void sendResult(json::json& result);
 
 private:
+
     template<class T>
     static std::unique_ptr<T> fromJson2(const json::json& j, SendResult sendResult) {
         std::string cmd = j["cmd"];

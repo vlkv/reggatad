@@ -15,31 +15,32 @@
 #include <string>
 #include <iostream>
 
-
 class Service {
-	std::shared_ptr<Processor> _proc;
+    std::shared_ptr<Processor> _proc;
 
-	boost::asio::io_service _service; // TODO: rename to _io_service
-	boost::asio::ip::tcp::acceptor _acceptor;
+    boost::asio::io_service _service; // TODO: rename to _io_service
+    boost::asio::ip::tcp::acceptor _acceptor;
 
-	enum Status { starting, started, stopping, stopped };
-	Status _status;
+    enum Status {
+        starting, started, stopping, stopped
+    };
+    Status _status;
 
-	typedef std::map<int, std::unique_ptr<ClientConnection>> ClientConnections;
-	ClientConnections _clients;
+    typedef std::map<int, std::unique_ptr<ClientConnection>> ClientConnections;
+    ClientConnections _clients;
 
-	bool _pingClients;
+    bool _pingClients;
 
 public:
-	Service(int port, std::shared_ptr<Processor> proc, bool pingClients);
-	virtual ~Service() = default;
+    Service(int port, std::shared_ptr<Processor> proc, bool pingClients);
+    virtual ~Service() = default;
 
-	void startListenPort();
-	void stopAsync();
+    void startListenPort();
+    void stopAsync();
 
 private:
-	void serviceRunLoop();
-	void acceptClient();
-	void onAccept(ClientConnection* client, const boost::system::error_code& err);
-	void stop();
+    void serviceRunLoop();
+    void acceptClient();
+    void onAccept(ClientConnection* client, const boost::system::error_code& err);
+    void stop();
 };
