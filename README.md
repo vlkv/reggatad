@@ -1,13 +1,13 @@
 ## About
-Reggatad --- is a service (daemon process) that makes it possible to add/remove/modify `tags` to regular files and search by tags. Beside the `tags` there are `fields` (key-value pairs) that are also searchable. Reggatad also watches for changes in filesystem and updates tags database correspondingly. It stores all tags/fields information in database and provides an API (TCP sockets) for all operations with tags/fields. This API uses reggata_client (https://github.com/av-elier/reggata-scala-client). This project is a second try of https://github.com/vlkv/reggata. At the moment, reggatad is a **work in progress**.
+**Reggatad** --- is a service (daemon process) that makes it possible to add/remove/modify *tags* to regular files and search by those tags. Beside the tags there are *fields* (key-value pairs) that are also searchable. Reggatad also watches for changes in filesystem and updates tags database correspondingly. It stores all tags/fields information in database and provides an API (TCP sockets) for all operations with tags/fields. This API uses reggata_client (https://github.com/av-elier/reggata-scala-client). This project is a second try of https://github.com/vlkv/reggata. At the moment, reggatad is a **work in progress**.
 
 It uses
 - Flexc++ and Bisonc++ to implement query language parsing
-- RocksDB http://rocksdb.org/docs/getting-started.html an embedded database (key value store)
+- RocksDB http://rocksdb.org an embedded database (key value store)
 - POCO DirectoryWatcher class (implemented with inotify on Linux)
 - https://github.com/nlohmann/json as JSON library
-- gtest as unit testing framework
-- boost for anything else
+- GTest as unit testing framework
+- Boost for anything else
 
 ## API
 Every message has a **4 byte header** that contains length of the message. The message is a JSON string.
@@ -20,7 +20,7 @@ All commands are divided into two categories:
 
 ### open_repo(root_dir, db_dir, init_if_not_exists)
 Request:
-```json
+```javascript
 {
 	id: "1",
 	cmd: "open_repo",
@@ -32,13 +32,13 @@ Request:
 }
 ```
 Responses:
-```json
+```javascript
 {ok: true, id: "1"}
 {ok: false, msg: "Reason", id: "1"}
 ```	
 ### close_repo(root_dir)
 Request:
-```json
+```javascript
 {
 	id: "1",
 	cmd: "close_repo",
@@ -50,14 +50,14 @@ Request:
 
 ### get_repos_info()
 Request:
-```json
+```javascript
 {
 	id: "1",
 	cmd: "get_repos_info"
 }
 ```
 Response:
-```json
+```javascript
 {
 	ok: true,
 	repos: [
@@ -69,7 +69,7 @@ Response:
 	
 ### add_tags(file_path, tag1, tag2, ...)
 Request:
-```json
+```javascript
 {
 	id: "1",
 	cmd: "add_tags",
@@ -81,7 +81,7 @@ Request:
 ```
 ### remove_tags(file_path, tag1, tag2, ...)
 Request:
-```json
+```javascript
 {
 	id: "1",
 	cmd: "remove_tags",
@@ -91,7 +91,9 @@ Request:
 	}
 }
 ```
+
 TODO: do we need a request to remove all tags from file?..
+
 TODO: do we need a request to get info about "tag cloud"? It's a N most popular tags with their usage counts.
 
 ### add_fields(file_path, field1(key1,val1), field2(key2,val2), ...)
@@ -102,7 +104,7 @@ TODO: implement after tags
 
 ### get_file_info(file_path)
 Request:
-```json
+```javascript
 {
 	id: "1",
 	cmd: "get_file_info",
@@ -114,7 +116,7 @@ Request:
 
 ### search(path, query_string)
 Request:
-```json
+```javascript
 {
 	id: "1",
 	cmd: "search",
@@ -128,7 +130,7 @@ Request:
 ### cancel_cmd(cmd_id)
 Client is able to cancel any other long running command.
 Request:
-```json
+```javascript
 {
 	id: "2",
 	cmd: "cancel_cmd",
@@ -139,13 +141,13 @@ Request:
 ```
 
 ## File watch actions
-### file_created - do nothing
-### file_removed - remove file tags and fields from DB
-### file_moved (renamed) - update file path
-### file_modified - do nothing
-### dir_created - create a filewatch for it
-### dir_removed - remove all files tags and fields from DB recursively. Remove filewathes from dir and subdirs
-### dir_moved (renamed) - update files paths for all files recursively. Remove/Create a filewatcher for the dir
+* file_created - do nothing
+* file_removed - remove file tags and fields from DB
+* file_moved (renamed) - update file path
+* file_modified - do nothing
+* dir_created - create a filewatch for it
+* dir_removed - remove all files tags and fields from DB recursively. Remove filewathes from dir and subdirs
+* dir_moved (renamed) - update files paths for all files recursively. Remove/Create a filewatcher for the dir
 
 ## Query Language
 Fields are just tags with values. Values should be typed. 
@@ -188,5 +190,3 @@ The old grammar of reggata is https://github.com/vlkv/reggata/wiki/Query-languag
 * Reggatad should have some recovery request in API. For example, by some reason reggatad wasn't running. And during that time user moved (or anything) files withing repository... This recovery could be a simple one. For example we try to find files in different location withing the repo by name...
 * Maybe we should also provide add/remove tags/fields to all files in subdir recursively. Or this would be a task for reggata_client?..
 
-## Useful links
-* https://github.com/eliben/code-for-blog/blob/master/2011/asio_protobuf_sample/db_server.cpp
