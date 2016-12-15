@@ -17,5 +17,7 @@ std::string CmdAddTags::path() const {
 
 json::json CmdAddTags::execute() {
     // TODO
-    return json::json{};
+    return json::json{
+        {"TODO", true}
+    };
 }

@@ -29,10 +29,36 @@ Repo::Repo(const std::string& rootPath, const std::string& dbPath, bool initIfNo
         createDirWatcherIfNeeded(entry.path().string());
     }
     createDirWatcherIfNeeded(rootPath);
+    
+    start();
 }
 
 void Repo::start() {
-    // TODO: start a thread that reads cmds from _queue and executes them...
+    _thread = boost::thread(&Repo::run, this);
+}
+
+void Repo::run() {
+    BOOST_LOG_TRIVIAL(info) << "Repo started " << _rootPath;
+    while (!_thread.interruption_requested()) {
+        try {
+            auto cmd = _queue.dequeue();
+            try {
+                auto result = cmd->execute();
+                cmd->sendResult(result);
+            } catch (const std::exception& ex) {
+                json::json result = {
+                    {"ok", false},
+                    {"reason", ex.what()}
+                };
+                cmd->sendResult(result);
+            }
+        } catch (const std::exception& ex) {
+            BOOST_LOG_TRIVIAL(error) << "std::exception " << ex.what();
+        } catch (...) {
+            BOOST_LOG_TRIVIAL(error) << "Unexpected exception";
+        }
+    }
+    BOOST_LOG_TRIVIAL(info) << "Repo:run exited " << _rootPath;
 }
 
 std::string Repo::rootPath() const {

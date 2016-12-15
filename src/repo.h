@@ -16,14 +16,19 @@ class Repo {
     std::map<const std::string, std::unique_ptr<Poco::DirectoryWatcher>> _watchers;
 
     SafeQueue<std::unique_ptr<CmdRepo>> _queue;
+    boost::thread _thread;
+    
 public:
     Repo(const std::string& rootPath, const std::string& dbPath, bool initIfNotExists);
     virtual ~Repo() = default;
-    void start();
+    
     std::string rootPath() const;
     void enqueueCmd(std::unique_ptr<CmdRepo> cmd);
 
 private:
+    void run();
+    void start();
+    
     void createDirWatcherIfNeeded(const std::string& dirPath);
     void createDirWatcher(const std::string& dirPath);
     void destroyDirWatcherIfExists(const std::string& dirPath);

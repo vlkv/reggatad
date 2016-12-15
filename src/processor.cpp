@@ -7,7 +7,6 @@ Processor::Processor() {
 
 void Processor::start() {
     _thread = boost::thread(&Processor::run, this);
-    // ATTN: after start is called, it's not thread-safe to call openRepo! Do not call it. Instead, enqueue a command open_repo
 }
 
 void Processor::stop() {
@@ -20,12 +19,11 @@ void Processor::stop() {
 
 void Processor::run() {
     BOOST_LOG_TRIVIAL(info) << "Processor started";
-    while (!_stopCalled) {
+    while (!_stopCalled && !_thread.interruption_requested()) {
         try {
             auto cmd = _queue.dequeue();
             try {
                 auto result = cmd->execute();
-                //throw std::exception();
                 cmd->sendResult(result);
             } catch (const std::exception& ex) {
                 json::json result = {

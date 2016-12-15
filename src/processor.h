@@ -27,8 +27,9 @@ public:
 
 public:
     void openRepo(const std::string& repoRootDir, const std::string& repoDbDir, bool initIfNotExists);
+
 private:
-    std::shared_ptr<Repo> findRepo(const std::string& path);
-    void enqueueCmd(std::unique_ptr<CmdProc> cmd);
     void run();
+    void enqueueCmd(std::unique_ptr<CmdProc> cmd);
+    std::shared_ptr<Repo> findRepo(const std::string& path);
 };
