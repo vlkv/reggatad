@@ -12,7 +12,6 @@ class SafeQueue {
     std::condition_variable c;
 
 public:
-
     SafeQueue() : q(), m(), c() {
     }
     virtual ~SafeQueue() = default;

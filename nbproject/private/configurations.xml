@@ -49,8 +49,10 @@
       <in>service.h</in>
     </df>
     <df root="test" name="2">
+      <in>add_tags_test.cpp</in>
       <in>client.cpp</in>
       <in>client.h</in>
+      <in>common.cpp</in>
       <in>common.h</in>
       <in>open_close_repo_test.cpp</in>
     </df>
