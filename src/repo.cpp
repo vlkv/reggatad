@@ -19,7 +19,7 @@ Repo::Repo(const std::string& rootPath, const std::string& dbPath, bool initIfNo
     rocksdb::Status status = rocksdb::DB::Open(options, _dbPath, &db);
     _db.reset(db);
     if (!status.ok()) {
-        throw ReggataException(std::string("Could not open rocksdb database at ") + _dbPath);
+        throw ReggataException(std::string("Could not open rocksdb database ") + _dbPath + ", reason: " + status.ToString());
     }
 
     for (auto&& entry : boost::filesystem::recursive_directory_iterator(_rootPath)) {

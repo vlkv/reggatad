@@ -1,5 +1,11 @@
 ## About
-**Reggatad** --- is a service (daemon process) that makes it possible to add/remove/modify *tags* to regular files and search by those tags. Beside the tags there are *fields* (key-value pairs) that are also searchable. Reggatad also watches for changes in filesystem and updates tags database correspondingly. It stores all tags/fields information in database and provides an API (TCP sockets) for all operations with tags/fields. This API uses reggata_client (https://github.com/av-elier/reggata-scala-client). This project is a second try of https://github.com/vlkv/reggata. At the moment, reggatad is a **work in progress**.
+**Reggatad** --- is a service (daemon process) that makes it possible to add/remove/modify 
+*tags* to regular files and search by those tags. Beside the tags there are *fields* 
+(key-value pairs) that are also searchable. Reggatad also watches for changes in filesystem 
+and updates tags database correspondingly. It stores all tags/fields information in database 
+and provides an API (TCP sockets) for all operations with tags/fields. This API uses reggata_client 
+(https://github.com/av-elier/reggata-scala-client). This project is a second try of 
+https://github.com/vlkv/reggata. At the moment, reggatad is a **work in progress**.
 
 It uses
 - Flexc++ and Bisonc++ to implement query language parsing
@@ -190,3 +196,37 @@ The old grammar of reggata is https://github.com/vlkv/reggata/wiki/Query-languag
 * Reggatad should have some recovery request in API. For example, by some reason reggatad wasn't running. And during that time user moved (or anything) files withing repository... This recovery could be a simple one. For example we try to find files in different location withing the repo by name...
 * Maybe we should also provide add/remove tags/fields to all files in subdir recursively. Or this would be a task for reggata_client?..
 
+## RocksDB Database Schema
+
+Example of data in form of (column_family, key, value).
+
+(counter, file_id, 1) // This is a monotonically increasing counter for files ids, atomically increment-and-get.
+
+(file_path, /a/b, 1) // This is like an index on "path" property
+(file, 1:path, /a/b)
+(file, 1:size, 1234)
+(file, 1:prop, value)
+
+(file_path, /a/c, 2)
+(file, 2:path, /a/c)
+
+(file_path, /a/d, 3)
+(file, 3:path, /a/d)
+
+(file_tag, 1:Tag1, "")
+(tag_file, Tag1:1, "")
+
+(file_tag, 1:Tag2, "")
+(tag_file, Tag2:1, "")
+
+(file_tag, 2:Tag1, "")
+(tag_file, Tag1:2, "")
+
+(file_field, 1:Field1, "10")
+(field_file, Field1:1, "")
+
+(file_field, 2:Field1, "20")
+(field_file, Field1:2, "")
+
+(file_field, 2:Field2, "21")
+(field_file, Field2:2, "")
