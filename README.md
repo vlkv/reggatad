@@ -195,11 +195,19 @@ The old grammar of reggata is https://github.com/vlkv/reggata/wiki/Query-languag
 * Repository should have a list of required fileds. Every file with tags should have these fields set. E.g. 'rating'.
 * Reggatad should have some recovery request in API. For example, by some reason reggatad wasn't running. And during that time user moved (or anything) files withing repository... This recovery could be a simple one. For example we try to find files in different location withing the repo by name...
 * Maybe we should also provide add/remove tags/fields to all files in subdir recursively. Or this would be a task for reggata_client?..
+* Alternatives for RocksDB are
+  * http://www.sqlite.org/
+  * https://upscaledb.com/
+  * http://www.wiredtiger.com/
+  * http://unqlite.org/
+  * more http://embedded-databases.com/
 
 ## RocksDB Database Schema
 
-Example of data in form of (column_family, key, value).
+API is here https://github.com/facebook/rocksdb/blob/v4.9/include/rocksdb/db.h
 
+Example of data in form of (column_family, key, value).
+```
 (counter, file_id, 1) // This is a monotonically increasing counter for files ids, atomically increment-and-get.
 
 (file_path, /a/b, 1) // This is like an index on "path" property
@@ -230,3 +238,4 @@ Example of data in form of (column_family, key, value).
 
 (file_field, 2:Field2, "21")
 (field_file, Field2:2, "")
+```
