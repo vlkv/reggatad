@@ -54,6 +54,7 @@
       <in>client.h</in>
       <in>common.cpp</in>
       <in>common.h</in>
+      <in>first_delim_prefix_transform.h</in>
       <in>open_close_repo_test.cpp</in>
       <in>rocksdb_merge_operator.h</in>
       <in>rocksdb_test.cpp</in>
@@ -84,6 +85,8 @@
         <gdb_interceptlist>
           <gdbinterceptoptions gdb_all="false" gdb_unhandled="true" gdb_unexpected="true"/>
         </gdb_interceptlist>
+        <gdb_signals>
+        </gdb_signals>
         <gdb_options>
           <DebugOptions>
           </DebugOptions>
