@@ -41,7 +41,9 @@ Responses:
 ```javascript
 {ok: true, id: "1"}
 {ok: false, msg: "Reason", id: "1"}
-```	
+```
+TODO: Instead of boolean *ok* field, we'd use numeric *code* field (just like return_code in HTTP).
+
 ### close_repo(root_dir)
 Request:
 ```javascript
@@ -208,7 +210,9 @@ API is here https://github.com/facebook/rocksdb/blob/v4.9/include/rocksdb/db.h
 
 Example of data in form of (column_family, key, value).
 ```
-(counter, file_id, 1) // This is a monotonically increasing counter for files ids, atomically increment-and-get.
+(counter, file_path_id, 1) // This is a source for file_path ids. 
+// A monotonically increasing counter for files ids, atomically increment-and-get. 
+// It's implemented with MergeOperator in rocksDB.
 
 (file_path, /a/b, 1) // This is like an index on "path" property
 (file, 1:path, /a/b)
@@ -239,3 +243,8 @@ Example of data in form of (column_family, key, value).
 (file_field, 2:Field2, "21")
 (field_file, Field2:2, "")
 ```
+TODO: Find out really good delimiter instead of `:`. Such a delimiter should never be met in tag/field name. 
+We may escape the delimiter in tag/field name before put in DB.
+
+When a tag is attached to a file, a pair of key-values (e.g. file_tag and tag_file) should be added atomically with
+WriteBatch operation in rocksDB.
