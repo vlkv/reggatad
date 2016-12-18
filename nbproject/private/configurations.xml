@@ -55,6 +55,8 @@
       <in>common.cpp</in>
       <in>common.h</in>
       <in>open_close_repo_test.cpp</in>
+      <in>rocksdb_merge_operator.h</in>
+      <in>rocksdb_test.cpp</in>
     </df>
   </logicalFolder>
   <projectmakefile>build/Makefile</projectmakefile>
@@ -94,8 +96,10 @@
       <runprofile version="9">
         <runcommandpicklist>
           <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" --gtest_list_tests</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" --gtest_filter=RocksDBTest.*</runcommandpicklistitem>
         </runcommandpicklist>
-        <runcommand>"${OUTPUT_PATH}"</runcommand>
+        <runcommand>"${OUTPUT_PATH}" --gtest_filter=RocksDBTest.*</runcommand>
         <rundir>build</rundir>
         <buildfirst>false</buildfirst>
         <terminal-type>0</terminal-type>

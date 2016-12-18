@@ -12,8 +12,9 @@
         <group>
             <file>file:/home/vitvlkv/dev/reggatad/test/open_close_repo_test.cpp</file>
             <file>file:/home/vitvlkv/dev/reggatad/test/add_tags_test.cpp</file>
+            <file>file:/home/vitvlkv/dev/reggatad/src/repo.h</file>
             <file>file:/home/vitvlkv/dev/reggatad/src/repo.cpp</file>
-            <file>file:/home/vitvlkv/dev/reggatad/README.md</file>
+            <file>file:/home/vitvlkv/dev/reggatad/test/rocksdb_test.cpp</file>
         </group>
     </open-files>
 </project-private>
