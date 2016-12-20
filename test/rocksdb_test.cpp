@@ -1,6 +1,6 @@
 #include "common.h"
-#include "rocksdb_merge_operator.h"
-#include "first_delim_prefix_transform.h"
+#include <rocksdb_merge_operator.h>
+#include <first_delim_prefix_transform.h>
 #include <reggata_exceptions.h>
 
 #include <rocksdb/db.h>

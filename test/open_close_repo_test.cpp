@@ -30,6 +30,10 @@ public:
     }
 
     void startReggataApp() {
+        // init the rocksdb database of the repo1
+        auto db = std::unique_ptr<Database>(new Database("./test_data/repo1/.reggata", true));
+        db.reset();
+        
         _app->start();
     }
 

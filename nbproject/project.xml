@@ -13,6 +13,9 @@
                 <sourceRootElem>src</sourceRootElem>
                 <sourceRootElem>test</sourceRootElem>
                 <sourceRootElem>main</sourceRootElem>
+                <sourceRootElem>src</sourceRootElem>
+                <sourceRootElem>test</sourceRootElem>
+                <sourceRootElem>main</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>
