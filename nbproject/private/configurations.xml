@@ -36,6 +36,8 @@
       <in>client_connection.cpp</in>
       <in>client_connection.h</in>
       <in>cmds.h</in>
+      <in>database.cpp</in>
+      <in>database.h</in>
       <in>json.hpp</in>
       <in>json_map.h</in>
       <in>main.cpp</in>
@@ -49,6 +51,7 @@
       <in>service.h</in>
     </df>
     <df root="test" name="2">
+      <in>README.md</in>
       <in>add_tags_test.cpp</in>
       <in>client.cpp</in>
       <in>client.h</in>
@@ -85,8 +88,6 @@
         <gdb_interceptlist>
           <gdbinterceptoptions gdb_all="false" gdb_unhandled="true" gdb_unexpected="true"/>
         </gdb_interceptlist>
-        <gdb_signals>
-        </gdb_signals>
         <gdb_options>
           <DebugOptions>
           </DebugOptions>
@@ -101,8 +102,9 @@
           <runcommandpicklistitem>"${OUTPUT_PATH}"</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" --gtest_list_tests</runcommandpicklistitem>
           <runcommandpicklistitem>"${OUTPUT_PATH}" --gtest_filter=RocksDBTest.*</runcommandpicklistitem>
+          <runcommandpicklistitem>"${OUTPUT_PATH}" </runcommandpicklistitem>
         </runcommandpicklist>
-        <runcommand>"${OUTPUT_PATH}" --gtest_filter=RocksDBTest.*</runcommand>
+        <runcommand>"${OUTPUT_PATH}"</runcommand>
         <rundir>build</rundir>
         <buildfirst>false</buildfirst>
         <terminal-type>0</terminal-type>

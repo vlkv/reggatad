@@ -4,6 +4,7 @@
 #include <reggata_exceptions.h>
 
 #include <rocksdb/db.h>
+#include <rocksdb/slice_transform.h>
 #include <json.hpp>
 namespace json = nlohmann;
 
@@ -19,7 +20,7 @@ namespace fs = boost::filesystem;
 #include <memory>
 #include <iostream>
 #include <sstream>
-#include <rocksdb/slice_transform.h>
+
 
 class RocksDBTest : public testing::Test {
 public:

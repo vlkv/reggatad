@@ -21,19 +21,18 @@
       </df>
       <in>application.cpp</in>
       <in>client_connection.cpp</in>
+      <in>database.cpp</in>
       <in>main.cpp</in>
       <in>processor.cpp</in>
       <in>repo.cpp</in>
       <in>service.cpp</in>
     </df>
     <df root="test" name="2">
+      <in>README.md</in>
       <in>add_tags_test.cpp</in>
       <in>client.cpp</in>
       <in>common.cpp</in>
-      <in>common.h</in>
-      <in>first_delim_prefix_transform.h</in>
       <in>open_close_repo_test.cpp</in>
-      <in>rocksdb_merge_operator.h</in>
       <in>rocksdb_test.cpp</in>
     </df>
     <logicalFolder name="ExternalFiles"
@@ -190,6 +189,17 @@
         <ccTool flags="0">
         </ccTool>
       </item>
+      <item path="src/database.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>src/cmd</pElem>
+            <pElem>src/scanner</pElem>
+            <pElem>src/parser</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build</pElem>
+          </incDir>
+        </ccTool>
+      </item>
       <item path="src/main.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
           <incDir>
@@ -243,6 +253,8 @@
           </incDir>
         </ccTool>
       </item>
+      <item path="test/README.md" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="test/add_tags_test.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
@@ -251,22 +263,13 @@
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="test/common.cpp" ex="false" tool="1" flavor2="0">
-      </item>
-      <item path="test/common.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="test/first_delim_prefix_transform.h"
-            ex="false"
-            tool="3"
-            flavor2="0">
+      <item path="test/common.cpp" ex="false" tool="1" flavor2="4">
       </item>
       <item path="test/open_close_repo_test.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="test/rocksdb_merge_operator.h" ex="false" tool="3" flavor2="0">
-      </item>
-      <item path="test/rocksdb_test.cpp" ex="false" tool="1" flavor2="0">
+      <item path="test/rocksdb_test.cpp" ex="false" tool="1" flavor2="4">
       </item>
     </conf>
   </confs>

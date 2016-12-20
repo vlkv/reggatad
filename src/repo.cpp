@@ -4,22 +4,13 @@
 #include <iostream>
 
 Repo::Repo(const std::string& rootPath, const std::string& dbPath, bool initIfNotExists = false)
-: _rootPath(rootPath), _dbPath(dbPath) {
+: _rootPath(rootPath), _dbPath(dbPath), _db(new Database(dbPath, initIfNotExists)) {
 
     if (initIfNotExists && !boost::filesystem::exists(rootPath)) {
         auto ok = boost::filesystem::create_directories(rootPath);
         if (!ok) {
             throw ReggataException(std::string("Could not create directory ") + rootPath);
         }
-    }
-
-    rocksdb::Options options;
-    options.create_if_missing = initIfNotExists;
-    rocksdb::DB* db;
-    rocksdb::Status status = rocksdb::DB::Open(options, _dbPath, &db);
-    _db.reset(db);
-    if (!status.ok()) {
-        throw ReggataException(std::string("Could not open rocksdb database ") + _dbPath + ", reason: " + status.ToString());
     }
 
     for (auto&& entry : boost::filesystem::recursive_directory_iterator(_rootPath)) {
