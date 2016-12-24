@@ -17,22 +17,26 @@ _dbPath(dbPath) {
     opts.create_missing_column_families = true;
     auto families = columnFamilies();
     rocksdb::DB* db;
-    auto status = rocksdb::DB::Open(opts, _dbPath, families, &_handles, &db);
+    std::vector<rocksdb::ColumnFamilyHandle*> handles;
+    auto status = rocksdb::DB::Open(opts, _dbPath, families, &handles, &db);
     _db.reset(db);
     if (!status.ok()) {
         throw ReggataException(std::string("Could not open rocksdb database ") + _dbPath + ", reason: " + status.ToString());
+    }
+    for (auto h : handles) {
+        _handles[h->GetName()] = h;
     }
 }
 
 std::vector<rocksdb::ColumnFamilyDescriptor> Database::columnFamilies() {
     std::vector<rocksdb::ColumnFamilyDescriptor> result;
-    
-    result.push_back(rocksdb::ColumnFamilyDescriptor("default", rocksdb::ColumnFamilyOptions())); // TODO: maybe remove?..
-    
+
+    //result.push_back(rocksdb::ColumnFamilyDescriptor("default", rocksdb::ColumnFamilyOptions())); // TODO: maybe remove?..
+
     rocksdb::ColumnFamilyOptions opts1;
     opts1.merge_operator = std::shared_ptr<rocksdb::MergeOperator>(new UInt64AddOperator());
     result.push_back(rocksdb::ColumnFamilyDescriptor("counter", opts1));
-    
+
     rocksdb::ColumnFamilyOptions opts2;
     opts2.prefix_extractor = std::shared_ptr<rocksdb::SliceTransform>(new FirstDelimPrefixTransform(":"));
     result.push_back(rocksdb::ColumnFamilyDescriptor("file_path", opts2));

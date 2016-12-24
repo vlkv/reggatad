@@ -1,9 +1,8 @@
-#include "application.h"
 #include "client.h"
 #include "common.h"
+#include <application.h>
 #include <json.hpp>
 namespace json = nlohmann;
-
 #include <gtest/gtest.h>
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
@@ -12,85 +11,54 @@ namespace json = nlohmann;
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/path.hpp>
 namespace fs = boost::filesystem;
-
 #include <memory>
 #include <iostream>
 #include <sstream>
 
 class OpenCloseRepoTest : public testing::Test {
 public:
-    const int PORT = 9100;
+    fs::path _workDir;
+    const int _port = 9100;
     std::unique_ptr<Application> _app;
     boost::thread _t;
 
     OpenCloseRepoTest() :
-    _app(new Application(PORT, false)),
+    _workDir("./test_data/open_close_repo_test"),
+    _app(new Application(_port, false)),
     _t(&OpenCloseRepoTest::startReggataApp, this) {
         boost::this_thread::sleep(boost::posix_time::seconds(1));
     }
 
     void startReggataApp() {
-        // init the rocksdb database of the repo1
-        auto db = std::unique_ptr<Database>(new Database("./test_data/repo1/.reggata", true));
-        db.reset();
-        
         _app->start();
     }
 
     void SetUp() {
+        fs::remove_all(_workDir);
     }
 
     void TearDown() {
+        _app->stop();
+        _t.join();
+        fs::remove_all(_workDir);
     }
 
     ~OpenCloseRepoTest() {
         // cleanup any pending stuff, but no exceptions allowed
-        try {
-            _app->stop();
-            _t.join();
-        } catch (const std::exception& ex) {
-            std::cout << "~TestFixture: std::exception, " << ex.what();
-        } catch (...) {
-            std::cout << "~TestFixture: unknown exception";
-        }
     }
 };
 
-TEST_F(OpenCloseRepoTest, StartStop) {
-    std::cout << "do nothing" << std::endl;
-}
-
-TEST_F(OpenCloseRepoTest, OpenRepo1) {
-    fs::path REPO_ROOT("./test_data/repo1");
-    Client c(PORT);
+TEST_F(OpenCloseRepoTest, InitRepoThenCloseThenOpen) {
+    fs::path repoDir(_workDir / "repo");
+    ASSERT_FALSE(fs::exists(repoDir));
+    Client c(_port);
     json::json cmd = {
-        {"id", "123"},
+        {"id", "42"},
         {"cmd", "open_repo"},
         {"args",
             {
-                {"root_dir", REPO_ROOT.c_str()},
-                {"db_dir", (REPO_ROOT / ".reggata").c_str()}
-            }}
-    };
-    auto err = c.send(cmd.dump());
-    ASSERT_EQ(nullptr, err) << "sendMsg failed, error: " << err;
-    auto msg = c.recv();
-    auto obj = json::json::parse(msg);
-    ASSERT_EQ("123", obj["id"]);
-    ASSERT_EQ(true, obj["ok"]);
-}
-
-TEST_F(OpenCloseRepoTest, InitAndOpenNonExistentRepo) {
-    fs::path REPO_ROOT("./test_data/non_existent_repo");
-    fs::remove_all(REPO_ROOT);
-    Client c(PORT);
-    json::json cmd = {
-        {"id", "123"},
-        {"cmd", "open_repo"},
-        {"args",
-            {
-                {"root_dir", REPO_ROOT.c_str()},
-                {"db_dir", (REPO_ROOT / ".reggata").c_str()},
+                {"root_dir", repoDir.c_str()},
+                {"db_dir", (repoDir / ".reggata").c_str()},
                 {"init_if_not_exists", true}
             }}
     };
@@ -98,31 +66,40 @@ TEST_F(OpenCloseRepoTest, InitAndOpenNonExistentRepo) {
     ASSERT_EQ(nullptr, err) << "sendMsg failed, error: " << err;
     auto msg = c.recv();
     auto obj = json::json::parse(msg);
-    ASSERT_EQ("123", obj["id"]);
+    ASSERT_EQ("42", obj["id"]);
     ASSERT_EQ(true, obj["ok"]);
+
+    // TODO: close this repo
+
+    // TODO: open this repo without flag init_if_not_exists
 }
 
-TEST_F(OpenCloseRepoTest, OpenNonExistentRepoAndFail) {
-    Client c(PORT);
-    {
-        fs::path REPO_ROOT("./test_data/non_existent_repo");
-        fs::remove_all(REPO_ROOT);
-        json::json cmd = {
-            {"id", "123"},
-            {"cmd", "open_repo"},
-            {"args",
-                {
-                    {"root_dir", REPO_ROOT.c_str()},
-                    {"db_dir", (REPO_ROOT / ".reggata").c_str()}
-                }}
-        };
-        auto err = c.send(cmd.dump());
-        ASSERT_EQ(nullptr, err) << "sendMsg failed, error: " << err;
-        auto msg = c.recv();
-        auto obj = json::json::parse(msg);
-        ASSERT_EQ("123", obj["id"]);
-        ASSERT_EQ(false, obj["ok"]);
-        const std::string reason = obj["reason"];
-        ASSERT_TRUE(reason.find("Could not open rocksdb database") == 0);
-    }
+TEST_F(OpenCloseRepoTest, TryOpenNonExistentRepo) {
+    fs::path repoDir(_workDir / "non_existent_repo");
+    ASSERT_FALSE(fs::exists(repoDir));
+    json::json cmd = {
+        {"id", "123"},
+        {"cmd", "open_repo"},
+        {"args",
+            {
+                {"root_dir", repoDir.c_str()},
+                {"db_dir", (repoDir / ".reggata").c_str()}
+            }}
+    };
+    Client c(_port);
+    auto err = c.send(cmd.dump());
+    ASSERT_EQ(nullptr, err) << "sendMsg failed, error: " << err;
+    auto msg = c.recv();
+    auto obj = json::json::parse(msg);
+    ASSERT_EQ("123", obj["id"]);
+    ASSERT_EQ(false, obj["ok"]);
+    const std::string reason = obj["reason"];
+    ASSERT_TRUE(reason.find("Could not open rocksdb database") == 0);
+
 }
+
+/* TODO: Add tests:
+ * TryOpenRepoTwice
+ * TryInitRepoInSubdirOfOpenedRepo
+ * TryOpenNotARepo - when root_dir exists but it's not a reggata repo
+ */
