@@ -93,8 +93,7 @@ TEST_F(OpenCloseRepoTest, TryOpenNonExistentRepo) {
     auto obj = json::json::parse(msg);
     ASSERT_EQ("123", obj["id"]);
     ASSERT_EQ(false, obj["ok"]);
-    const std::string reason = obj["reason"];
-    ASSERT_TRUE(reason.find("Could not open rocksdb database") == 0);
+    ASSERT_EQ("Database directory ./test_data/open_close_repo_test/non_existent_repo/.reggata doesn't exist", obj["reason"]);
 
 }
 

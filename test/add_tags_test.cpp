@@ -86,3 +86,24 @@ TEST_F(AddTagsTest, Add3Tags) {
 
     // TODO: send get_file_info and check the tags have been added
 }
+
+TEST_F(AddTagsTest, TryAddTagsToNonexistentFile) {
+    Client c(_port);
+    json::json cmd2 = {
+        {"id", "124"},
+        {"cmd", "add_tags"},
+        {"args",
+            {
+                {"file", (_workDir / "nonexistent_file").c_str()},
+                {"tags",
+                    {"tag1", "tag2", "tag3"}}
+            }}
+    };
+    auto err2 = c.send(cmd2.dump());
+    ASSERT_EQ(nullptr, err2) << "sendMsg failed, error: " << err2;
+    auto msg2 = c.recv();
+    auto obj2 = json::json::parse(msg2);
+    ASSERT_EQ("124", obj2["id"]);
+    ASSERT_EQ(false, obj2["ok"]);
+    ASSERT_EQ("Could not add tags, reason: file \"./test_data/add_tags_test/nonexistent_file\" does not exists", obj2["reason"]);
+}

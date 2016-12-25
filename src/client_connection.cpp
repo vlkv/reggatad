@@ -23,7 +23,12 @@ void ClientConnection::stop() {
 }
 
 void ClientConnection::onPingTimer(const boost::system::error_code& err) {
-    BOOST_LOG_TRIVIAL(debug) << "onPingTimer, err=" << err;
+    if (err) {
+        BOOST_LOG_TRIVIAL(error) << "onPingTimer error=" << err << " " << err.message();
+        startPingTimer();
+        return;
+    }
+    BOOST_LOG_TRIVIAL(debug) << "onPingTimer";
     json::json pingMsg{
         {"cmd", "ping"}};
     doWrite(pingMsg.dump(), boost::bind(&ClientConnection::onPingSent, this, _1, _2));
@@ -54,9 +59,10 @@ void ClientConnection::doReadHeader() {
 
 void ClientConnection::onReadHeader(const boost::system::error_code& err) {
     if (err) {
-        BOOST_LOG_TRIVIAL(debug) << "onReadHeader error=" << err;
-        doReadHeader();
-        return;
+        std::ostringstream oss;
+        oss << "onReadHeader error=" << err << " " << err.message();
+        BOOST_LOG_TRIVIAL(error) << oss.str();
+        throw ConnException(oss.str(), _id);
     }
     auto bodySize = decodeHeader(_read_buffer);
     BOOST_LOG_TRIVIAL(debug) << "body size is " << bodySize;
@@ -86,7 +92,7 @@ void ClientConnection::doReadBody(int bodySize) {
 
 void ClientConnection::onReadBody(const boost::system::error_code& err) {
     if (err) {
-        BOOST_LOG_TRIVIAL(debug) << "onReadBody error=" << err;
+        BOOST_LOG_TRIVIAL(error) << "onReadBody error=" << err << " " << err.message();
         doReadHeader();
         return;
     }
@@ -111,7 +117,7 @@ void ClientConnection::handleCmdResult(const std::string& result) {
 void ClientConnection::onCmdResultWritten(const boost::system::error_code& err, size_t bytes) {
     if (err) {
         std::ostringstream oss;
-        oss << "Could not send cmd result, error: " << err << " client id=" << _id;
+        oss << "Could not send cmd result, error: " << err << " " << err.message() << " client id=" << _id;
         throw ConnException(oss.str(), _id);
     }
 }
@@ -128,7 +134,7 @@ void ClientConnection::doWrite(const std::string &msg, OnWriteHandler onWriteHan
 void ClientConnection::onPingSent(const boost::system::error_code& err, size_t bytes) {
     if (err) {
         std::ostringstream oss;
-        oss << "Could not send ping, error: " << err << " client id=" << _id;
+        oss << "Could not send ping, error: " << err << " " << err.message() << " client id=" << _id;
         throw ConnException(oss.str(), _id);
     }
     startPingTimer();

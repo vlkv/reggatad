@@ -6,6 +6,7 @@
 #include <Poco/Delegate.h>
 #include <boost/log/trivial.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/uuid/random_generator.hpp>
 #include <string>
 #include <map>
 #include <memory>
@@ -18,6 +19,8 @@ class Repo {
 
     SafeQueue<std::unique_ptr<CmdRepo>> _queue;
     boost::thread _thread;
+    
+    boost::uuids::random_generator _uuidGenerator;
     
 public:
     Repo(const std::string& rootPath, const std::string& dbPath, bool initIfNotExists);

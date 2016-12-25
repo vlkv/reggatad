@@ -14,7 +14,7 @@ public:
     rocksdb::DB* getDB() const;
     rocksdb::ColumnFamilyHandle* getColumnFamilyHandle(const std::string& columnFamilyName) const;
     
-    static const std::string CF_COUNTER;
+    static const std::string CF_DEFAULT;
     static const std::string CF_FILE_PATH;
     static const std::string CF_FILE;
     static const std::string CF_FILE_TAG;

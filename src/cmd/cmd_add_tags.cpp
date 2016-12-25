@@ -19,5 +19,5 @@ std::string CmdAddTags::path() const {
 json::json CmdAddTags::execute() {
     _repo->addTags(_file, _tags);
     return json::json{
-        {"TODO", true}};
+        {"ok", true}};
 }

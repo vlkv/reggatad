@@ -1,6 +1,11 @@
 #include "repo.h"
 #include "reggata_exceptions.h"
 #include <boost/filesystem.hpp>
+#include <boost/uuid/uuid.hpp>
+#include <boost/uuid/random_generator.hpp>
+#include <boost/uuid/uuid_io.hpp>
+#include <boost/lexical_cast.hpp>
+#include <boost/format.hpp>
 #include <iostream>
 
 Repo::Repo(const std::string& rootPath, const std::string& dbPath, bool initIfNotExists = false)
@@ -61,14 +66,17 @@ void Repo::enqueueCmd(std::unique_ptr<CmdRepo> cmd) {
 }
 
 void Repo::addTags(const boost::filesystem::path& fileAbs, const std::vector<std::string>& tags) {
+    if (!boost::filesystem::exists(fileAbs)) {
+        throw ReggataException(boost::str(boost::format("Could not add tags, reason: file %1% does not exists")
+                % fileAbs));
+    }
     boost::system::error_code ec;
     auto fileRel = boost::filesystem::relative(fileAbs, _rootPath, ec);
     if (ec.value() != boost::system::errc::success) {
-        throw new ReggataException(ec.message());
+        throw ReggataException(ec.message());
     }
 
     auto fileId = getOrCreateFileId(fileRel);
-
     for (auto tag : tags) {
         addTag(fileId, tag);
     }
@@ -89,20 +97,63 @@ bool Repo::getFileId(const boost::filesystem::path& fileRel, std::string* fileId
     auto cfh = _db->getColumnFamilyHandle(Database::CF_FILE_PATH);
     auto s = db->Get(rocksdb::ReadOptions(), cfh, fileRel.string(), fileId);
     if (!s.ok() && !s.IsNotFound()) {
-        throw new ReggataException(std::string("Failed to get file_id of ") + fileRel.string() + ", reason " + s.ToString());
+        throw ReggataException(std::string("Failed to get file_id of ") + fileRel.string() + ", reason " + s.ToString());
     }
     return !s.IsNotFound();
 }
 
 std::string Repo::createFileId(const boost::filesystem::path& fileRel) {
-    // TODO create new file_id:
-    // 1) obtain next file_id from counters
+    // Algorithm:
+    // 1) generate next file_id
     // 2) Put three values: (file_path, /a/c, 2), (file, 2:path, /a/c), (file, 2:size, 234234)
-    return std::string();
+    std::string fileId;
+    auto db = _db->getDB();
+    auto cfhFile = _db->getColumnFamilyHandle(Database::CF_FILE);
+    bool needToRegenerateId = false;
+    do {
+        boost::uuids::uuid u = _uuidGenerator();
+        fileId = boost::lexical_cast<std::string>(u);
+        std::string filePath;
+        auto s = db->Get(rocksdb::ReadOptions(), cfhFile, fileId + ":path", &filePath);
+        if (!s.ok() && !s.IsNotFound()) {
+            throw ReggataException(std::string("Failed to create file id for ") + fileRel.string() + ", reason " + s.ToString());
+        }
+        needToRegenerateId = s.ok();
+    } while (needToRegenerateId);
+
+    auto cfhFilePath = _db->getColumnFamilyHandle(Database::CF_FILE_PATH);
+    rocksdb::WriteBatch wb;
+    wb.Put(cfhFilePath, fileRel.string(), fileId);
+    wb.Put(cfhFile, fileId + ":path", fileRel.string());
+    auto fileSizeStr = std::to_string(boost::filesystem::file_size(_rootPath / fileRel));
+    wb.Put(cfhFile, fileId + ":size", fileSizeStr);
+    rocksdb::WriteOptions wo;
+    wo.sync = true;
+    auto st = db->Write(wo, &wb);
+    if (!st.ok()) {
+        throw ReggataException(boost::str(boost::format(
+                "Failed to create new file entity for %1%, reason: %2%")
+                % fileRel % st.ToString()));
+    }
+    return fileId;
 }
 
 void Repo::addTag(const std::string& fileId, const std::string& tag) {
-    // TODO: put two records (file_tag, 1:Tag1, "") and (tag_file, Tag1:1, "") for every tag
+    // Put two records (file_tag, 1:Tag1, "") and (tag_file, Tag1:1, "") for a tag 'Tag1'
+    auto cfhFileTag = _db->getColumnFamilyHandle(Database::CF_FILE_TAG);
+    auto cfhTagFile = _db->getColumnFamilyHandle(Database::CF_TAG_FILE);
+    auto db = _db->getDB();
+    rocksdb::WriteBatch wb;
+    wb.Put(cfhFileTag, fileId + ":" + tag, "");
+    wb.Put(cfhTagFile, tag + ":" + fileId, "");
+    rocksdb::WriteOptions wo;
+    wo.sync = true;
+    auto st = db->Write(wo, &wb);
+    if (!st.ok()) {
+        throw ReggataException(boost::str(boost::format(
+                "Failed to create new tag %1% entity for %2%, reason: %3%")
+                % tag % fileId % st.ToString()));
+    }
 }
 
 void Repo::createDirWatcherIfNeeded(const std::string& dirPath) {
