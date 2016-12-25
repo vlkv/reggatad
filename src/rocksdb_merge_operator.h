@@ -5,6 +5,8 @@
 class UInt64AddOperator : public rocksdb::AssociativeMergeOperator {
 public:
 
+    // TODO: reimplement this class to be a Compare-And-Set operation
+    
     virtual bool Merge(
             const rocksdb::Slice& key,
             const rocksdb::Slice* existing_value,

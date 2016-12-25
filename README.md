@@ -210,7 +210,7 @@ API is here https://github.com/facebook/rocksdb/blob/v4.9/include/rocksdb/db.h
 
 Example of data in form of (column_family, key, value).
 ```
-(counter, file_path_id, 1) // This is a source for file_path ids. 
+(counter, file_id, 1) // This is a source for file ids. 
 // A monotonically increasing counter for files ids, atomically increment-and-get. 
 // It's implemented with MergeOperator in rocksDB.
 
@@ -221,9 +221,11 @@ Example of data in form of (column_family, key, value).
 
 (file_path, /a/c, 2)
 (file, 2:path, /a/c)
+(file, 2:size, 234234)
 
 (file_path, /a/d, 3)
 (file, 3:path, /a/d)
+(file, 3:size, 63435)
 
 (file_tag, 1:Tag1, "")
 (tag_file, Tag1:1, "")

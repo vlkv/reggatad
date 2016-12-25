@@ -4,7 +4,7 @@
 #include <iostream>
 
 class FirstDelimPrefixTransform : public rocksdb::SliceTransform {
-    std::string _delim;
+    std::string _delim; // TODO: add _delimEsc, and skip _delimEsc in keys
     std::string _name;
 
 public:

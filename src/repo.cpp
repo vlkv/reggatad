@@ -20,7 +20,7 @@ Repo::Repo(const std::string& rootPath, const std::string& dbPath, bool initIfNo
         createDirWatcherIfNeeded(entry.path().string());
     }
     createDirWatcherIfNeeded(rootPath);
-    
+
     start();
 }
 
@@ -58,6 +58,51 @@ std::string Repo::rootPath() const {
 
 void Repo::enqueueCmd(std::unique_ptr<CmdRepo> cmd) {
     _queue.enqueue(std::move(cmd));
+}
+
+void Repo::addTags(const boost::filesystem::path& fileAbs, const std::vector<std::string>& tags) {
+    boost::system::error_code ec;
+    auto fileRel = boost::filesystem::relative(fileAbs, _rootPath, ec);
+    if (ec.value() != boost::system::errc::success) {
+        throw new ReggataException(ec.message());
+    }
+
+    auto fileId = getOrCreateFileId(fileRel);
+
+    for (auto tag : tags) {
+        addTag(fileId, tag);
+    }
+}
+
+std::string Repo::getOrCreateFileId(const boost::filesystem::path& fileRel) {
+    std::string fileId;
+    auto found = getFileId(fileRel, &fileId);
+    if (!found) {
+        fileId = createFileId(fileRel);
+    }
+    return fileId;
+}
+
+bool Repo::getFileId(const boost::filesystem::path& fileRel, std::string* fileId) {
+    // find file_id - get value of record (file_path, /a/c, 2)
+    auto db = _db->getDB();
+    auto cfh = _db->getColumnFamilyHandle(Database::CF_FILE_PATH);
+    auto s = db->Get(rocksdb::ReadOptions(), cfh, fileRel.string(), fileId);
+    if (!s.ok() && !s.IsNotFound()) {
+        throw new ReggataException(std::string("Failed to get file_id of ") + fileRel.string() + ", reason " + s.ToString());
+    }
+    return !s.IsNotFound();
+}
+
+std::string Repo::createFileId(const boost::filesystem::path& fileRel) {
+    // TODO create new file_id:
+    // 1) obtain next file_id from counters
+    // 2) Put three values: (file_path, /a/c, 2), (file, 2:path, /a/c), (file, 2:size, 234234)
+    return std::string();
+}
+
+void Repo::addTag(const std::string& fileId, const std::string& tag) {
+    // TODO: put two records (file_tag, 1:Tag1, "") and (tag_file, Tag1:1, "") for every tag
 }
 
 void Repo::createDirWatcherIfNeeded(const std::string& dirPath) {

@@ -1,4 +1,5 @@
 #include "cmd_add_tags.h"
+#include <repo.h>
 #include <boost/assign.hpp>
 
 CmdAddTags::CmdAddTags(const std::string& id, Cmd::SendResult sendResult) :
@@ -16,8 +17,7 @@ std::string CmdAddTags::path() const {
 }
 
 json::json CmdAddTags::execute() {
-    // TODO
+    _repo->addTags(_file, _tags);
     return json::json{
-        {"TODO", true}
-    };
+        {"TODO", true}};
 }

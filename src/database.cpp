@@ -24,24 +24,37 @@ _dbPath(dbPath) {
         throw ReggataException(std::string("Could not open rocksdb database ") + _dbPath + ", reason: " + status.ToString());
     }
     for (auto h : handles) {
-        _handles[h->GetName()] = h;
+        auto hPtr = std::unique_ptr<rocksdb::ColumnFamilyHandle>(h);
+        _handles[h->GetName()] = std::move(hPtr);
     }
 }
+
+rocksdb::DB* Database::getDB() const {
+    return _db.get();
+}
+
+rocksdb::ColumnFamilyHandle* Database::getColumnFamilyHandle(const std::string& columnFamilyName) const {
+    return _handles.at(columnFamilyName).get();
+}
+
+const std::string Database::CF_COUNTER = std::string("counter");
+const std::string Database::CF_FILE_PATH = std::string("file_path");
+const std::string Database::CF_FILE = std::string("file");
+const std::string Database::CF_FILE_TAG = std::string("file_tag");
+const std::string Database::CF_TAG_FILE = std::string("tag_file");
 
 std::vector<rocksdb::ColumnFamilyDescriptor> Database::columnFamilies() {
     std::vector<rocksdb::ColumnFamilyDescriptor> result;
 
-    //result.push_back(rocksdb::ColumnFamilyDescriptor("default", rocksdb::ColumnFamilyOptions())); // TODO: maybe remove?..
-
     rocksdb::ColumnFamilyOptions opts1;
     opts1.merge_operator = std::shared_ptr<rocksdb::MergeOperator>(new UInt64AddOperator());
-    result.push_back(rocksdb::ColumnFamilyDescriptor("counter", opts1));
+    result.push_back(rocksdb::ColumnFamilyDescriptor(CF_COUNTER, opts1));
 
     rocksdb::ColumnFamilyOptions opts2;
     opts2.prefix_extractor = std::shared_ptr<rocksdb::SliceTransform>(new FirstDelimPrefixTransform(":"));
-    result.push_back(rocksdb::ColumnFamilyDescriptor("file_path", opts2));
-    result.push_back(rocksdb::ColumnFamilyDescriptor("file", opts2));
-    result.push_back(rocksdb::ColumnFamilyDescriptor("file_tag", opts2));
-    result.push_back(rocksdb::ColumnFamilyDescriptor("tag_file", opts2));
+    result.push_back(rocksdb::ColumnFamilyDescriptor(CF_FILE_PATH, opts2));
+    result.push_back(rocksdb::ColumnFamilyDescriptor(CF_FILE, opts2));
+    result.push_back(rocksdb::ColumnFamilyDescriptor(CF_FILE_TAG, opts2));
+    result.push_back(rocksdb::ColumnFamilyDescriptor(CF_TAG_FILE, opts2));
     return result;
 }

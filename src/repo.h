@@ -5,13 +5,14 @@
 #include <Poco/DirectoryWatcher.h>
 #include <Poco/Delegate.h>
 #include <boost/log/trivial.hpp>
+#include <boost/filesystem.hpp>
 #include <string>
 #include <map>
 #include <memory>
 
 class Repo {
-    std::string _rootPath;
-    std::string _dbPath;
+    std::string _rootPath; // TODO: use path class
+    std::string _dbPath; // TODO: use path class
     std::unique_ptr<Database> _db;
     std::map<const std::string, std::unique_ptr<Poco::DirectoryWatcher>> _watchers;
 
@@ -24,6 +25,13 @@ public:
     
     std::string rootPath() const;
     void enqueueCmd(std::unique_ptr<CmdRepo> cmd);
+    
+    void addTags(const boost::filesystem::path& fileAbs, const std::vector<std::string>& tags);
+private:
+    std::string getOrCreateFileId(const boost::filesystem::path& fileRel);
+    bool getFileId(const boost::filesystem::path& fileRel, std::string* fileId);
+    std::string createFileId(const boost::filesystem::path& fileRel);
+    void addTag(const std::string& fileId, const std::string& tag);
 
 private:
     void run();

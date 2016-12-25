@@ -174,12 +174,9 @@
       <item path="src/cmd/cmd_add_tags.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
           <incDir>
-            <pElem>build</pElem>
             <pElem>/usr/local/include</pElem>
+            <pElem>build</pElem>
           </incDir>
-          <preprocessorList>
-            <Elem>UNIT_TESTS</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/cmd/cmd_open_repo.cpp" ex="false" tool="1" flavor2="11">
@@ -299,7 +296,18 @@
           </preprocessorList>
         </ccTool>
       </item>
-      <item path="test/rocksdb_test.cpp" ex="false" tool="1" flavor2="4">
+      <item path="test/rocksdb_test.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>src/cmd</pElem>
+            <pElem>src/scanner</pElem>
+            <pElem>src/parser</pElem>
+            <pElem>build</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>UNIT_TESTS</Elem>
+          </preprocessorList>
+        </ccTool>
       </item>
     </conf>
   </confs>

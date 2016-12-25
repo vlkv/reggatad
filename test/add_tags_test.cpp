@@ -35,13 +35,16 @@ public:
 
     void SetUp() {
         Client c(_port);
+        fs::path dbDir(_workDir / ".reggata");
+        fs::remove_all(dbDir);
         json::json cmd = {
             {"id", "123"},
             {"cmd", "open_repo"},
             {"args",
                 {
                     {"root_dir", _workDir.c_str()},
-                    {"db_dir", (_workDir / ".reggata").c_str()}
+                    {"db_dir", dbDir.c_str()},
+                    {"init_if_not_exists", true}
                 }}
         };
         auto err = c.send(cmd.dump());
@@ -62,7 +65,7 @@ public:
     }
 };
 
-TEST_F(AddTagsTest, OpenRepo1AddTag) {
+TEST_F(AddTagsTest, Add3Tags) {
     Client c(_port);
     json::json cmd2 = {
         {"id", "124"},
@@ -80,4 +83,6 @@ TEST_F(AddTagsTest, OpenRepo1AddTag) {
     auto obj2 = json::json::parse(msg2);
     ASSERT_EQ("124", obj2["id"]);
     ASSERT_EQ(true, obj2["ok"]);
+
+    // TODO: send get_file_info and check the tags have been added
 }
