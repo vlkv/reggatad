@@ -1,5 +1,5 @@
 #include "database.h"
-#include "rocksdb_merge_operator.h"
+#include "compare_and_inc_uint64.h"
 #include "first_delim_prefix_transform.h"
 #include "reggata_exceptions.h"
 #include <boost/filesystem.hpp>
@@ -47,7 +47,7 @@ std::vector<rocksdb::ColumnFamilyDescriptor> Database::columnFamilies() {
     std::vector<rocksdb::ColumnFamilyDescriptor> result;
 
     rocksdb::ColumnFamilyOptions opts1;
-    opts1.merge_operator = std::shared_ptr<rocksdb::MergeOperator>(new UInt64AddOperator());
+    opts1.merge_operator = std::shared_ptr<rocksdb::MergeOperator>(new CompareAndIncUInt64());
     result.push_back(rocksdb::ColumnFamilyDescriptor(CF_COUNTER, opts1));
 
     rocksdb::ColumnFamilyOptions opts2;
