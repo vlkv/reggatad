@@ -10,6 +10,7 @@
       <df name="cmd">
         <in>cmd.cpp</in>
         <in>cmd_add_tags.cpp</in>
+        <in>cmd_get_file_info.cpp</in>
         <in>cmd_open_repo.cpp</in>
         <in>cmd_proc.cpp</in>
         <in>cmd_remove_tags.cpp</in>
@@ -24,6 +25,7 @@
       <in>application.cpp</in>
       <in>client_connection.cpp</in>
       <in>database.cpp</in>
+      <in>file_info.cpp</in>
       <in>main.cpp</in>
       <in>processor.cpp</in>
       <in>repo.cpp</in>
@@ -118,6 +120,14 @@
           </incDir>
         </ccTool>
       </folder>
+      <folder path="2/cmd">
+        <ccTool>
+          <incDir>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build</pElem>
+          </incDir>
+        </ccTool>
+      </folder>
       <folder path="2/parser">
         <ccTool>
           <incDir>
@@ -162,56 +172,30 @@
       </item>
       <item path="src/cmd/cmd.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
-          <incDir>
-            <pElem>build</pElem>
-            <pElem>/usr/local/include</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>UNIT_TESTS</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/cmd/cmd_add_tags.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
-          <incDir>
-            <pElem>/usr/local/include</pElem>
-            <pElem>build</pElem>
-          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/cmd/cmd_get_file_info.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
         </ccTool>
       </item>
       <item path="src/cmd/cmd_open_repo.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
-          <incDir>
-            <pElem>/usr/local/include</pElem>
-            <pElem>build</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/cmd/cmd_proc.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
-          <incDir>
-            <pElem>/usr/local/include</pElem>
-            <pElem>build</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/cmd/cmd_remove_tags.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
-          <incDir>
-            <pElem>build</pElem>
-            <pElem>/usr/local/include</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>UNIT_TESTS</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/cmd/cmd_repo.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
-          <incDir>
-            <pElem>/usr/local/include</pElem>
-            <pElem>build</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/database.cpp" ex="false" tool="1" flavor2="11">
@@ -221,6 +205,8 @@
             <pElem>build</pElem>
           </incDir>
         </ccTool>
+      </item>
+      <item path="src/file_info.cpp" ex="false" tool="1" flavor2="4">
       </item>
       <item path="src/main.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">

@@ -70,16 +70,20 @@ void Repo::addTags(const boost::filesystem::path& fileAbs, const std::vector<std
         throw ReggataException(boost::str(boost::format("Could not add tags, reason: file %1% does not exists")
                 % fileAbs));
     }
-    boost::system::error_code ec;
-    auto fileRel = boost::filesystem::relative(fileAbs, _rootPath, ec);
-    if (ec.value() != boost::system::errc::success) {
-        throw ReggataException(ec.message());
-    }
-
+    auto fileRel = makeRelativePath(fileAbs);
     auto fileId = getOrCreateFileId(fileRel);
     for (auto tag : tags) {
         addTag(fileId, tag);
     }
+}
+
+boost::filesystem::path Repo::makeRelativePath(const boost::filesystem::path& abs) const {
+    boost::system::error_code ec;
+    auto rel = boost::filesystem::relative(abs, _rootPath, ec);
+    if (ec.value() != boost::system::errc::success) {
+        throw ReggataException(ec.message());
+    }
+    return rel;
 }
 
 std::string Repo::getOrCreateFileId(const boost::filesystem::path& fileRel) {
@@ -91,7 +95,7 @@ std::string Repo::getOrCreateFileId(const boost::filesystem::path& fileRel) {
     return fileId;
 }
 
-bool Repo::getFileId(const boost::filesystem::path& fileRel, std::string* fileId) {
+bool Repo::getFileId(const boost::filesystem::path& fileRel, std::string* fileId) const {
     // find file_id - get value of record (file_path, /a/c, 2)
     auto db = _db->getDB();
     auto cfh = _db->getColumnFamilyHandle(Database::CF_FILE_PATH);
@@ -150,10 +154,36 @@ void Repo::addTag(const std::string& fileId, const std::string& tag) {
     wo.sync = true;
     auto st = db->Write(wo, &wb);
     if (!st.ok()) {
-        throw ReggataException(boost::str(boost::format(
+        throw ReggataException((boost::format(
                 "Failed to create new tag %1% entity for %2%, reason: %3%")
-                % tag % fileId % st.ToString()));
+                % tag % fileId % st.ToString()).str());
     }
+}
+
+FileInfo Repo::getFileInfo(const boost::filesystem::path& fileAbs) const {
+    FileInfo res;
+    res._path = fileAbs.string();
+    res._size = boost::filesystem::file_size(fileAbs);
+
+    auto fileRel = makeRelativePath(fileAbs);
+    std::string fileId;
+    auto found = getFileId(fileRel, &fileId);
+    if (!found) {
+        // no info in DB about this file. So, just get file size and return
+        return res;
+    }
+
+    rocksdb::ReadOptions ro;
+    ro.prefix_same_as_start = true;
+    auto db = _db->getDB();
+    auto cfh = _db->getColumnFamilyHandle(Database::CF_FILE_TAG);
+    std::unique_ptr<rocksdb::Iterator> j(db->NewIterator(ro, cfh));
+    for (j->Seek(fileId + ":"); j->Valid(); j->Next()) {
+        auto key = j->key().ToString();
+        // TODO: split the key by ":"
+        res._tags.push_back(key);
+    }
+    return res;
 }
 
 void Repo::createDirWatcherIfNeeded(const std::string& dirPath) {

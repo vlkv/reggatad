@@ -28,13 +28,13 @@ All commands are divided into two categories:
 Request:
 ```javascript
 {
-	id: "1",
-	cmd: "open_repo",
-	args: {
-		root_dir: "/home/repo/",
-		db_dir: "home/repo/.reggata/",
-		init_if_not_exists: true
-	}
+    id: "1",
+    cmd: "open_repo",
+    args: {
+            root_dir: "/home/repo/",
+            db_dir: "home/repo/.reggata/",
+            init_if_not_exists: true
+    }
 }
 ```
 Responses:
@@ -48,11 +48,11 @@ TODO: Instead of boolean *ok* field, we'd use numeric *code* field (just like re
 Request:
 ```javascript
 {
-	id: "1",
-	cmd: "close_repo",
-	args: {
-		root_dir: "/home/repo/"
-	}
+    id: "1",
+    cmd: "close_repo",
+    args: {
+            root_dir: "/home/repo/"
+    }
 }
 ```
 
@@ -60,18 +60,18 @@ Request:
 Request:
 ```javascript
 {
-	id: "1",
-	cmd: "get_repos_info"
+    id: "1",
+    cmd: "get_repos_info"
 }
 ```
 Response:
 ```javascript
 {
-	ok: true,
-	repos: [
-		{root_dir:"/home/repo1/"},
-		{root_dir:"/home/repo2/"}
-	]
+    ok: true,
+    repos: [
+            {root_dir:"/home/repo1/"},
+            {root_dir:"/home/repo2/"}
+    ]
 }
 ```
 	
@@ -79,24 +79,24 @@ Response:
 Request:
 ```javascript
 {
-	id: "1",
-	cmd: "add_tags",
-	args: {
-		file: "/home/repo/file.txt",
-		tags: ["tag1", "tag2"]
-	}
+    id: "1",
+    cmd: "add_tags",
+    args: {
+            file: "/home/repo/file.txt",
+            tags: ["tag1", "tag2"]
+    }
 }
 ```
 ### remove_tags(file_path, tag1, tag2, ...)
 Request:
 ```javascript
 {
-	id: "1",
-	cmd: "remove_tags",
-	args: {
-		file: "/home/repo/file.txt",
-		tags: ["tag1", "tag2"]
-	}
+    id: "1",
+    cmd: "remove_tags",
+    args: {
+            file: "/home/repo/file.txt",
+            tags: ["tag1", "tag2"]
+    }
 }
 ```
 
@@ -114,11 +114,20 @@ TODO: implement after tags
 Request:
 ```javascript
 {
-	id: "1",
-	cmd: "get_file_info",
-	args: {
-		file: "/home/repo/file.txt"
-	}
+    id: "1",
+    cmd: "get_file_info",
+    args: {
+        file: "/home/repo/file.txt"
+    }
+}
+```
+TODO: we need a command to get many file_infos at once. Maybe extend this command,
+or maybe --- a different command.
+
+Response:
+```javascript
+{
+    TODO
 }
 ```
 
@@ -126,12 +135,12 @@ Request:
 Request:
 ```javascript
 {
-	id: "1",
-	cmd: "search",
-	args: {
-		path: "/home/repo/",
-		query: "tag1 tag2|tag3"
-	}
+    id: "1",
+    cmd: "search",
+    args: {
+            path: "/home/repo/",
+            query: "tag1 tag2|tag3"
+    }
 }
 ```
 
@@ -140,11 +149,11 @@ Client is able to cancel any other long running command.
 Request:
 ```javascript
 {
-	id: "2",
-	cmd: "cancel_cmd",
-	args: {
-		cmd_id: "1"
-	}
+    id: "2",
+    cmd: "cancel_cmd",
+    args: {
+            cmd_id: "1"
+    }
 }
 ```
 

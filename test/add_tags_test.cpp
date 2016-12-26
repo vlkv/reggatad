@@ -67,24 +67,42 @@ public:
 
 TEST_F(AddTagsTest, Add3Tags) {
     Client c(_port);
-    json::json cmd2 = {
-        {"id", "124"},
-        {"cmd", "add_tags"},
-        {"args",
-            {
-                {"file", (_workDir / "dir" / "file").c_str()},
-                {"tags",
-                    {"tag1", "tag2", "tag3"}}
-            }}
-    };
-    auto err2 = c.send(cmd2.dump());
-    ASSERT_EQ(nullptr, err2) << "sendMsg failed, error: " << err2;
-    auto msg2 = c.recv();
-    auto obj2 = json::json::parse(msg2);
-    ASSERT_EQ("124", obj2["id"]);
-    ASSERT_EQ(true, obj2["ok"]);
+    {
+        json::json cmd = {
+            {"id", "124"},
+            {"cmd", "add_tags"},
+            {"args",
+                {
+                    {"file", (_workDir / "dir" / "file").c_str()},
+                    {"tags",
+                        {"tag1", "tag2", "tag3"}}
+                }}
+        };
+        auto err = c.send(cmd.dump());
+        ASSERT_EQ(nullptr, err) << "sendMsg failed, error: " << err;
+        auto msg = c.recv();
+        auto obj = json::json::parse(msg);
+        ASSERT_EQ("124", obj["id"]);
+        ASSERT_EQ(true, obj["ok"]);
+    }
 
-    // TODO: send get_file_info and check the tags have been added
+    {// check the tags have been added
+        json::json cmd = {
+            {"id", "125"},
+            {"cmd", "get_file_info"},
+            {"args",
+                {
+                    {"file", (_workDir / "dir" / "file").c_str()},
+                }}
+        };
+        auto err = c.send(cmd.dump());
+        ASSERT_EQ(nullptr, err) << "sendMsg failed, error: " << err;
+        auto msg = c.recv();
+        auto obj = json::json::parse(msg);
+        ASSERT_EQ("125", obj["id"]);
+        ASSERT_EQ(true, obj["ok"]);
+        // TODO: assert on tags
+    }
 }
 
 TEST_F(AddTagsTest, TryAddTagsToNonexistentFile) {

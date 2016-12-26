@@ -10,5 +10,5 @@ struct CmdRepo : public Cmd {
 
     void setContext(std::shared_ptr<Repo> repo);
 
-    virtual std::string path() const = 0;
+    virtual std::string path() const = 0; // TODO: use boost::filesystem::path
 };
