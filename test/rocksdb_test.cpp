@@ -44,7 +44,7 @@ public:
 TEST_F(RocksDBTest, BasicOperations) {
     rocksdb::Options options;
     options.create_if_missing = true;
-    options.prefix_extractor = std::shared_ptr<rocksdb::SliceTransform>(new FirstDelimPrefixTransform(":"));
+    options.prefix_extractor = std::shared_ptr<rocksdb::SliceTransform>(new FirstDelimPrefixTransform());
     rocksdb::DB* dbRaw;
     rocksdb::Status status = rocksdb::DB::Open(options, DB_PATH.string(), &dbRaw);
     std::unique_ptr<rocksdb::DB> db(dbRaw);

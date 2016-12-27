@@ -52,7 +52,7 @@ std::vector<rocksdb::ColumnFamilyDescriptor> Database::columnFamilies() {
     result.push_back(rocksdb::ColumnFamilyDescriptor(CF_DEFAULT, rocksdb::ColumnFamilyOptions()));
 
     rocksdb::ColumnFamilyOptions opts;
-    opts.prefix_extractor = std::shared_ptr<rocksdb::SliceTransform>(new FirstDelimPrefixTransform(":"));
+    opts.prefix_extractor = std::shared_ptr<rocksdb::SliceTransform>(new FirstDelimPrefixTransform());
     result.push_back(rocksdb::ColumnFamilyDescriptor(CF_FILE_PATH, opts));
     result.push_back(rocksdb::ColumnFamilyDescriptor(CF_FILE, opts));
     result.push_back(rocksdb::ColumnFamilyDescriptor(CF_FILE_TAG, opts));
