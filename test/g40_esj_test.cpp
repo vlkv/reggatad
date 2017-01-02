@@ -22,10 +22,10 @@ public:
 TEST(G40EsjTest, Simple) {
     JSONExample source;
     source.text = "Hello World 2014";
+
     std::string json = JSON::producer<JSONExample>::convert(source);
-    ASSERT_EQ("TODO", json);
+    ASSERT_EQ("{\"JSONExample\":{\"text\":\"Hello World 2014\"}}", json);
 
     JSONExample sink = JSON::consumer<JSONExample>::convert(json);
-    //
-    JSON::throw_if(0, source.text != sink.text, "test_template failed");
+    ASSERT_EQ(source.text, sink.text);
 }
