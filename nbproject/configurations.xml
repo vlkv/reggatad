@@ -38,6 +38,7 @@
       <in>client.cpp</in>
       <in>common.cpp</in>
       <in>first_delim_prefix_transform_test.cpp</in>
+      <in>g40_esj_test.cpp</in>
       <in>open_close_repo_test.cpp</in>
       <in>rocksdb_test.cpp</in>
     </df>
@@ -65,9 +66,6 @@
     <Elem>src</Elem>
     <Elem>test</Elem>
     <Elem>main</Elem>
-    <Elem>src</Elem>
-    <Elem>test</Elem>
-    <Elem>main</Elem>
   </sourceRootList>
   <projectmakefile>build/Makefile</projectmakefile>
   <confs>
@@ -89,9 +87,6 @@
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
           <executablePath>build/unit_tests</executablePath>
           <ccTool>
-            <incDir>
-              <pElem>src</pElem>
-            </incDir>
             <preprocessorList>
               <Elem>BOOST_LOG_DYN_LINK=1</Elem>
             </preprocessorList>
@@ -105,8 +100,10 @@
       <folder path="0">
         <ccTool>
           <incDir>
+            <pElem>src</pElem>
             <pElem>src/scanner</pElem>
             <pElem>src/parser</pElem>
+            <pElem>third_party</pElem>
             <pElem>src/cmd</pElem>
             <pElem>build</pElem>
           </incDir>
@@ -115,6 +112,7 @@
       <folder path="2">
         <ccTool>
           <incDir>
+            <pElem>src</pElem>
             <pElem>src/cmd</pElem>
             <pElem>src/scanner</pElem>
             <pElem>src/parser</pElem>
@@ -124,6 +122,7 @@
       <folder path="2/cmd">
         <ccTool>
           <incDir>
+            <pElem>third_party</pElem>
             <pElem>/usr/local/include</pElem>
             <pElem>build</pElem>
           </incDir>
@@ -132,6 +131,7 @@
       <folder path="2/parser">
         <ccTool>
           <incDir>
+            <pElem>third_party</pElem>
             <pElem>/usr/local/include</pElem>
             <pElem>build</pElem>
           </incDir>
@@ -140,6 +140,7 @@
       <folder path="2/scanner">
         <ccTool>
           <incDir>
+            <pElem>third_party</pElem>
             <pElem>/usr/local/include</pElem>
             <pElem>build</pElem>
           </incDir>
@@ -148,6 +149,8 @@
       <folder path="4">
         <ccTool>
           <incDir>
+            <pElem>third_party</pElem>
+            <pElem>src</pElem>
             <pElem>src/cmd</pElem>
             <pElem>src/scanner</pElem>
             <pElem>src/parser</pElem>
@@ -165,6 +168,7 @@
       <item path="src/application.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
           <incDir>
+            <pElem>third_party</pElem>
             <pElem>/usr/local/include</pElem>
             <pElem>build</pElem>
           </incDir>
@@ -173,6 +177,7 @@
       <item path="src/client_connection.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
           <incDir>
+            <pElem>third_party</pElem>
             <pElem>/usr/local/include</pElem>
             <pElem>build</pElem>
           </incDir>
@@ -209,6 +214,7 @@
       <item path="src/database.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
           <incDir>
+            <pElem>third_party</pElem>
             <pElem>/usr/local/include</pElem>
             <pElem>build</pElem>
           </incDir>
@@ -233,6 +239,7 @@
       <item path="src/processor.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
           <incDir>
+            <pElem>third_party</pElem>
             <pElem>/usr/local/include</pElem>
             <pElem>build</pElem>
           </incDir>
@@ -241,6 +248,7 @@
       <item path="src/repo.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
           <incDir>
+            <pElem>third_party</pElem>
             <pElem>/usr/local/include</pElem>
             <pElem>build</pElem>
           </incDir>
@@ -253,6 +261,7 @@
       <item path="src/service.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
           <incDir>
+            <pElem>third_party</pElem>
             <pElem>/usr/local/include</pElem>
             <pElem>build</pElem>
           </incDir>
@@ -274,6 +283,10 @@
             ex="false"
             tool="1"
             flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="test/g40_esj_test.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
       </item>

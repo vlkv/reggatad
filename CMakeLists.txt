@@ -15,11 +15,17 @@ target_include_directories(reggata_lib PUBLIC
     src
     src/cmd
     src/scanner
-    src/parser)
+    src/parser
+    third_party)
+
 
 add_executable(reggatad ${sources_main})
 target_compile_options(reggatad PUBLIC -std=c++1y -Wall)
-target_include_directories(reggatad PUBLIC src src/scanner src/parser)
+target_include_directories(reggatad PUBLIC 
+    src 
+    src/scanner 
+    src/parser 
+    third_party)
 
 file(COPY reggatad.conf DESTINATION ".")
 file(COPY test_data DESTINATION ".")
@@ -89,6 +95,7 @@ if(GTEST_FOUND)
 
   target_include_directories(unit_tests PUBLIC
     ${GTEST_INCLUDE_DIRS} # doesn't do anything on linux
+    third_party
   )
   
 endif()
