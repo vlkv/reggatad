@@ -1,5 +1,5 @@
 #pragma once
-#include <json.hpp>
+#include <nlohmann/json.hpp>
 
 namespace nlohmann {
     // NOTE: this fixes segmentation fault

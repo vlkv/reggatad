@@ -6,7 +6,7 @@
             <name>reggatad</name>
             <c-extensions/>
             <cpp-extensions>cc,cpp</cpp-extensions>
-            <header-extensions>h,hpp,ih</header-extensions>
+            <header-extensions>h,ih</header-extensions>
             <sourceEncoding>UTF-8</sourceEncoding>
             <make-dep-projects/>
             <sourceRootList>

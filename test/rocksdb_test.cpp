@@ -4,7 +4,7 @@
 
 #include <rocksdb/db.h>
 #include <rocksdb/slice_transform.h>
-#include <json.hpp>
+#include <nlohmann/json.hpp>
 namespace json = nlohmann;
 
 #include <gtest/gtest.h>

@@ -4,7 +4,7 @@
 class Service;
 #include "processor.h"
 #include "cmds.h"
-#include "json.hpp"
+#include <nlohmann/json.hpp>
 namespace json = nlohmann;
 #include <boost/asio.hpp>
 #include <boost/asio/ip/tcp.hpp>

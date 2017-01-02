@@ -1,7 +1,7 @@
 #include "client.h"
 #include "common.h"
 #include <application.h>
-#include <json.hpp>
+#include <nlohmann/json.hpp>
 namespace json = nlohmann;
 #include <gtest/gtest.h>
 #include <boost/thread.hpp>
