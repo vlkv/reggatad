@@ -13,7 +13,6 @@ _sendResult(sendResult) {
 }
 
 std::unique_ptr<Cmd> Cmd::fromJson(const json::json& j, Cmd::SendResult sendResult) {
-    BOOST_LOG_TRIVIAL(debug) << "Cmd::fromJson";
     std::string cmdStr = j["cmd"];
     if (cmdStr == CmdAddTags::NAME) {
         return Cmd::fromJson2<CmdAddTags>(j, sendResult);

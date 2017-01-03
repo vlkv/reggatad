@@ -10,8 +10,7 @@ struct FileInfo {
         // TODO: use automatic serialization here
         nlohmann::json res;
         res["path"] = _path;
-        res["tags"] = nlohmann::json::array();
-        res["tags"].push_back(_tags);
+        res["tags"] = _tags;
         res["size"] = _size;
         return res;
     }

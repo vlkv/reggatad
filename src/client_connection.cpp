@@ -102,7 +102,6 @@ void ClientConnection::onReadBody(const boost::system::error_code& err) {
 }
 
 void ClientConnection::handleMsg(const std::string &msg) {
-    BOOST_LOG_TRIVIAL(debug) << "Received msg: " << msg;
     auto j = json::json::parse(msg);
     auto cmd = Cmd::fromJson(j,
             boost::bind(&ClientConnection::handleCmdResult, this, _1));

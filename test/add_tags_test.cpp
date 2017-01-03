@@ -101,7 +101,12 @@ TEST_F(AddTagsTest, Add3Tags) {
         auto obj = json::json::parse(msg);
         ASSERT_EQ("125", obj["id"]);
         ASSERT_EQ(true, obj["ok"]);
-        // TODO: assert on tags
+
+        std::vector<std::string> tags = obj["tags"];
+        ASSERT_EQ(3, tags.size());
+        ASSERT_NE(tags.end(), std::find(tags.begin(), tags.end(), "tag1"));
+        ASSERT_NE(tags.end(), std::find(tags.begin(), tags.end(), "tag2"));
+        ASSERT_NE(tags.end(), std::find(tags.begin(), tags.end(), "tag3"));
     }
 }
 
