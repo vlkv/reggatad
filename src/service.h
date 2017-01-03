@@ -18,7 +18,7 @@
 class Service {
     std::shared_ptr<Processor> _proc;
 
-    boost::asio::io_service _service; // TODO: rename to _io_service
+    boost::asio::io_service _ioService;
     boost::asio::ip::tcp::acceptor _acceptor;
 
     enum Status {

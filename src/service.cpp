@@ -9,7 +9,7 @@
 
 Service::Service(int port, std::shared_ptr<Processor> proc, bool pingClients) :
 _proc(proc),
-_acceptor(_service, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)),
+_acceptor(_ioService, boost::asio::ip::tcp::endpoint(boost::asio::ip::tcp::v4(), port)),
 _status(Service::Status::stopped),
 _pingClients(pingClients) {
 }
@@ -35,7 +35,7 @@ void Service::startListenPort() {
 void Service::serviceRunLoop() {
     while (_status != Service::Status::stopped) {
         try {
-            _service.run();
+            _ioService.run();
         } catch (const ConnException &e) {
             BOOST_LOG_TRIVIAL(error) << "Service fail: " << e.what();
             _clients.at(e.clientId())->stop();
@@ -51,7 +51,7 @@ void Service::acceptClient() {
         return;
     }
     BOOST_LOG_TRIVIAL(info) << "Waiting for client...";
-    auto conn = std::unique_ptr<ClientConnection>(new ClientConnection(_service, _proc, _pingClients));
+    auto conn = std::unique_ptr<ClientConnection>(new ClientConnection(_ioService, _proc, _pingClients));
     auto connId = conn->id();
     _clients.insert(ClientConnections::value_type(connId, std::move(conn)));
     auto client = _clients.at(connId).get();
@@ -73,7 +73,7 @@ void Service::onAccept(ClientConnection* client, const boost::system::error_code
 }
 
 void Service::stopAsync() {
-    _service.dispatch(boost::bind(&Service::stop, this));
+    _ioService.dispatch(boost::bind(&Service::stop, this));
 }
 
 void Service::stop() {
@@ -89,7 +89,7 @@ void Service::stop() {
     // TODO: wait for clients to stop?..
 
     _clients.clear();
-    _service.stop();
+    _ioService.stop();
     _status = Service::Status::stopped;
 
     BOOST_LOG_TRIVIAL(info) << "Service stopped";
