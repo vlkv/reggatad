@@ -7,7 +7,6 @@ namespace json = nlohmann;
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
 #include <boost/timer.hpp>
-#include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/path.hpp>
 namespace fs = boost::filesystem;
@@ -26,7 +25,6 @@ public:
     _app(new Application(_port, false)),
     _t(&AddTagsTest::startReggataApp, this),
     _workDir("./test_data/add_tags_test") {
-        boost::this_thread::sleep(boost::posix_time::seconds(1));
     }
 
     void startReggataApp() {
