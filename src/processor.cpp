@@ -1,6 +1,7 @@
 #include "processor.h"
 #include "reggata_exceptions.h"
 #include "cmds.h"
+#include "status_code.h"
 
 Processor::Processor() {
 }
@@ -30,7 +31,7 @@ void Processor::run() {
                 cmd->sendResult(result);
             } catch (const std::exception& ex) {
                 json::json result = {
-                    {"ok", false},
+                    {"code", StatusCode::SERVER_ERROR},
                     {"reason", ex.what()}
                 };
                 cmd->sendResult(result);

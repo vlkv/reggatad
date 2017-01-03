@@ -1,4 +1,5 @@
 #include "cmd_get_file_info.h"
+#include "status_code.h"
 #include <repo.h>
 #include <boost/assign.hpp>
 
@@ -18,6 +19,6 @@ std::string CmdGetFileInfo::path() const {
 json::json CmdGetFileInfo::execute() {
     auto fi = _repo->getFileInfo(_file);
     auto res = fi.toJson();
-    res["ok"] = true;
+    res["code"] = StatusCode::OK;
     return res;
 }

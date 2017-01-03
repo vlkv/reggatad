@@ -1,5 +1,6 @@
 #include "client.h"
 #include "common.h"
+#include "status_code.h"
 #include <application.h>
 #include <nlohmann/json.hpp>
 namespace json = nlohmann;
@@ -65,7 +66,7 @@ TEST_F(OpenCloseRepoTest, InitRepoThenCloseThenOpen) {
     auto msg = c.recv();
     auto obj = json::json::parse(msg);
     ASSERT_EQ("42", obj["id"]);
-    ASSERT_EQ(true, obj["ok"]);
+    ASSERT_EQ(StatusCode::OK, obj["code"]);
 
     // TODO: close this repo
 
@@ -90,7 +91,7 @@ TEST_F(OpenCloseRepoTest, TryOpenNonExistentRepo) {
     auto msg = c.recv();
     auto obj = json::json::parse(msg);
     ASSERT_EQ("123", obj["id"]);
-    ASSERT_EQ(false, obj["ok"]);
+    ASSERT_EQ(StatusCode::CLIENT_ERROR, obj["code"]);
     ASSERT_EQ("Database directory ./test_data/open_close_repo_test/non_existent_repo/.reggata doesn't exist", obj["reason"]);
 
 }

@@ -1,4 +1,5 @@
 #include "cmd_add_tags.h"
+#include "status_code.h"
 #include <repo.h>
 #include <boost/assign.hpp>
 
@@ -19,5 +20,5 @@ std::string CmdAddTags::path() const {
 json::json CmdAddTags::execute() {
     _repo->addTags(_file, _tags);
     return json::json{
-        {"ok", true}};
+        {"code", StatusCode::OK}};
 }

@@ -1,4 +1,5 @@
 #include "cmd_open_repo.h"
+#include "status_code.h"
 #include <processor.h>
 #include <json_map.h>
 #include <boost/assign.hpp>
@@ -17,8 +18,7 @@ const JsonMap::ParseMap<CmdOpenRepo> CmdOpenRepo::parseMap = boost::assign::list
 json::json CmdOpenRepo::execute() {
     _proc->openRepo(_rootDir, _dbDir, _initIfNotExists);
     json::json res = {
-        {"ok", true}
+        {"code", StatusCode::OK}
     };
     return res;
 }
-

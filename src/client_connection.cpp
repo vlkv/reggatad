@@ -103,7 +103,7 @@ void ClientConnection::onReadBody(const boost::system::error_code& err) {
 
 void ClientConnection::handleMsg(const std::string &msg) {
     auto j = json::json::parse(msg);
-    auto cmd = Cmd::fromJson(j,
+    auto cmd = Cmd::fromJson(j, // TODO: send CLIENT_ERROR if command has bad format
             boost::bind(&ClientConnection::handleCmdResult, this, _1));
     _proc->routeCmd(std::move(cmd));
     doReadHeader();

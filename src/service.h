@@ -38,7 +38,7 @@ public:
     void startListenPort();
     void stopAsync();
     bool isStopped();
-
+    
 private:
     void serviceRunLoop();
     void acceptClient();

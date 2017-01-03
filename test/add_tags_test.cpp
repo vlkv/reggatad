@@ -1,5 +1,6 @@
 #include "client.h"
 #include "common.h"
+#include "status_code.h"
 #include <application.h>
 #include <nlohmann/json.hpp>
 namespace json = nlohmann;
@@ -50,7 +51,7 @@ public:
         auto msg = c.recv();
         auto obj = json::json::parse(msg);
         ASSERT_EQ("123", obj["id"]);
-        ASSERT_EQ(true, obj["ok"]);
+        ASSERT_EQ(StatusCode::OK, obj["code"]);
     }
 
     void TearDown() {
@@ -81,7 +82,7 @@ TEST_F(AddTagsTest, Add3Tags) {
         auto msg = c.recv();
         auto obj = json::json::parse(msg);
         ASSERT_EQ("124", obj["id"]);
-        ASSERT_EQ(true, obj["ok"]);
+        ASSERT_EQ(StatusCode::OK, obj["code"]);
     }
 
     {// check the tags have been added
@@ -98,7 +99,7 @@ TEST_F(AddTagsTest, Add3Tags) {
         auto msg = c.recv();
         auto obj = json::json::parse(msg);
         ASSERT_EQ("125", obj["id"]);
-        ASSERT_EQ(true, obj["ok"]);
+        ASSERT_EQ(StatusCode::OK, obj["code"]);
 
         std::vector<std::string> tags = obj["tags"];
         ASSERT_EQ(3, tags.size());
@@ -125,6 +126,6 @@ TEST_F(AddTagsTest, TryAddTagsToNonexistentFile) {
     auto msg2 = c.recv();
     auto obj2 = json::json::parse(msg2);
     ASSERT_EQ("124", obj2["id"]);
-    ASSERT_EQ(false, obj2["ok"]);
+    ASSERT_EQ(StatusCode::CLIENT_ERROR, obj2["code"]);
     ASSERT_EQ("Could not add tags, reason: file \"./test_data/add_tags_test/nonexistent_file\" does not exists", obj2["reason"]);
 }

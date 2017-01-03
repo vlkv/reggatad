@@ -30,6 +30,7 @@
       <in>processor.cpp</in>
       <in>repo.cpp</in>
       <in>service.cpp</in>
+      <in>status_code.cpp</in>
     </df>
     <df root="src" name="3">
     </df>
@@ -267,6 +268,15 @@
         </ccTool>
       </item>
       <item path="src/service.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>third_party</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/status_code.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
           <incDir>
             <pElem>third_party</pElem>

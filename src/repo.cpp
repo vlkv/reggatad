@@ -1,6 +1,7 @@
 #include "repo.h"
 #include "reggata_exceptions.h"
 #include "db_key.h"
+#include "status_code.h"
 #include <boost/filesystem.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/random_generator.hpp>
@@ -47,7 +48,7 @@ void Repo::run() {
                 cmd->sendResult(result);
             } catch (const std::exception& ex) {
                 json::json result = {
-                    {"ok", false},
+                    {"code", StatusCode::SERVER_ERROR},
                     {"reason", ex.what()}
                 };
                 cmd->sendResult(result);

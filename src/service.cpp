@@ -1,10 +1,3 @@
-/*
- * Service.cpp
- *
- *  Created on: Sep 28, 2016
- *      Author: vitvlkv
- */
-
 #include "service.h"
 
 Service::Service(int port, std::shared_ptr<Processor> proc, bool pingClients) :
