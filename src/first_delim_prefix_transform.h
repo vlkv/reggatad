@@ -1,7 +1,9 @@
 #pragma once
+#include "db_key.h"
 #include <rocksdb/db.h>
 #include <rocksdb/slice_transform.h>
 #include <iostream>
+
 
 class FirstDelimPrefixTransform : public rocksdb::SliceTransform {
     std::string _name;
@@ -26,7 +28,7 @@ public:
         auto dataSize = src.size();
         size_t i = 0;
         for (; i < dataSize; ++i) {
-            while (i < dataSize && data[i] != ':') {
+            while (i < dataSize && data[i] != DBKey::DELIM) {
                 ++i;
             }
             if (i == 0) {
@@ -35,7 +37,7 @@ public:
             if (i == dataSize) {
                 break;
             }
-            if (data[i-1] != '\\') {
+            if (data[i-1] != DBKey::ESC) {
                 break;
             }
         }

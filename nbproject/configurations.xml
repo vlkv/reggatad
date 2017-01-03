@@ -25,7 +25,7 @@
       <in>application.cpp</in>
       <in>client_connection.cpp</in>
       <in>database.cpp</in>
-      <in>file_info.cpp</in>
+      <in>db_key.cpp</in>
       <in>main.cpp</in>
       <in>processor.cpp</in>
       <in>repo.cpp</in>
@@ -37,6 +37,7 @@
       <in>add_tags_test.cpp</in>
       <in>client.cpp</in>
       <in>common.cpp</in>
+      <in>db_key_test.cpp</in>
       <in>first_delim_prefix_transform_test.cpp</in>
       <in>g40_esj_test.cpp</in>
       <in>open_close_repo_test.cpp</in>
@@ -220,7 +221,14 @@
           </incDir>
         </ccTool>
       </item>
-      <item path="src/file_info.cpp" ex="false" tool="1" flavor2="4">
+      <item path="src/db_key.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>third_party</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build</pElem>
+          </incDir>
+        </ccTool>
       </item>
       <item path="src/main.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
@@ -278,6 +286,8 @@
       <item path="test/common.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
+      </item>
+      <item path="test/db_key_test.cpp" ex="false" tool="1" flavor2="4">
       </item>
       <item path="test/first_delim_prefix_transform_test.cpp"
             ex="false"

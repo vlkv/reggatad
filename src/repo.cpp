@@ -1,5 +1,6 @@
 #include "repo.h"
 #include "reggata_exceptions.h"
+#include "db_key.h"
 #include <boost/filesystem.hpp>
 #include <boost/uuid/uuid.hpp>
 #include <boost/uuid/random_generator.hpp>
@@ -118,7 +119,7 @@ std::string Repo::createFileId(const boost::filesystem::path& fileRel) {
         boost::uuids::uuid u = _uuidGenerator();
         fileId = boost::lexical_cast<std::string>(u);
         std::string filePath;
-        auto s = db->Get(rocksdb::ReadOptions(), cfhFile, fileId + ":path", &filePath);
+        auto s = db->Get(rocksdb::ReadOptions(), cfhFile, DBKey::join(fileId, "path"), &filePath);
         if (!s.ok() && !s.IsNotFound()) {
             throw ReggataException(std::string("Failed to create file id for ") + fileRel.string() + ", reason " + s.ToString());
         }
@@ -128,9 +129,9 @@ std::string Repo::createFileId(const boost::filesystem::path& fileRel) {
     auto cfhFilePath = _db->getColumnFamilyHandle(Database::CF_FILE_PATH);
     rocksdb::WriteBatch wb;
     wb.Put(cfhFilePath, fileRel.string(), fileId);
-    wb.Put(cfhFile, fileId + ":path", fileRel.string());
+    wb.Put(cfhFile, DBKey::join(fileId, "path"), fileRel.string());
     auto fileSizeStr = std::to_string(boost::filesystem::file_size(_rootPath / fileRel));
-    wb.Put(cfhFile, fileId + ":size", fileSizeStr);
+    wb.Put(cfhFile, DBKey::join(fileId, "size"), fileSizeStr);
     rocksdb::WriteOptions wo;
     wo.sync = true;
     auto st = db->Write(wo, &wb);
@@ -148,8 +149,8 @@ void Repo::addTag(const std::string& fileId, const std::string& tag) {
     auto cfhTagFile = _db->getColumnFamilyHandle(Database::CF_TAG_FILE);
     auto db = _db->getDB();
     rocksdb::WriteBatch wb;
-    wb.Put(cfhFileTag, fileId + ":" + tag, "");
-    wb.Put(cfhTagFile, tag + ":" + fileId, "");
+    wb.Put(cfhFileTag, DBKey::join(fileId, tag), "");
+    wb.Put(cfhTagFile, DBKey::join(tag, fileId), "");
     rocksdb::WriteOptions wo;
     wo.sync = true;
     auto st = db->Write(wo, &wb);
@@ -178,10 +179,10 @@ FileInfo Repo::getFileInfo(const boost::filesystem::path& fileAbs) const {
     auto db = _db->getDB();
     auto cfh = _db->getColumnFamilyHandle(Database::CF_FILE_TAG);
     std::unique_ptr<rocksdb::Iterator> j(db->NewIterator(ro, cfh));
-    for (j->Seek(fileId + ":"); j->Valid(); j->Next()) {
+    for (j->Seek(fileId); j->Valid(); j->Next()) {
         auto key = j->key().ToString();
-        // TODO: split the key by ":"
-        res._tags.push_back(key);
+        auto p = DBKey::split(key);
+        res._tags.push_back(p.second);
     }
     return res;
 }
@@ -189,12 +190,14 @@ FileInfo Repo::getFileInfo(const boost::filesystem::path& fileAbs) const {
 void Repo::createDirWatcherIfNeeded(const std::string& dirPath) {
     if (dirPath == _dbPath) {
         BOOST_LOG_TRIVIAL(debug) << "Skipping dir " << dirPath;
+
         return;
     }
     createDirWatcher(dirPath);
 }
 
 void Repo::createDirWatcher(const std::string& dirPath) {
+
     std::unique_ptr<Poco::DirectoryWatcher> watcher(new Poco::DirectoryWatcher(dirPath,
             Poco::DirectoryWatcher::DW_FILTER_ENABLE_ALL, 2));
     watcher->itemAdded += Poco::delegate(this, &Repo::onFileAdded);
@@ -210,6 +213,7 @@ void Repo::createDirWatcher(const std::string& dirPath) {
 void Repo::destroyDirWatcherIfExists(const std::string& dirPath) {
     auto f = _watchers.find(dirPath);
     if (f != _watchers.end()) {
+
         _watchers.erase(f);
         BOOST_LOG_TRIVIAL(debug) << "DirWatcher destroyed for " << dirPath;
     }
@@ -219,25 +223,30 @@ void Repo::destroyDirWatcherIfExists(const std::string& dirPath) {
 void Repo::onFileAdded(const Poco::DirectoryWatcher::DirectoryEvent& event) {
     BOOST_LOG_TRIVIAL(debug) << "Added: " << event.item.path();
     if (event.item.exists() && event.item.isDirectory()) {
+
         createDirWatcher(event.item.path());
     }
 }
 
 void Repo::onFileRemoved(const Poco::DirectoryWatcher::DirectoryEvent& event) {
+
     const std::string& path = event.item.path();
     destroyDirWatcherIfExists(path);
     BOOST_LOG_TRIVIAL(debug) << "Removed: " << event.item.path();
 }
 
 void Repo::onFileChanged(const Poco::DirectoryWatcher::DirectoryEvent& event) {
+
     BOOST_LOG_TRIVIAL(debug) << "Changed: " << event.item.path();
 }
 
 void Repo::onFileMovedFrom(const Poco::DirectoryWatcher::DirectoryEvent& event) {
+
     BOOST_LOG_TRIVIAL(debug) << "MovedFrom: " << event.item.path();
 }
 
 void Repo::onFileMovedTo(const Poco::DirectoryWatcher::DirectoryEvent& event) {
+
     BOOST_LOG_TRIVIAL(debug) << "MovedTo: " << event.item.path();
 }
 

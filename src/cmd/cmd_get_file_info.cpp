@@ -17,7 +17,7 @@ std::string CmdGetFileInfo::path() const {
 
 json::json CmdGetFileInfo::execute() {
     auto fi = _repo->getFileInfo(_file);
-    // TODO: serialize fi to json
-    return json::json{
-        {"ok", true}};
+    auto res = fi.toJson();
+    res["ok"] = true;
+    return res;
 }
