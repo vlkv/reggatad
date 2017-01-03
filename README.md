@@ -39,10 +39,10 @@ Request:
 ```
 Responses:
 ```javascript
-{ok: true, id: "1"}
-{ok: false, msg: "Reason", id: "1"}
+{code: 200, id: "1"}
+{code: 400, msg: "Reason", id: "1"}
 ```
-TODO: Instead of boolean *ok* field, we'd use numeric *code* field (just like return_code in HTTP).
+NOTE: list of all possible code values is here https://github.com/vlkv/reggatad/blob/master/src/status_code.cpp
 
 ### close_repo(root_dir)
 Request:
@@ -67,7 +67,7 @@ Request:
 Response:
 ```javascript
 {
-    ok: true,
+    code: 200,
     repos: [
             {root_dir:"/home/repo1/"},
             {root_dir:"/home/repo2/"}
@@ -121,7 +121,20 @@ Request:
     }
 }
 ```
-TODO: we need a command to get many file_infos at once. Maybe extend this command,
+Response:
+```javascript
+{
+    code: 200,
+    id: "1",
+    "path": "./test_data/add_tags_test/dir/file",
+    "size":4,
+    "tags": ["tag1","tag2","tag3"]
+}
+```
+TODO: Maybe it's better to put all the response info to `data` subobject 
+(similar to `args` in commands)?..
+
+TODO: We need a command to get many file_infos at once. Maybe extend this command,
 or maybe --- a different command.
 
 Response:
