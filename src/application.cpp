@@ -1,5 +1,6 @@
 #include "application.h"
 #include "cmd_open_repo.h"
+#include <boost/thread.hpp>
 
 Application::Application(int port, bool pingClients = true) :
 _proc(new Processor()),
@@ -24,6 +25,9 @@ void Application::start() {
 void Application::stop() {
     BOOST_LOG_TRIVIAL(info) << "Application stop";
     _service->stopAsync();
+    while (!_service->isStopped()) {
+        boost::this_thread::sleep(boost::posix_time::millisec(25));
+    }
     _proc->stop();
 }
 

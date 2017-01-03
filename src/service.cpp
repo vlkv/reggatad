@@ -76,6 +76,10 @@ void Service::stopAsync() {
     _ioService.dispatch(boost::bind(&Service::stop, this));
 }
 
+bool Service::isStopped() {
+    return _status == Service::Status::stopped;
+}
+
 void Service::stop() {
     if (_status != Service::Status::started) {
         return;
@@ -86,7 +90,9 @@ void Service::stop() {
     _acceptor.close();
     BOOST_LOG_TRIVIAL(info) << "tcp acceptor closed";
 
-    // TODO: wait for clients to stop?..
+    for (auto c = _clients.begin(); c != _clients.end(); ++c) {
+        c->second->stop();
+    }
 
     _clients.clear();
     _ioService.stop();

@@ -18,7 +18,7 @@ _dbPath(dbPath) {
     rocksdb::DBOptions opts;
     opts.create_if_missing = initIfNotExists;
     opts.create_missing_column_families = true;
-    auto families = columnFamilies(); // TODO: debug seg fault here... something bad is happening in dtor of ColumnFamilyOptions std::shared_ptr<TableFactory> table_factory
+    auto families = columnFamilies();
     rocksdb::DB* db;
     std::vector<rocksdb::ColumnFamilyHandle*> handles;
     auto status = rocksdb::DB::Open(opts, _dbPath, families, &handles, &db);

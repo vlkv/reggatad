@@ -10,7 +10,8 @@
 #include <iostream>
 
 Repo::Repo(const std::string& rootPath, const std::string& dbPath, bool initIfNotExists = false)
-: _rootPath(rootPath), _dbPath(dbPath), _db(new Database(dbPath, initIfNotExists)) {
+: _rootPath(rootPath), _dbPath(dbPath), _db(new Database(dbPath, initIfNotExists)),
+_thread(&Repo::run, this) {
 
     if (initIfNotExists && !boost::filesystem::exists(rootPath)) {
         auto ok = boost::filesystem::create_directories(rootPath);
@@ -26,17 +27,19 @@ Repo::Repo(const std::string& rootPath, const std::string& dbPath, bool initIfNo
         createDirWatcherIfNeeded(entry.path().string());
     }
     createDirWatcherIfNeeded(rootPath);
-
-    start();
 }
 
-void Repo::start() {
-    _thread = boost::thread(&Repo::run, this);
+void Repo::stop() {
+    BOOST_LOG_TRIVIAL(info) << "Stopping Repo " << _rootPath;
+    _stopCalled = true;
+    _thread.interrupt();
+    _thread.join();
+    BOOST_LOG_TRIVIAL(info) << "Repo stopped " << _rootPath;
 }
 
 void Repo::run() {
     BOOST_LOG_TRIVIAL(info) << "Repo started " << _rootPath;
-    while (!_thread.interruption_requested()) {
+    while (!_stopCalled && !_thread.interruption_requested()) {
         try {
             auto cmd = _queue.dequeue();
             try {
@@ -49,13 +52,15 @@ void Repo::run() {
                 };
                 cmd->sendResult(result);
             }
+        } catch (const boost::thread_interrupted& ex) {
+            break;
         } catch (const std::exception& ex) {
             BOOST_LOG_TRIVIAL(error) << "std::exception " << ex.what();
         } catch (...) {
-            BOOST_LOG_TRIVIAL(error) << "Unexpected exception";
+            BOOST_LOG_TRIVIAL(error) << "Unexpected exception in Repo::run";
         }
     }
-    BOOST_LOG_TRIVIAL(info) << "Repo:run exited " << _rootPath;
+    BOOST_LOG_TRIVIAL(info) << "Repo::run exited " << _rootPath;
 }
 
 std::string Repo::rootPath() const {

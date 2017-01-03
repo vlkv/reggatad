@@ -16,16 +16,17 @@ class Repo {
     std::string _rootPath; // TODO: use path class
     std::string _dbPath; // TODO: use path class
     std::unique_ptr<Database> _db;
-    std::map<const std::string, std::unique_ptr<Poco::DirectoryWatcher>> _watchers;
-
-    SafeQueue<std::unique_ptr<CmdRepo>> _queue;
-    boost::thread _thread;
-    
     boost::uuids::random_generator _uuidGenerator;
+    SafeQueue<std::unique_ptr<CmdRepo>> _queue;
+    volatile bool _stopCalled = false;
+    boost::thread _thread;
+    std::map<const std::string, std::unique_ptr<Poco::DirectoryWatcher>> _watchers;
     
 public:
     Repo(const std::string& rootPath, const std::string& dbPath, bool initIfNotExists);
     virtual ~Repo() = default;
+    
+    void stop();
     
     std::string rootPath() const;
     void enqueueCmd(std::unique_ptr<CmdRepo> cmd);

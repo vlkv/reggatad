@@ -11,9 +11,7 @@ class CmdProc;
 class Processor : public std::enable_shared_from_this<Processor> {
     typedef std::map<std::string, std::shared_ptr<Repo>> Repos;
     Repos _repos;
-
     SafeQueue<std::unique_ptr<CmdProc>> _queue;
-
     volatile bool _stopCalled = false;
     boost::thread _thread;
 

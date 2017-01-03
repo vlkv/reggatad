@@ -12,6 +12,9 @@ void Processor::start() {
 void Processor::stop() {
     BOOST_LOG_TRIVIAL(info) << "Stopping Processor...";
     _stopCalled = true;
+    for (auto r = _repos.begin(); r != _repos.end(); ++r) {
+        r->second->stop();
+    }
     _thread.interrupt();
     _thread.join();
     BOOST_LOG_TRIVIAL(info) << "Processor stopped";
@@ -32,10 +35,12 @@ void Processor::run() {
                 };
                 cmd->sendResult(result);
             }
+        } catch (const boost::thread_interrupted& ex) {
+            break;
         } catch (const std::exception& ex) {
             BOOST_LOG_TRIVIAL(error) << "std::exception " << ex.what();
         } catch (...) {
-            BOOST_LOG_TRIVIAL(error) << "Unexpected exception";
+            BOOST_LOG_TRIVIAL(error) << "Unexpected exception in Processor::run";
         }
     }
     BOOST_LOG_TRIVIAL(info) << "Processor:run exited";

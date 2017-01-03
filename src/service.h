@@ -24,7 +24,7 @@ class Service {
     enum Status {
         starting, started, stopping, stopped
     };
-    Status _status;
+    volatile Status _status;
 
     typedef std::map<int, std::unique_ptr<ClientConnection>> ClientConnections;
     ClientConnections _clients;
@@ -37,6 +37,7 @@ public:
 
     void startListenPort();
     void stopAsync();
+    bool isStopped();
 
 private:
     void serviceRunLoop();
