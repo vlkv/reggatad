@@ -8,12 +8,12 @@ and provides an API (TCP sockets) for all operations with tags/fields. This API 
 https://github.com/vlkv/reggata. At the moment, reggatad is a **work in progress**.
 
 It uses
-- Flexc++ and Bisonc++ to implement query language parsing
+- Flexc++ and Bisonc++ to implement query language parsing https://fbb-git.github.io/flexcpp/ https://github.com/fbb-git/bisoncpp
 - RocksDB http://rocksdb.org an embedded database (key value store)
-- POCO DirectoryWatcher class (implemented with inotify on Linux)
-- https://github.com/nlohmann/json as JSON library
-- GTest as unit testing framework
-- Boost for anything else
+- POCO DirectoryWatcher class (implemented with inotify on Linux) https://pocoproject.org/
+- JSON for Modern C++ https://github.com/nlohmann/json
+- GTest as unit testing framework https://github.com/google/googletest
+- Boost for anything else http://www.boost.org/
 
 ## API
 Every message has a **4 byte header** that contains length of the message. The message is a JSON string.
@@ -32,11 +32,14 @@ Request:
     cmd: "open_repo",
     args: {
             root_dir: "/home/repo/",
-            db_dir: "home/repo/.reggata/",
+            db_dir: "/home/repo/.reggata/",
             init_if_not_exists: true
     }
 }
 ```
+TODO: At the moment `db_dir` is absolute path. Let client to use relative path 
+for `db_dir`. Make argument `db_dir` optional.
+
 Responses:
 ```javascript
 {code: 200, id: "1"}
@@ -51,7 +54,7 @@ Request:
     id: "1",
     cmd: "close_repo",
     args: {
-            root_dir: "/home/repo/"
+        root_dir: "/home/repo/"
     }
 }
 ```
@@ -68,9 +71,9 @@ Response:
 ```javascript
 {
     code: 200,
-    repos: [
-            {root_dir:"/home/repo1/"},
-            {root_dir:"/home/repo2/"}
+    data: [
+        {root_dir:"/home/repo1/"},
+        {root_dir:"/home/repo2/"}
     ]
 }
 ```
@@ -82,8 +85,8 @@ Request:
     id: "1",
     cmd: "add_tags",
     args: {
-            file: "/home/repo/file.txt",
-            tags: ["tag1", "tag2"]
+        file: "/home/repo/file.txt",
+        tags: ["tag1", "tag2"]
     }
 }
 ```
@@ -94,8 +97,8 @@ Request:
     id: "1",
     cmd: "remove_tags",
     args: {
-            file: "/home/repo/file.txt",
-            tags: ["tag1", "tag2"]
+        file: "/home/repo/file.txt",
+        tags: ["tag1", "tag2"]
     }
 }
 ```
@@ -126,23 +129,22 @@ Response:
 {
     code: 200,
     id: "1",
-    "path": "./test_data/add_tags_test/dir/file",
-    "size": 4,
-    "tags": ["tag1", "tag2", "tag3"]
+    data: {
+        "path": "./test_data/add_tags_test/dir/file",
+        "size": 4,
+        "tags": ["tag1", "tag2", "tag3"]
+    }
 }
 ```
 TODO: Maybe it's better to put all the response info to `data` subobject 
 (similar to `args` in commands)?..
 
 TODO: We need a command to get many file_infos at once. Maybe extend this command,
-or maybe --- a different command.
+or maybe --- a different command. We could have `file`, `files` and `dir` args in 
+this command. NOTE, if we'd make `files` arg in command,
+how should we handle situations when client asks for info about files from different
+repositories?..
 
-Response:
-```javascript
-{
-    TODO
-}
-```
 
 ### search(path, query_string)
 Request:
@@ -151,8 +153,8 @@ Request:
     id: "1",
     cmd: "search",
     args: {
-            path: "/home/repo/",
-            query: "tag1 tag2|tag3"
+        path: "/home/repo/",
+        query: "tag1 tag2|tag3"
     }
 }
 ```
@@ -165,7 +167,7 @@ Request:
     id: "2",
     cmd: "cancel_cmd",
     args: {
-            cmd_id: "1"
+        cmd_id: "1"
     }
 }
 ```
@@ -232,9 +234,6 @@ API is here https://github.com/facebook/rocksdb/blob/v4.9/include/rocksdb/db.h
 
 Example of data in form of (column_family, key, value).
 ```
-(counter, file_id, 1) // This is a source for file ids. 
-// A monotonically increasing counter for files ids, atomically increment-and-get. 
-// It's implemented with MergeOperator in rocksDB.
 
 (file_path, /a/b, 1) // This is like an index on "path" property
 (file, 1:path, /a/b)
@@ -267,8 +266,6 @@ Example of data in form of (column_family, key, value).
 (file_field, 2:Field2, "21")
 (field_file, Field2:2, "")
 ```
-TODO: Find out really good delimiter instead of `:`. Such a delimiter should never be met in tag/field name. 
-We may escape the delimiter in tag/field name before put in DB.
 
 When a tag is attached to a file, a pair of key-values (e.g. file_tag and tag_file) should be added atomically with
 WriteBatch operation in rocksDB.
