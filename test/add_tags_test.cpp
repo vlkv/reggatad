@@ -100,10 +100,11 @@ TEST_F(AddTagsTest, Add3Tags) {
         auto obj = json::json::parse(msg);
         ASSERT_EQ("125", obj["id"]);
         ASSERT_EQ(StatusCode::OK, obj["code"]);
-        ASSERT_EQ(4, obj["size"]);
-        ASSERT_EQ("dir/file", obj["path"]) << "Path must be relative to repo root dir";
+        auto objData = obj["data"];
+        ASSERT_EQ(4, objData["size"]);
+        ASSERT_EQ("dir/file", objData["path"]) << "Path must be relative to repo root dir";
 
-        std::vector<std::string> tags = obj["tags"];
+        std::vector<std::string> tags = objData["tags"];
         ASSERT_EQ(3, tags.size());
         ASSERT_NE(tags.end(), std::find(tags.begin(), tags.end(), "tag1"));
         ASSERT_NE(tags.end(), std::find(tags.begin(), tags.end(), "tag2"));

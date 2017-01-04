@@ -18,7 +18,10 @@ std::string CmdGetFileInfo::path() const {
 
 json::json CmdGetFileInfo::execute() {
     auto fi = _repo->getFileInfo(_file);
-    auto res = fi.toJson();
-    res["code"] = StatusCode::OK;
+    auto fiJson = fi.toJson();
+    json::json res = {
+        {"code", StatusCode::OK},
+        {"data", fiJson}
+    };
     return res;
 }
