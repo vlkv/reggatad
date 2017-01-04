@@ -1,11 +1,11 @@
 #pragma once
-#include <boost/weak_ptr.hpp>
 #include <string>
 #include <exception>
 
 class ReggataException : public std::exception {
-public:
+    std::string _msg;
 
+public:
     explicit ReggataException(const std::string& msg) :
     _msg(msg) {
     }
@@ -13,16 +13,14 @@ public:
     virtual const char* what() const throw () {
         return _msg.c_str();
     }
-protected:
-    std::string _msg;
+    
 };
 
-class ClientConnection;
 
 class ConnException : public ReggataException {
     int _clientId;
-public:
 
+public:
     explicit ConnException(const std::string& msg, int clientId) :
     ReggataException(msg),
     _clientId(clientId) {
@@ -30,5 +28,21 @@ public:
 
     int clientId() const {
         return _clientId;
+    }
+};
+
+
+
+class StatusCodeException : public ReggataException {
+    int _statusCode;
+
+public:
+    explicit StatusCodeException(int statusCode, const std::string& msg) :
+    ReggataException(msg),
+    _statusCode(statusCode) {
+    }
+
+    int statusCode() const {
+        return _statusCode;
     }
 };

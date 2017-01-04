@@ -1,6 +1,7 @@
 #include "database.h"
 #include "first_delim_prefix_transform.h"
 #include "reggata_exceptions.h"
+#include "status_code.h"
 #include <boost/filesystem.hpp>
 #include <boost/format.hpp>
 
@@ -9,11 +10,13 @@ _dbPath(dbPath) {
     if (initIfNotExists && !boost::filesystem::exists(dbPath)) {
         auto ok = boost::filesystem::create_directories(dbPath);
         if (!ok) {
-            throw ReggataException(std::string("Could not create directory ") + dbPath);
+            throw StatusCodeException(StatusCode::SERVER_ERROR,
+                    (boost::format("Could not create directory %1%") % dbPath).str());
         }
     }
     if (!boost::filesystem::exists(dbPath)) {
-        throw ReggataException(boost::str(boost::format("Database directory %1% doesn't exist") % dbPath));
+        throw StatusCodeException(StatusCode::CLIENT_ERROR,
+                (boost::format("Database directory %1% doesn't exist") % dbPath).str());
     }
     rocksdb::DBOptions opts;
     opts.create_if_missing = initIfNotExists;
@@ -24,7 +27,9 @@ _dbPath(dbPath) {
     auto status = rocksdb::DB::Open(opts, _dbPath, families, &handles, &db);
     _db.reset(db);
     if (!status.ok()) {
-        throw ReggataException(std::string("Could not open rocksdb database ") + _dbPath + ", reason: " + status.ToString());
+        throw StatusCodeException(StatusCode::SERVER_ERROR,
+                (boost::format("Could not open rocksdb database %1%, reason: %2%")
+                % _dbPath % status.ToString()).str());
     }
     for (auto h : handles) {
         auto hPtr = std::unique_ptr<rocksdb::ColumnFamilyHandle>(h);

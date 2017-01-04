@@ -43,16 +43,21 @@ void Repo::run() {
     while (!_stopCalled && !_thread.interruption_requested()) {
         try {
             auto cmd = _queue.dequeue();
+            json::json result;
             try {
-                auto result = cmd->execute();
-                cmd->sendResult(result);
+                result = cmd->execute();
+            } catch (const StatusCodeException& ex) {
+                result = {
+                    {"code", ex.statusCode()},
+                    {"reason", ex.what()}
+                };
             } catch (const std::exception& ex) {
-                json::json result = {
+                result = {
                     {"code", StatusCode::SERVER_ERROR},
                     {"reason", ex.what()}
                 };
-                cmd->sendResult(result);
             }
+            cmd->sendResult(result);
         } catch (const boost::thread_interrupted& ex) {
             break;
         } catch (const std::exception& ex) {
@@ -74,8 +79,9 @@ void Repo::enqueueCmd(std::unique_ptr<CmdRepo> cmd) {
 
 void Repo::addTags(const boost::filesystem::path& fileAbs, const std::vector<std::string>& tags) {
     if (!boost::filesystem::exists(fileAbs)) {
-        throw ReggataException(boost::str(boost::format("Could not add tags, reason: file %1% does not exists")
-                % fileAbs));
+        throw StatusCodeException(StatusCode::CLIENT_ERROR,
+                (boost::format("Could not add tags, reason: file %1% does not exists")
+                % fileAbs).str());
     }
     auto fileRel = makeRelativePath(fileAbs);
     auto fileId = getOrCreateFileId(fileRel);
@@ -108,7 +114,9 @@ bool Repo::getFileId(const boost::filesystem::path& fileRel, std::string* fileId
     auto cfh = _db->getColumnFamilyHandle(Database::CF_FILE_PATH);
     auto s = db->Get(rocksdb::ReadOptions(), cfh, fileRel.string(), fileId);
     if (!s.ok() && !s.IsNotFound()) {
-        throw ReggataException(std::string("Failed to get file_id of ") + fileRel.string() + ", reason " + s.ToString());
+        throw StatusCodeException(StatusCode::SERVER_ERROR,
+                (boost::format("Failed to get file_id of %1%, reason %2%")
+                % fileRel.string() % s.ToString()).str());
     }
     return !s.IsNotFound();
 }
@@ -127,7 +135,9 @@ std::string Repo::createFileId(const boost::filesystem::path& fileRel) {
         std::string filePath;
         auto s = db->Get(rocksdb::ReadOptions(), cfhFile, DBKey::join(fileId, "path"), &filePath);
         if (!s.ok() && !s.IsNotFound()) {
-            throw ReggataException(std::string("Failed to create file id for ") + fileRel.string() + ", reason " + s.ToString());
+            throw StatusCodeException(StatusCode::SERVER_ERROR,
+                    (boost::format("Failed to create file id for %1%, reason ")
+                    % fileRel.string() % s.ToString()).str());
         }
         needToRegenerateId = s.ok();
     } while (needToRegenerateId);
@@ -142,9 +152,9 @@ std::string Repo::createFileId(const boost::filesystem::path& fileRel) {
     wo.sync = true;
     auto st = db->Write(wo, &wb);
     if (!st.ok()) {
-        throw ReggataException(boost::str(boost::format(
+        throw StatusCodeException(StatusCode::SERVER_ERROR, (boost::format(
                 "Failed to create new file entity for %1%, reason: %2%")
-                % fileRel % st.ToString()));
+                % fileRel % st.ToString()).str());
     }
     return fileId;
 }
@@ -161,7 +171,7 @@ void Repo::addTag(const std::string& fileId, const std::string& tag) {
     wo.sync = true;
     auto st = db->Write(wo, &wb);
     if (!st.ok()) {
-        throw ReggataException((boost::format(
+        throw StatusCodeException(StatusCode::SERVER_ERROR, (boost::format(
                 "Failed to create new tag %1% entity for %2%, reason: %3%")
                 % tag % fileId % st.ToString()).str());
     }

@@ -127,8 +127,8 @@ Response:
     code: 200,
     id: "1",
     "path": "./test_data/add_tags_test/dir/file",
-    "size":4,
-    "tags": ["tag1","tag2","tag3"]
+    "size": 4,
+    "tags": ["tag1", "tag2", "tag3"]
 }
 ```
 TODO: Maybe it's better to put all the response info to `data` subobject 

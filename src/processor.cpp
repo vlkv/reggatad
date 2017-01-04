@@ -26,16 +26,21 @@ void Processor::run() {
     while (!_stopCalled && !_thread.interruption_requested()) {
         try {
             auto cmd = _queue.dequeue();
+            json::json result;
             try {
-                auto result = cmd->execute();
-                cmd->sendResult(result);
+                result = cmd->execute();
+            } catch (const StatusCodeException& ex) {
+                result = {
+                    {"code", ex.statusCode()},
+                    {"reason", ex.what()}
+                };
             } catch (const std::exception& ex) {
-                json::json result = {
+                result = {
                     {"code", StatusCode::SERVER_ERROR},
                     {"reason", ex.what()}
                 };
-                cmd->sendResult(result);
             }
+            cmd->sendResult(result);
         } catch (const boost::thread_interrupted& ex) {
             break;
         } catch (const std::exception& ex) {
