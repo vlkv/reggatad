@@ -178,11 +178,12 @@ void Repo::addTag(const std::string& fileId, const std::string& tag) {
 }
 
 FileInfo Repo::getFileInfo(const boost::filesystem::path& fileAbs) const {
-    FileInfo res;
-    res._path = fileAbs.string();
-    res._size = boost::filesystem::file_size(fileAbs);
-
     auto fileRel = makeRelativePath(fileAbs);
+
+    FileInfo res;
+    res._path = fileRel.string();
+    res._size = boost::filesystem::file_size(fileAbs); // TODO: size is stored in DB. What should we do in case sizes are different?..
+
     std::string fileId;
     auto found = getFileId(fileRel, &fileId);
     if (!found) {

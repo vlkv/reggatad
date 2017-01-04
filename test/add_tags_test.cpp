@@ -100,6 +100,8 @@ TEST_F(AddTagsTest, Add3Tags) {
         auto obj = json::json::parse(msg);
         ASSERT_EQ("125", obj["id"]);
         ASSERT_EQ(StatusCode::OK, obj["code"]);
+        ASSERT_EQ(4, obj["size"]);
+        ASSERT_EQ("dir/file", obj["path"]) << "Path must be relative to repo root dir";
 
         std::vector<std::string> tags = obj["tags"];
         ASSERT_EQ(3, tags.size());
