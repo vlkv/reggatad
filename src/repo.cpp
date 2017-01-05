@@ -90,6 +90,19 @@ void Repo::addTags(const boost::filesystem::path& fileAbs, const std::vector<std
     }
 }
 
+void Repo::removeTags(const boost::filesystem::path& fileAbs, const std::vector<std::string>& tags) {
+    if (!boost::filesystem::exists(fileAbs)) {
+        throw StatusCodeException(StatusCode::CLIENT_ERROR,
+                (boost::format("Could not remove tags, reason: file %1% does not exists")
+                % fileAbs).str());
+    }
+    auto fileRel = makeRelativePath(fileAbs);
+    auto fileId = getOrCreateFileId(fileRel);
+    for (auto tag : tags) {
+        removeTag(fileId, tag);
+    }
+}
+
 boost::filesystem::path Repo::makeRelativePath(const boost::filesystem::path& abs) const {
     boost::system::error_code ec;
     auto rel = boost::filesystem::relative(abs, _rootPath, ec);
@@ -172,7 +185,25 @@ void Repo::addTag(const std::string& fileId, const std::string& tag) {
     auto st = db->Write(wo, &wb);
     if (!st.ok()) {
         throw StatusCodeException(StatusCode::SERVER_ERROR, (boost::format(
-                "Failed to create new tag %1% entity for %2%, reason: %3%")
+                "Failed to create new tag %1% of file %2%, reason: %3%")
+                % tag % fileId % st.ToString()).str());
+    }
+}
+
+void Repo::removeTag(const std::string& fileId, const std::string& tag) {
+    // Delete two records (file_tag, 1:Tag1, "") and (tag_file, Tag1:1, "") for a tag 'Tag1'
+    auto cfhFileTag = _db->getColumnFamilyHandle(Database::CF_FILE_TAG);
+    auto cfhTagFile = _db->getColumnFamilyHandle(Database::CF_TAG_FILE);
+    auto db = _db->getDB();
+    rocksdb::WriteBatch wb;
+    wb.Delete(cfhFileTag, DBKey::join(fileId, tag));
+    wb.Delete(cfhTagFile, DBKey::join(tag, fileId));
+    rocksdb::WriteOptions wo;
+    wo.sync = true;
+    auto st = db->Write(wo, &wb);
+    if (!st.ok()) {
+        throw StatusCodeException(StatusCode::SERVER_ERROR, (boost::format(
+                "Failed to remove tag %1% of file %2%, reason: %3%")
                 % tag % fileId % st.ToString()).str());
     }
 }

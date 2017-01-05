@@ -42,6 +42,7 @@
       <in>first_delim_prefix_transform_test.cpp</in>
       <in>g40_esj_test.cpp</in>
       <in>open_close_repo_test.cpp</in>
+      <in>remove_tags_test.cpp</in>
       <in>rocksdb_test.cpp</in>
     </df>
     <df root="test" name="5">
@@ -311,6 +312,10 @@
         </ccTool>
       </item>
       <item path="test/open_close_repo_test.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="test/remove_tags_test.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
       </item>

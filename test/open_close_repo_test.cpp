@@ -61,8 +61,7 @@ TEST_F(OpenCloseRepoTest, InitRepoThenCloseThenOpen) {
                 {"init_if_not_exists", true}
             }}
     };
-    auto err = c.send(cmd.dump());
-    ASSERT_EQ(nullptr, err) << "sendMsg failed, error: " << err;
+    c.send(cmd.dump());
     auto msg = c.recv();
     auto obj = json::json::parse(msg);
     ASSERT_EQ("42", obj["id"]);
@@ -86,8 +85,7 @@ TEST_F(OpenCloseRepoTest, TryOpenNonExistentRepo) {
             }}
     };
     Client c(_port);
-    auto err = c.send(cmd.dump());
-    ASSERT_EQ(nullptr, err) << "sendMsg failed, error: " << err;
+    c.send(cmd.dump());
     auto msg = c.recv();
     auto obj = json::json::parse(msg);
     ASSERT_EQ("123", obj["id"]);

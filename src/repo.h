@@ -32,6 +32,7 @@ public:
     void enqueueCmd(std::unique_ptr<CmdRepo> cmd);
     
     void addTags(const boost::filesystem::path& fileAbs, const std::vector<std::string>& tags);
+    void removeTags(const boost::filesystem::path& fileAbs, const std::vector<std::string>& tags);
     FileInfo getFileInfo(const boost::filesystem::path& fileAbs) const;
     
 private:
@@ -40,6 +41,7 @@ private:
     bool getFileId(const boost::filesystem::path& fileRel, std::string* fileId) const;
     std::string createFileId(const boost::filesystem::path& fileRel);
     void addTag(const std::string& fileId, const std::string& tag);
+    void removeTag(const std::string& fileId, const std::string& tag);
 
 private:
     void run();

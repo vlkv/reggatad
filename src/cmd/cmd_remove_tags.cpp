@@ -1,4 +1,6 @@
 #include "cmd_remove_tags.h"
+#include <status_code.h>
+#include <repo.h>
 #include <boost/assign.hpp>
 
 CmdRemoveTags::CmdRemoveTags(const std::string& id, Cmd::SendResult sendResult) :
@@ -16,6 +18,7 @@ std::string CmdRemoveTags::path() const {
 }
 
 json::json CmdRemoveTags::execute() {
-    // TODO
-    return json::json{};
+    _repo->removeTags(_file, _tags);
+    return json::json{
+        {"code", StatusCode::OK}};
 }
