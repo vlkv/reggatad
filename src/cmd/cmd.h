@@ -21,17 +21,16 @@ struct Cmd {
     void sendResult(json::json& result);
 
 private:
-
     template<class T>
     static std::unique_ptr<T> fromJson2(const json::json& j, SendResult sendResult) {
         std::string cmd = j["cmd"];
-        BOOST_ASSERT_MSG(cmd == T::NAME, "Bad cmd");
+        BOOST_ASSERT_MSG(cmd == T::_name, "Bad cmd");
 
         const std::string id = j["id"];
         auto res = std::unique_ptr<T>(new T(id, sendResult));
 
         auto args = j["args"];
-        for (auto& jm : T::parseMap) {
+        for (auto& jm : T::_parseMap) {
             jm.second(args, *res);
         }
         return res;

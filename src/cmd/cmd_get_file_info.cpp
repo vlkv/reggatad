@@ -7,9 +7,9 @@ CmdGetFileInfo::CmdGetFileInfo(const std::string& id, Cmd::SendResult sendResult
 CmdRepo(id, sendResult) {
 }
 
-const std::string CmdGetFileInfo::NAME = "get_file_info";
+const std::string CmdGetFileInfo::_name = "get_file_info";
 
-const JsonMap::ParseMap<CmdGetFileInfo> CmdGetFileInfo::parseMap = boost::assign::list_of
+const JsonMap::ParseMap<CmdGetFileInfo> CmdGetFileInfo::_parseMap = boost::assign::list_of
         (JsonMap::mapValue("file", &CmdGetFileInfo::_file));
 
 std::string CmdGetFileInfo::path() const {

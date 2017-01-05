@@ -3,8 +3,8 @@
 #include <json_map.h>
 
 struct CmdOpenRepo : public CmdProc {
-    static const std::string NAME;
-    static const JsonMap::ParseMap<CmdOpenRepo> parseMap;
+    static const std::string _name;
+    static const JsonMap::ParseMap<CmdOpenRepo> _parseMap;
 
     std::string _rootDir;
     std::string _dbDir;

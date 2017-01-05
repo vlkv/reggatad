@@ -3,8 +3,8 @@
 #include <json_map.h>
 
 struct CmdRemoveTags : public CmdRepo {
-    static const std::string NAME;
-    static const JsonMap::ParseMap<CmdRemoveTags> parseMap;
+    static const std::string _name;
+    static const JsonMap::ParseMap<CmdRemoveTags> _parseMap;
 
     std::string _file;
     std::vector<std::string> _tags;

@@ -14,16 +14,16 @@ _sendResult(sendResult) {
 
 std::unique_ptr<Cmd> Cmd::fromJson(const json::json& j, Cmd::SendResult sendResult) {
     std::string cmdStr = j["cmd"];
-    if (cmdStr == CmdAddTags::NAME) {
+    if (cmdStr == CmdAddTags::_name) {
         return Cmd::fromJson2<CmdAddTags>(j, sendResult);
 
-    } else if (cmdStr == CmdGetFileInfo::NAME) {
+    } else if (cmdStr == CmdGetFileInfo::_name) {
         return Cmd::fromJson2<CmdGetFileInfo>(j, sendResult);
 
-    } else if (cmdStr == CmdRemoveTags::NAME) {
+    } else if (cmdStr == CmdRemoveTags::_name) {
         return Cmd::fromJson2<CmdRemoveTags>(j, sendResult);
 
-    } else if (cmdStr == CmdOpenRepo::NAME) {
+    } else if (cmdStr == CmdOpenRepo::_name) {
         return Cmd::fromJson2<CmdOpenRepo>(j, sendResult);
 
     } else {

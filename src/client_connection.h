@@ -20,15 +20,14 @@ namespace json = nlohmann;
 
 class ClientConnection {
     int _id;
-    static int _next_id;
+    static int _nextId;
 
     boost::asio::ip::tcp::socket _sock;
     boost::asio::deadline_timer _pingTimer;
 
-    const size_t HEADER_SIZE = 4;
-
-    std::vector<char> _read_buffer;
-    std::vector<char> _write_buffer;
+    const size_t _headerSize = 4;
+    std::vector<char> _readBuffer;
+    std::vector<char> _writeBuffer;
 
     std::shared_ptr<Processor> _proc;
 

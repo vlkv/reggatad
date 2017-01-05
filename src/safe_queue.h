@@ -7,12 +7,12 @@
 
 template<class T>
 class SafeQueue {
-    std::queue<T> q;
-    mutable std::mutex m;
-    std::condition_variable c;
+    std::queue<T> _queue;
+    mutable std::mutex _mutex;
+    std::condition_variable _condVar;
 
 public:
-    SafeQueue() : q(), m(), c() {
+    SafeQueue() : _queue(), _mutex(), _condVar() {
     }
     virtual ~SafeQueue() = default;
 
@@ -25,16 +25,16 @@ private:
 
 template<class T>
 void SafeQueue<T>::enqueue(T&& t) {
-    std::lock_guard<std::mutex> lock(m);
-    q.push(std::move(t));
-    c.notify_one();
+    std::lock_guard<std::mutex> lock(_mutex);
+    _queue.push(std::move(t));
+    _condVar.notify_one();
 }
 
 template<class T>
 T SafeQueue<T>::dequeue() {
-    std::unique_lock<std::mutex> lock(m);
-    while (q.empty()) {
-        c.wait_for(lock, std::chrono::milliseconds(25));
+    std::unique_lock<std::mutex> lock(_mutex);
+    while (_queue.empty()) {
+        _condVar.wait_for(lock, std::chrono::milliseconds(25));
         boost::this_thread::interruption_point();
     }
     return frontPop();
@@ -42,8 +42,8 @@ T SafeQueue<T>::dequeue() {
 
 template<class T>
 T SafeQueue<T>::frontPop() {
-    T val = std::move(q.front());
-    q.pop();
+    T val = std::move(_queue.front());
+    _queue.pop();
     return val;
 }
 

@@ -5,9 +5,9 @@ CmdRemoveTags::CmdRemoveTags(const std::string& id, Cmd::SendResult sendResult) 
 CmdRepo(id, sendResult) {
 }
 
-const std::string CmdRemoveTags::NAME = "remove_tags";
+const std::string CmdRemoveTags::_name = "remove_tags";
 
-const JsonMap::ParseMap<CmdRemoveTags> CmdRemoveTags::parseMap = boost::assign::list_of
+const JsonMap::ParseMap<CmdRemoveTags> CmdRemoveTags::_parseMap = boost::assign::list_of
         (JsonMap::mapValue("file", &CmdRemoveTags::_file))
 (JsonMap::mapArray("tags", &CmdRemoveTags::_tags));
 

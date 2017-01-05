@@ -3,8 +3,8 @@
 #include <json_map.h>
 
 struct CmdGetFileInfo : public CmdRepo {
-    static const std::string NAME;
-    static const JsonMap::ParseMap<CmdGetFileInfo> parseMap;
+    static const std::string _name;
+    static const JsonMap::ParseMap<CmdGetFileInfo> _parseMap;
 
     std::string _file;
     

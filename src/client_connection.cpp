@@ -1,10 +1,10 @@
 #include "client_connection.h"
 
-int ClientConnection::_next_id = 1;
+int ClientConnection::_nextId = 1;
 
 ClientConnection::ClientConnection(boost::asio::io_service& io_service, std::shared_ptr<Processor> proc,
         bool pingClient) :
-_id(ClientConnection::_next_id++),
+_id(ClientConnection::_nextId++),
 _sock(io_service),
 _pingTimer(io_service),
 _proc(proc),
@@ -52,8 +52,8 @@ int ClientConnection::id() const {
 
 void ClientConnection::doReadHeader() {
     BOOST_LOG_TRIVIAL(debug) << "doReadHeader";
-    _read_buffer.resize(HEADER_SIZE);
-    boost::asio::async_read(_sock, boost::asio::buffer(_read_buffer),
+    _readBuffer.resize(_headerSize);
+    boost::asio::async_read(_sock, boost::asio::buffer(_readBuffer),
             boost::bind(&ClientConnection::onReadHeader, this, _1));
 }
 
@@ -64,20 +64,20 @@ void ClientConnection::onReadHeader(const boost::system::error_code& err) {
         BOOST_LOG_TRIVIAL(error) << oss.str();
         throw ConnException(oss.str(), _id);
     }
-    auto bodySize = decodeHeader(_read_buffer);
+    auto bodySize = decodeHeader(_readBuffer);
     BOOST_LOG_TRIVIAL(debug) << "body size is " << bodySize;
     doReadBody(bodySize);
 }
 
 uint32_t ClientConnection::decodeHeader(const std::vector<char>& buf) const {
-    if (buf.size() != HEADER_SIZE) {
+    if (buf.size() != _headerSize) {
         std::ostringstream ost;
-        ost << "Bad buffer size=" << buf.size() << " should be equal to " << HEADER_SIZE;
+        ost << "Bad buffer size=" << buf.size() << " should be equal to " << _headerSize;
         throw ConnException(ost.str(), _id);
     }
     uint32_t msgSize = 0;
     char* dst = (char*) &msgSize;
-    for (size_t i = 0; i < HEADER_SIZE; ++i) {
+    for (size_t i = 0; i < _headerSize; ++i) {
         dst[i] = buf[i];
     }
     return msgSize;
@@ -85,8 +85,8 @@ uint32_t ClientConnection::decodeHeader(const std::vector<char>& buf) const {
 
 void ClientConnection::doReadBody(int bodySize) {
     BOOST_LOG_TRIVIAL(debug) << "doReadBody";
-    _read_buffer.resize(bodySize);
-    boost::asio::async_read(_sock, boost::asio::buffer(_read_buffer),
+    _readBuffer.resize(bodySize);
+    boost::asio::async_read(_sock, boost::asio::buffer(_readBuffer),
             boost::bind(&ClientConnection::onReadBody, this, _1));
 }
 
@@ -96,7 +96,7 @@ void ClientConnection::onReadBody(const boost::system::error_code& err) {
         doReadHeader();
         return;
     }
-    std::string msg(_read_buffer.begin(), _read_buffer.end());
+    std::string msg(_readBuffer.begin(), _readBuffer.end());
     BOOST_LOG_TRIVIAL(info) << "Received from client id=" << _id << " msg: " << msg;
     handleMsg(msg);
 }
@@ -123,11 +123,11 @@ void ClientConnection::onCmdResultWritten(const boost::system::error_code& err, 
 
 void ClientConnection::doWrite(const std::string &msg, OnWriteHandler onWriteHandler) {
     BOOST_LOG_TRIVIAL(info) << "Sending to client id=" << _id << " msg: " << msg;
-    _write_buffer.resize(4 + msg.size());
+    _writeBuffer.resize(4 + msg.size());
     uint32_t header = msg.size();
-    std::copy((char*) &header, (char*) &header + 4, _write_buffer.begin());
-    std::copy(msg.begin(), msg.end(), _write_buffer.begin() + 4);
-    boost::asio::async_write(_sock, boost::asio::buffer(_write_buffer), onWriteHandler);
+    std::copy((char*) &header, (char*) &header + 4, _writeBuffer.begin());
+    std::copy(msg.begin(), msg.end(), _writeBuffer.begin() + 4);
+    boost::asio::async_write(_sock, boost::asio::buffer(_writeBuffer), onWriteHandler);
 }
 
 void ClientConnection::onPingSent(const boost::system::error_code& err, size_t bytes) {

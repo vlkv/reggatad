@@ -7,9 +7,9 @@ CmdAddTags::CmdAddTags(const std::string& id, Cmd::SendResult sendResult) :
 CmdRepo(id, sendResult) {
 }
 
-const std::string CmdAddTags::NAME = "add_tags";
+const std::string CmdAddTags::_name = "add_tags";
 
-const JsonMap::ParseMap<CmdAddTags> CmdAddTags::parseMap = boost::assign::list_of
+const JsonMap::ParseMap<CmdAddTags> CmdAddTags::_parseMap = boost::assign::list_of
         (JsonMap::mapValue("file", &CmdAddTags::_file))
 (JsonMap::mapArray("tags", &CmdAddTags::_tags));
 
