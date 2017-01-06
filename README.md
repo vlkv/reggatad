@@ -121,7 +121,7 @@ Request:
     id: "1",
     cmd: "get_file_info",
     args: {
-        file: "/home/repo/file.txt"
+        file: "/home/user/repo/dir/file"
     }
 }
 ```
@@ -131,7 +131,7 @@ Response:
     code: 200,
     id: "1",
     data: {
-        "path": "./test_data/add_tags_test/dir/file",
+        "path": "dir/file",
         "size": 4,
         "tags": ["tag1", "tag2", "tag3"]
     }
