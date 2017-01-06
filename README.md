@@ -185,36 +185,45 @@ Request:
 ## Query Language
 Fields are just tags with values. Values should be typed. 
 Types supported are: string, number, datetime.
-Operations with tags are: AND (lowest priority), OR, NOT and braces (highest priority).
-Operations with fields are: ==, !=, >, >=, <, <=, ~= (like)
+Operations with tags are: AND (lowest priority), OR, NOT, operations with fields and braces (highest priority).
+Operations with fields are: ==, !=, >, >=, <, <=, ~= (like).
 
-files which has all three tags: t1 AND t2 AND t3:
+Files which has all three tags: t1 AND t2 AND t3:
 ```
 t1 t2 t3
 ```
-files with tag t1 AND any of t2 OR t3:
+
+Files with tag t1 AND any of t2 OR t3:
 ```
-t1 t2|t3
+t1 t2 | t3
 ```
-files with tags t1 AND t2 OR just one tag t3:
+
+Files with tags t1 AND t2 OR just one tag t3:
 ```
-(t1 t2)|t3
-``` 
-files with tag t1 AND field f1>5:
+(t1 t2) | t3
+```
+
+Files with tag t1 AND field f1>5:
 ```
 t1 f1>5
-``` 
-files with tag t1 OR field f1>5:
+```
+
+Files with tag t1 OR field f1>5:
 ```
 t1 | f1>5
-``` 
+```
 
-"tag1" eqiuvalent to "tag1 != NULL" => all files with tag1
-"NOT tag1" equivalent "tag1 == NULL" => all files without tag1
+Files that doesn't have tag t1:
+```
+NOT t1
+```
 
 The obvious way of executing queries is just filter files by subdir (recursively), then iterate over them and 
 apply query predicate to every file. Very often case is to perform a query in a subdir. The mechanism for executing 
 query in the repo root is just a particular case of "exec query in subdir".
+
+Another way is to calculate separate sets in memory of file_ids for every tag and field. Then
+calcuate AND/OR/NOT/etc operations on them according to the query structure.
 
 The old grammar of reggata is https://github.com/vlkv/reggata/wiki/Query-language-grammar. In reggatad we should improve it.
 
