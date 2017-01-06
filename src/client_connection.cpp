@@ -1,4 +1,5 @@
 #include "client_connection.h"
+#include "status_code.h"
 #include <boost/format.hpp>
 
 int ClientConnection::_nextId = 1;
@@ -135,7 +136,15 @@ void ClientConnection::onReadBody(const boost::system::error_code& err) {
     }
     std::string msg(_readBuffer.begin(), _readBuffer.end());
     BOOST_LOG_TRIVIAL(info) << "Received from client id=" << _id << " msg: " << msg;
-    handleMsg(msg);
+    try {
+        handleMsg(msg);
+    } catch (const std::exception& ex) {
+        json::json resp{
+            {"code", StatusCode::CLIENT_ERROR},
+            {"reason", ex.what()}};
+        handleCmdResult(resp.dump());
+    }
+    doReadHeader();
 }
 
 void ClientConnection::handleMsg(const std::string &msg) {
@@ -146,11 +155,10 @@ void ClientConnection::handleMsg(const std::string &msg) {
             _autoCloseConnectionTimer.async_wait(boost::bind(&ClientConnection::onAutoCloseConnectionTimer, this, _1));
         }
     } else {
-        auto cmd = Cmd::fromJson(j, // TODO: send CLIENT_ERROR if command has bad format
+        auto cmd = Cmd::fromJson(j,
                 boost::bind(&ClientConnection::handleCmdResult, this, _1));
         _proc->routeCmd(std::move(cmd));
     }
-    doReadHeader();
 }
 
 void ClientConnection::handleCmdResult(const std::string& result) {

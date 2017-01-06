@@ -13,7 +13,7 @@ _sendResult(sendResult) {
 }
 
 std::unique_ptr<Cmd> Cmd::fromJson(const json::json& j, Cmd::SendResult sendResult) {
-    std::string cmdStr = j["cmd"];
+    std::string cmdStr = j.value("cmd", std::string());
     if (cmdStr == CmdAddTags::_name) {
         return Cmd::fromJson2<CmdAddTags>(j, sendResult);
 
@@ -25,6 +25,9 @@ std::unique_ptr<Cmd> Cmd::fromJson(const json::json& j, Cmd::SendResult sendResu
 
     } else if (cmdStr == CmdOpenRepo::_name) {
         return Cmd::fromJson2<CmdOpenRepo>(j, sendResult);
+
+    } else if (cmdStr == std::string()) {
+        throw ReggataException(std::string("Field 'cmd' is missing or empty"));
 
     } else {
         throw ReggataException(std::string("Unexpected command: ") + cmdStr);
