@@ -1,4 +1,5 @@
 #include "service.h"
+#include <boost/format.hpp>
 
 Service::Service(int port, std::shared_ptr<Processor> proc, bool pingClients) :
 _proc(proc),
@@ -31,8 +32,11 @@ void Service::serviceRunLoop() {
             _ioService.run();
         } catch (const ConnException &e) {
             BOOST_LOG_TRIVIAL(error) << "Service fail: " << e.what();
-            _clients.at(e.clientId())->stop();
-            _clients.erase(e.clientId());
+            auto c = _clients.find(e.clientId());
+            if (c != _clients.end()) {
+                c->second->stop();
+                _clients.erase(e.clientId());
+            }
         } catch (...) {
             throw;
         }
@@ -52,15 +56,13 @@ void Service::acceptClient() {
 }
 
 void Service::onAccept(ClientConnection* client, const boost::system::error_code& err) {
-    if (err.value() == boost::asio::error::operation_aborted) {
+    if (err == boost::asio::error::operation_aborted) {
         throw ReggataException("Accept operation aborted");
     }
     if (err) {
-        std::ostringstream oss;
-        oss << "on_accept error: " << err;
-        throw ReggataException(oss.str());
+        throw ReggataException((boost::format("onAccept error: %1%") % err).str());
     }
-    BOOST_LOG_TRIVIAL(info) << "Client accepted!";
+    BOOST_LOG_TRIVIAL(info) << "Client id=" << client->id() << " accepted";
     client->start();
     acceptClient();
 }

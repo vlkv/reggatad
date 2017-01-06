@@ -74,7 +74,7 @@ TEST_F(RemoveTagsTest, RemoveTags) {
         ASSERT_EQ(StatusCode::OK, obj["code"]); // NOTE: removal of "NonExistentTag" doesn't hurt
     }
 
-    {// check the tags have been added
+    {// check the tags have been removed
         json::json cmd = {
             {"id", "3"},
             {"cmd", "get_file_info"},

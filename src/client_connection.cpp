@@ -1,4 +1,5 @@
 #include "client_connection.h"
+#include <boost/format.hpp>
 
 int ClientConnection::_nextId = 1;
 
@@ -7,8 +8,10 @@ ClientConnection::ClientConnection(boost::asio::io_service& io_service, std::sha
 _id(ClientConnection::_nextId++),
 _sock(io_service),
 _pingTimer(io_service),
+_autoCloseConnectionTimer(io_service),
 _proc(proc),
 _pingClient(pingClient) {
+    BOOST_LOG_TRIVIAL(info) << "Created ClientConnection id=" << _id;
 }
 
 void ClientConnection::start() {
@@ -19,27 +22,58 @@ void ClientConnection::start() {
 void ClientConnection::stop() {
     BOOST_LOG_TRIVIAL(info) << "Stopping ClientConnection id=" << _id;
     _pingTimer.cancel();
-    _sock.close();
-}
+    _autoCloseConnectionTimer.cancel();
 
-void ClientConnection::onPingTimer(const boost::system::error_code& err) {
-    if (err) {
-        BOOST_LOG_TRIVIAL(error) << "onPingTimer error=" << err << " " << err.message();
-        startPingTimer();
-        return;
+    boost::system::error_code ec;
+    _sock.shutdown(boost::asio::ip::tcp::socket::shutdown_both, ec);
+    if (ec) {
+        BOOST_LOG_TRIVIAL(error) << "Could not shutdown the socket, client id=" << _id;
     }
-    BOOST_LOG_TRIVIAL(debug) << "onPingTimer";
-    json::json pingMsg{
-        {"cmd", "ping"}};
-    doWrite(pingMsg.dump(), boost::bind(&ClientConnection::onPingSent, this, _1, _2));
+    _sock.close();
 }
 
 void ClientConnection::startPingTimer() {
     if (!_pingClient) {
         return;
     }
-    _pingTimer.expires_from_now(boost::posix_time::seconds(5));
+    _pingTimer.expires_from_now(boost::posix_time::seconds(5)); // TODO: parametrize timeout
     _pingTimer.async_wait(boost::bind(&ClientConnection::onPingTimer, this, _1));
+}
+
+void ClientConnection::startAutoCloseConnectionTimer() {
+    if (!_pingClient) {
+        return;
+    }
+    _autoCloseConnectionTimer.expires_from_now(boost::posix_time::seconds(9)); // Should be a little less than 2*ping_timeout
+    _autoCloseConnectionTimer.async_wait(boost::bind(&ClientConnection::onAutoCloseConnectionTimer, this, _1));
+}
+
+void ClientConnection::onPingTimer(const boost::system::error_code& err) {
+    if (err == boost::system::errc::operation_canceled) {
+        BOOST_LOG_TRIVIAL(debug) << "onPingTimer cancelled";
+        return;
+    }
+    if (err) {
+        throw ConnException((boost::format("Ping timer error: %1% %2% client id=%3%")
+                % err % err.message() % _id).str(), _id);
+    }
+    BOOST_LOG_TRIVIAL(debug) << "onPingTimer";
+    json::json pingMsg{
+        {"question", "Are you alive? Respond with {\"answer\": \"Yes\"} otherwise server would close the connection"}};
+    doWrite(pingMsg.dump(), boost::bind(&ClientConnection::onPingSent, this, _1, _2));
+}
+
+void ClientConnection::onAutoCloseConnectionTimer(const boost::system::error_code& err) {
+    if (err == boost::system::errc::operation_canceled) {
+        BOOST_LOG_TRIVIAL(debug) << "onAutoCloseConnectionTimer cancelled";
+        return;
+    }
+    if (err) {
+        throw ConnException((boost::format("Auto close connection timer error: %1% %2% client id=%3%")
+                % err % err.message() % _id).str(), _id);
+    }
+    throw ConnException((boost::format("Closing connection with client id=%1%, because it doesn't respond to pings")
+            % _id).str(), _id);
 }
 
 boost::asio::ip::tcp::socket& ClientConnection::sock() {
@@ -58,22 +92,22 @@ void ClientConnection::doReadHeader() {
 }
 
 void ClientConnection::onReadHeader(const boost::system::error_code& err) {
+    if (err == boost::system::errc::operation_canceled) {
+        BOOST_LOG_TRIVIAL(debug) << "Read message header cancelled";
+        return;
+    }
     if (err) {
-        std::ostringstream oss;
-        oss << "onReadHeader error=" << err << " " << err.message();
-        BOOST_LOG_TRIVIAL(error) << oss.str();
-        throw ConnException(oss.str(), _id);
+        throw ConnException((boost::format("Could not read message header, error: %1% %2% client id=%3%")
+                % err % err.message() % _id).str(), _id);
     }
     auto bodySize = decodeHeader(_readBuffer);
-    BOOST_LOG_TRIVIAL(debug) << "body size is " << bodySize;
     doReadBody(bodySize);
 }
 
 uint32_t ClientConnection::decodeHeader(const std::vector<char>& buf) const {
     if (buf.size() != _headerSize) {
-        std::ostringstream ost;
-        ost << "Bad buffer size=" << buf.size() << " should be equal to " << _headerSize;
-        throw ConnException(ost.str(), _id);
+        throw ConnException((boost::format("Bad header size %1% should be equal to %2% client id=%3%")
+                % buf.size() % _headerSize % _id).str(), _id);
     }
     uint32_t msgSize = 0;
     char* dst = (char*) &msgSize;
@@ -91,10 +125,13 @@ void ClientConnection::doReadBody(int bodySize) {
 }
 
 void ClientConnection::onReadBody(const boost::system::error_code& err) {
-    if (err) {
-        BOOST_LOG_TRIVIAL(error) << "onReadBody error=" << err << " " << err.message();
-        doReadHeader();
+    if (err == boost::system::errc::operation_canceled) {
+        BOOST_LOG_TRIVIAL(debug) << "Read message body cancelled";
         return;
+    }
+    if (err) {
+        throw ConnException((boost::format("Could not read message body, error: %1% %2% client id=%3%")
+                % err % err.message() % _id).str(), _id);
     }
     std::string msg(_readBuffer.begin(), _readBuffer.end());
     BOOST_LOG_TRIVIAL(info) << "Received from client id=" << _id << " msg: " << msg;
@@ -103,9 +140,16 @@ void ClientConnection::onReadBody(const boost::system::error_code& err) {
 
 void ClientConnection::handleMsg(const std::string &msg) {
     auto j = json::json::parse(msg);
-    auto cmd = Cmd::fromJson(j, // TODO: send CLIENT_ERROR if command has bad format
-            boost::bind(&ClientConnection::handleCmdResult, this, _1));
-    _proc->routeCmd(std::move(cmd));
+
+    if (_pingClient && j.find("cmd") == j.end() && j.value("answer", std::string("No")) == "Yes") {
+        if (_autoCloseConnectionTimer.expires_from_now(boost::posix_time::seconds(10)) > 0) {
+            _autoCloseConnectionTimer.async_wait(boost::bind(&ClientConnection::onAutoCloseConnectionTimer, this, _1));
+        }
+    } else {
+        auto cmd = Cmd::fromJson(j, // TODO: send CLIENT_ERROR if command has bad format
+                boost::bind(&ClientConnection::handleCmdResult, this, _1));
+        _proc->routeCmd(std::move(cmd));
+    }
     doReadHeader();
 }
 
@@ -115,13 +159,15 @@ void ClientConnection::handleCmdResult(const std::string& result) {
 
 void ClientConnection::onCmdResultWritten(const boost::system::error_code& err, size_t bytes) {
     if (err) {
-        std::ostringstream oss;
-        oss << "Could not send cmd result, error: " << err << " " << err.message() << " client id=" << _id;
-        throw ConnException(oss.str(), _id);
+        throw ConnException((boost::format("Could not send cmd result, error: %1% %2% client id=%3%")
+                % err % err.message() % _id).str(), _id);
     }
 }
 
 void ClientConnection::doWrite(const std::string &msg, OnWriteHandler onWriteHandler) {
+    if (!_sock.is_open()) {
+        return;
+    }
     BOOST_LOG_TRIVIAL(info) << "Sending to client id=" << _id << " msg: " << msg;
     _writeBuffer.resize(4 + msg.size());
     uint32_t header = msg.size();
@@ -132,9 +178,12 @@ void ClientConnection::doWrite(const std::string &msg, OnWriteHandler onWriteHan
 
 void ClientConnection::onPingSent(const boost::system::error_code& err, size_t bytes) {
     if (err) {
-        std::ostringstream oss;
-        oss << "Could not send ping, error: " << err << " " << err.message() << " client id=" << _id;
-        throw ConnException(oss.str(), _id);
+        throw ConnException((boost::format("Could not send ping, error: %1% %2% client id=%3%")
+                % err % err.message() % _id).str(), _id);
     }
     startPingTimer();
+    if (!_autoCloseConnectionTimerIsStarted) {
+        startAutoCloseConnectionTimer();
+        _autoCloseConnectionTimerIsStarted = true;
+    }
 }

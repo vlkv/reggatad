@@ -24,6 +24,8 @@ class ClientConnection {
 
     boost::asio::ip::tcp::socket _sock;
     boost::asio::deadline_timer _pingTimer;
+    boost::asio::deadline_timer _autoCloseConnectionTimer;
+    bool _autoCloseConnectionTimerIsStarted = false;
 
     const size_t _headerSize = 4;
     std::vector<char> _readBuffer;
@@ -36,7 +38,7 @@ class ClientConnection {
 public:
     typedef boost::shared_ptr<ClientConnection> ptr;
 
-    ClientConnection(boost::asio::io_service& io_service, std::shared_ptr<Processor> proc, bool pingClient);
+    ClientConnection(boost::asio::io_service& ioService, std::shared_ptr<Processor> proc, bool pingClient);
     virtual ~ClientConnection() = default;
 
     void start();
@@ -61,4 +63,6 @@ private:
     void startPingTimer();
     void onPingTimer(const boost::system::error_code& err);
     void onPingSent(const boost::system::error_code& err, size_t bytes);
+    void startAutoCloseConnectionTimer();
+    void onAutoCloseConnectionTimer(const boost::system::error_code& err);
 };
