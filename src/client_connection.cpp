@@ -4,12 +4,12 @@
 
 int ClientConnection::_nextId = 1;
 
-ClientConnection::ClientConnection(boost::asio::io_service& io_service, std::shared_ptr<Processor> proc,
+ClientConnection::ClientConnection(boost::asio::io_service& ioService, std::shared_ptr<Processor> proc,
         bool pingClient) :
 _id(ClientConnection::_nextId++),
-_sock(io_service),
-_pingTimer(io_service),
-_autoCloseConnectionTimer(io_service),
+_sock(ioService),
+_pingTimer(ioService),
+_autoCloseConnectionTimer(ioService),
 _proc(proc),
 _pingClient(pingClient) {
     BOOST_LOG_TRIVIAL(info) << "Created ClientConnection id=" << _id;
@@ -45,8 +45,22 @@ void ClientConnection::startAutoCloseConnectionTimer() {
     if (!_pingClient) {
         return;
     }
+    if (_autoCloseConnectionTimerIsStarted) {
+        return;
+    }
+    _autoCloseConnectionTimerIsStarted = true;
+
     _autoCloseConnectionTimer.expires_from_now(boost::posix_time::seconds(9)); // Should be a little less than 2*ping_timeout
     _autoCloseConnectionTimer.async_wait(boost::bind(&ClientConnection::onAutoCloseConnectionTimer, this, _1));
+}
+
+void ClientConnection::restartAutoCloseConnectionTimer() {
+    if (!_pingClient) {
+        return;
+    }
+    if (_autoCloseConnectionTimer.expires_from_now(boost::posix_time::seconds(9)) > 0) {
+        _autoCloseConnectionTimer.async_wait(boost::bind(&ClientConnection::onAutoCloseConnectionTimer, this, _1));
+    }
 }
 
 void ClientConnection::onPingTimer(const boost::system::error_code& err) {
@@ -138,10 +152,21 @@ void ClientConnection::onReadBody(const boost::system::error_code& err) {
     BOOST_LOG_TRIVIAL(info) << "Received from client id=" << _id << " msg: " << msg;
     try {
         handleMsg(msg);
+    } catch (const ParseCmdException& ex) {
+        json::json resp{
+            {"id", ex.cmdId()},
+            {"code", StatusCode::CLIENT_ERROR},
+            {"reason", ex.what()}};
+        handleCmdResult(resp.dump());
     } catch (const std::exception& ex) {
         json::json resp{
             {"code", StatusCode::CLIENT_ERROR},
             {"reason", ex.what()}};
+        handleCmdResult(resp.dump());
+    } catch (...) {
+        json::json resp{
+            {"code", StatusCode::CLIENT_ERROR},
+            {"reason", "Unknown exception in onReadBody"}};
         handleCmdResult(resp.dump());
     }
     doReadHeader();
@@ -149,15 +174,20 @@ void ClientConnection::onReadBody(const boost::system::error_code& err) {
 
 void ClientConnection::handleMsg(const std::string &msg) {
     auto j = json::json::parse(msg);
-
-    if (_pingClient && j.find("cmd") == j.end() && j.value("answer", std::string("No")) == "Yes") {
-        if (_autoCloseConnectionTimer.expires_from_now(boost::posix_time::seconds(10)) > 0) {
-            _autoCloseConnectionTimer.async_wait(boost::bind(&ClientConnection::onAutoCloseConnectionTimer, this, _1));
+    auto cmdId = j.value("id", std::string()); // We'd like to put 'id' to response if it presents in case of errors
+    try {
+        if (_pingClient && j.count("cmd") == 0 && j.value("answer", std::string("No")) == "Yes") {
+            restartAutoCloseConnectionTimer();
+        } else {
+            j.at("id"); // Would throw out_of_range error if 'id' is missing
+            auto cmd = Cmd::fromJson(j,
+                    boost::bind(&ClientConnection::handleCmdResult, this, _1));
+            _proc->routeCmd(std::move(cmd));
         }
-    } else {
-        auto cmd = Cmd::fromJson(j,
-                boost::bind(&ClientConnection::handleCmdResult, this, _1));
-        _proc->routeCmd(std::move(cmd));
+    } catch (const std::exception& ex) {
+        throw ParseCmdException(cmdId, ex.what());
+    } catch (...) {
+        throw ParseCmdException(cmdId, "Unknown exception in handleMsg");
     }
 }
 
@@ -190,8 +220,5 @@ void ClientConnection::onPingSent(const boost::system::error_code& err, size_t b
                 % err % err.message() % _id).str(), _id);
     }
     startPingTimer();
-    if (!_autoCloseConnectionTimerIsStarted) {
-        startAutoCloseConnectionTimer();
-        _autoCloseConnectionTimerIsStarted = true;
-    }
+    startAutoCloseConnectionTimer();
 }

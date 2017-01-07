@@ -42,6 +42,7 @@
       <in>db_key_test.cpp</in>
       <in>first_delim_prefix_transform_test.cpp</in>
       <in>g40_esj_test.cpp</in>
+      <in>nlohmann_json_test.cpp</in>
       <in>open_close_repo_test.cpp</in>
       <in>ping_client_test.cpp</in>
       <in>remove_tags_test.cpp</in>
@@ -314,6 +315,8 @@
       <item path="test/g40_esj_test.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
+      </item>
+      <item path="test/nlohmann_json_test.cpp" ex="false" tool="1" flavor2="0">
       </item>
       <item path="test/open_close_repo_test.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">

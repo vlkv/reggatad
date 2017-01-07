@@ -9,22 +9,20 @@ namespace JsonMap {
 
 template<class C, class F>
 void parseValue(const json::json& j, C& obj, const std::string& key, F C::*f) {
-    try {
-        F fieldVal = j.at(key);
-        obj.*f = fieldVal;
-    } catch(const std::out_of_range&) {
-        // do nothing
-    }
+    F fieldVal = j.at(key);
+    obj.*f = fieldVal;
+}
+
+template<class C, class F>
+void parseValue(const json::json& j, C& obj, const std::string& key, F C::*f, F defaultValue) {
+    F fieldVal = j.value(key, defaultValue);
+    obj.*f = fieldVal;
 }
 
 template<class C, class F>
 void parseArray(const json::json& j, C& obj, const std::string& key, F C::*f) {
-    try {
-        for (auto& item : j.at(key)) {
-            (obj.*f).push_back(item);
-        }
-    } catch(const std::out_of_range&) {
-        // do nothing
+    for (auto& item : j.at(key)) {
+        (obj.*f).push_back(item);
     }
 }
 
@@ -32,6 +30,13 @@ template<class C, class F>
 std::pair<std::string, boost::function<void(const json::json&, C& obj)>> 
 mapValue(const std::string& key, F C::*fieldPtr) {
     auto fun = boost::bind(&parseValue<C, F>, _1, _2, key, fieldPtr);
+    return std::pair<std::string, boost::function<void(const json::json&, C&)>>(key, fun);
+}
+
+template<class C, class F>
+std::pair<std::string, boost::function<void(const json::json&, C& obj)>> 
+mapValue(const std::string& key, F C::*fieldPtr, F defaultValue) {
+    auto fun = boost::bind(&parseValue<C, F>, _1, _2, key, fieldPtr, defaultValue);
     return std::pair<std::string, boost::function<void(const json::json&, C&)>>(key, fun);
 }
 

@@ -64,5 +64,6 @@ private:
     void onPingTimer(const boost::system::error_code& err);
     void onPingSent(const boost::system::error_code& err, size_t bytes);
     void startAutoCloseConnectionTimer();
+    void restartAutoCloseConnectionTimer();
     void onAutoCloseConnectionTimer(const boost::system::error_code& err);
 };

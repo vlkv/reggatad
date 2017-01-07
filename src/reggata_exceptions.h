@@ -32,7 +32,6 @@ public:
 };
 
 
-
 class StatusCodeException : public ReggataException {
     int _statusCode;
 
@@ -44,5 +43,20 @@ public:
 
     int statusCode() const {
         return _statusCode;
+    }
+};
+
+
+class ParseCmdException : public ReggataException {
+    std::string _cmdId;
+
+public:
+    explicit ParseCmdException(const std::string& cmdId, const std::string& msg) :
+    ReggataException(msg),
+    _cmdId(cmdId) {
+    }
+
+    std::string cmdId() const {
+        return _cmdId;
     }
 };

@@ -51,17 +51,19 @@ TEST_F(BadCmdTest, InvalidJson) {
 
 TEST_F(BadCmdTest, BlaBlaBlaJsonMessage) {
     nlohmann::json cmd = {
+        {"id", "2"},
         {"bla", "bla bla"}
     };
     Client c(_port);
     c.send(cmd.dump());
     auto msg = c.recv();
     auto obj = nlohmann::json::parse(msg);
+    ASSERT_EQ("2", obj["id"]);
     ASSERT_EQ(StatusCode::CLIENT_ERROR, obj["code"]);
-    ASSERT_EQ("Field 'cmd' is missing or empty", obj["reason"]);
+    ASSERT_EQ("key 'cmd' not found", obj["reason"]);
 }
 
-TEST_F(BadCmdTest, DISABLED_IncompleteCmdNoArgs) { //TODO: undisable the test
+TEST_F(BadCmdTest, IncompleteCmdNoArgs) {
     nlohmann::json cmd = {
         {"id", "1"},
         {"cmd", "open_repo"}
@@ -72,15 +74,15 @@ TEST_F(BadCmdTest, DISABLED_IncompleteCmdNoArgs) { //TODO: undisable the test
     auto obj = nlohmann::json::parse(msg);
     ASSERT_EQ("1", obj["id"]);
     ASSERT_EQ(StatusCode::CLIENT_ERROR, obj["code"]);
-    ASSERT_EQ("TODO", obj["reason"]);
+    ASSERT_EQ("key 'root_dir' not found", obj["reason"]);
 }
 
-TEST_F(BadCmdTest, DISABLED_IncompleteCmdNoArgs2) { //TODO: undisable the test
+TEST_F(BadCmdTest, IncompleteCmdNoArgs2) {
     nlohmann::json cmd = {
         {"id", "1"},
         {"cmd", "open_repo"},
         {"args",
-            {}}
+            nlohmann::json::object()}
     };
     Client c(_port);
     c.send(cmd.dump());
@@ -88,10 +90,10 @@ TEST_F(BadCmdTest, DISABLED_IncompleteCmdNoArgs2) { //TODO: undisable the test
     auto obj = nlohmann::json::parse(msg);
     ASSERT_EQ("1", obj["id"]);
     ASSERT_EQ(StatusCode::CLIENT_ERROR, obj["code"]);
-    ASSERT_EQ("TODO", obj["reason"]);
+    ASSERT_EQ("key 'root_dir' not found", obj["reason"]);
 }
 
-TEST_F(BadCmdTest, DISABLED_IncompleteCmdNoId) { //TODO: undisable the test
+TEST_F(BadCmdTest, IncompleteCmdNoId) {
     nlohmann::json cmd = {
         {"cmd", "open_repo"},
         {"args",
@@ -105,16 +107,15 @@ TEST_F(BadCmdTest, DISABLED_IncompleteCmdNoId) { //TODO: undisable the test
     auto msg = c.recv();
     auto obj = nlohmann::json::parse(msg);
     ASSERT_EQ(StatusCode::CLIENT_ERROR, obj["code"]);
-    ASSERT_EQ("TODO", obj["reason"]);
+    ASSERT_EQ("key 'id' not found", obj["reason"]);
 }
 
-TEST_F(BadCmdTest, DISABLED_IncompleteCmdNoMandatoryArg) { //TODO: undisable the test
+TEST_F(BadCmdTest, IncompleteCmdNoMandatoryArg) {
     nlohmann::json cmd = {
         {"id", "1"},
         {"cmd", "open_repo"},
         {"args",
             {
-                // NOTE mandatory arg 'root_dir' is missing
                 {"db_dir", "/tmp/repo/.reggata"}
             }}
     };
@@ -123,10 +124,10 @@ TEST_F(BadCmdTest, DISABLED_IncompleteCmdNoMandatoryArg) { //TODO: undisable the
     auto msg = c.recv();
     auto obj = nlohmann::json::parse(msg);
     ASSERT_EQ(StatusCode::CLIENT_ERROR, obj["code"]);
-    ASSERT_EQ("TODO", obj["reason"]);
+    ASSERT_EQ("key 'root_dir' not found", obj["reason"]);
 }
 
-TEST_F(BadCmdTest, DISABLED_InvalidCmdArgType) { //TODO: undisable the test
+TEST_F(BadCmdTest, InvalidCmdArgType) {
     nlohmann::json cmd = {
         {"id", "1"},
         {"cmd", "open_repo"},
@@ -141,5 +142,5 @@ TEST_F(BadCmdTest, DISABLED_InvalidCmdArgType) { //TODO: undisable the test
     auto msg = c.recv();
     auto obj = nlohmann::json::parse(msg);
     ASSERT_EQ(StatusCode::CLIENT_ERROR, obj["code"]);
-    ASSERT_EQ("TODO", obj["reason"]);
+    ASSERT_EQ("type must be string, but is number", obj["reason"]);
 }

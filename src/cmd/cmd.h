@@ -26,16 +26,13 @@ private:
         std::string cmd = j["cmd"];
         BOOST_ASSERT_MSG(cmd == T::_name, "Bad cmd");
 
-        const std::string id = j["id"];
+        const std::string id = j.at("id");
         auto res = std::unique_ptr<T>(new T(id, sendResult));
 
-        auto args = j["args"];
+        auto args = j.value("args", json::json::object());
         for (auto& jm : T::_parseMap) {
             jm.second(args, *res);
         }
         return res;
     }
 };
-
-
-
