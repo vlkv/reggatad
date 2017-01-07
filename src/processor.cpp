@@ -32,12 +32,12 @@ void Processor::run() {
             } catch (const StatusCodeException& ex) {
                 result = {
                     {"code", ex.statusCode()},
-                    {"reason", ex.what()}
+                    {"msg", ex.what()}
                 };
             } catch (const std::exception& ex) {
                 result = {
                     {"code", StatusCode::SERVER_ERROR},
-                    {"reason", ex.what()}
+                    {"msg", ex.what()}
                 };
             }
             cmd->sendResult(result);

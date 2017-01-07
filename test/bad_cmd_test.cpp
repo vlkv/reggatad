@@ -46,7 +46,7 @@ TEST_F(BadCmdTest, InvalidJson) {
     auto msg = c.recv();
     auto obj = nlohmann::json::parse(msg);
     ASSERT_EQ(StatusCode::CLIENT_ERROR, obj["code"]);
-    ASSERT_EQ("parse error - unexpected 'T'", obj["reason"]);
+    ASSERT_EQ("parse error - unexpected 'T'", obj["msg"]);
 }
 
 TEST_F(BadCmdTest, BlaBlaBlaJsonMessage) {
@@ -60,7 +60,7 @@ TEST_F(BadCmdTest, BlaBlaBlaJsonMessage) {
     auto obj = nlohmann::json::parse(msg);
     ASSERT_EQ("2", obj["id"]);
     ASSERT_EQ(StatusCode::CLIENT_ERROR, obj["code"]);
-    ASSERT_EQ("key 'cmd' not found", obj["reason"]);
+    ASSERT_EQ("key 'cmd' not found", obj["msg"]);
 }
 
 TEST_F(BadCmdTest, IncompleteCmdNoArgs) {
@@ -74,7 +74,7 @@ TEST_F(BadCmdTest, IncompleteCmdNoArgs) {
     auto obj = nlohmann::json::parse(msg);
     ASSERT_EQ("1", obj["id"]);
     ASSERT_EQ(StatusCode::CLIENT_ERROR, obj["code"]);
-    ASSERT_EQ("key 'root_dir' not found", obj["reason"]);
+    ASSERT_EQ("key 'root_dir' not found", obj["msg"]);
 }
 
 TEST_F(BadCmdTest, IncompleteCmdNoArgs2) {
@@ -90,7 +90,7 @@ TEST_F(BadCmdTest, IncompleteCmdNoArgs2) {
     auto obj = nlohmann::json::parse(msg);
     ASSERT_EQ("1", obj["id"]);
     ASSERT_EQ(StatusCode::CLIENT_ERROR, obj["code"]);
-    ASSERT_EQ("key 'root_dir' not found", obj["reason"]);
+    ASSERT_EQ("key 'root_dir' not found", obj["msg"]);
 }
 
 TEST_F(BadCmdTest, IncompleteCmdNoId) {
@@ -107,7 +107,7 @@ TEST_F(BadCmdTest, IncompleteCmdNoId) {
     auto msg = c.recv();
     auto obj = nlohmann::json::parse(msg);
     ASSERT_EQ(StatusCode::CLIENT_ERROR, obj["code"]);
-    ASSERT_EQ("key 'id' not found", obj["reason"]);
+    ASSERT_EQ("key 'id' not found", obj["msg"]);
 }
 
 TEST_F(BadCmdTest, IncompleteCmdNoMandatoryArg) {
@@ -124,7 +124,7 @@ TEST_F(BadCmdTest, IncompleteCmdNoMandatoryArg) {
     auto msg = c.recv();
     auto obj = nlohmann::json::parse(msg);
     ASSERT_EQ(StatusCode::CLIENT_ERROR, obj["code"]);
-    ASSERT_EQ("key 'root_dir' not found", obj["reason"]);
+    ASSERT_EQ("key 'root_dir' not found", obj["msg"]);
 }
 
 TEST_F(BadCmdTest, InvalidCmdArgType) {
@@ -142,5 +142,5 @@ TEST_F(BadCmdTest, InvalidCmdArgType) {
     auto msg = c.recv();
     auto obj = nlohmann::json::parse(msg);
     ASSERT_EQ(StatusCode::CLIENT_ERROR, obj["code"]);
-    ASSERT_EQ("type must be string, but is number", obj["reason"]);
+    ASSERT_EQ("type must be string, but is number", obj["msg"]);
 }

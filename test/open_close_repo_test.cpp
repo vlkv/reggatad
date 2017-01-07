@@ -90,7 +90,7 @@ TEST_F(OpenCloseRepoTest, TryOpenNonExistentRepo) {
     auto obj = json::json::parse(msg);
     ASSERT_EQ("123", obj["id"]);
     ASSERT_EQ(StatusCode::CLIENT_ERROR, obj["code"]);
-    ASSERT_EQ("Database directory ./test_data/open_close_repo_test/non_existent_repo/.reggata doesn't exist", obj["reason"]);
+    ASSERT_EQ("Database directory ./test_data/open_close_repo_test/non_existent_repo/.reggata doesn't exist", obj["msg"]);
 
 }
 

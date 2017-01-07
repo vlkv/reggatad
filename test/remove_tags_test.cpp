@@ -115,5 +115,5 @@ TEST_F(RemoveTagsTest, TryAddTagsToNonexistentFile) {
     auto obj2 = json::json::parse(msg2);
     ASSERT_EQ("124", obj2["id"]);
     ASSERT_EQ(StatusCode::CLIENT_ERROR, obj2["code"]);
-    ASSERT_EQ("Could not remove tags, reason: file \"./test_data/repo/nonexistent_file\" does not exists", obj2["reason"]);
+    ASSERT_EQ("Could not remove tags, reason: file \"./test_data/repo/nonexistent_file\" does not exists", obj2["msg"]);
 }

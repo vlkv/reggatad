@@ -156,17 +156,17 @@ void ClientConnection::onReadBody(const boost::system::error_code& err) {
         json::json resp{
             {"id", ex.cmdId()},
             {"code", StatusCode::CLIENT_ERROR},
-            {"reason", ex.what()}};
+            {"msg", ex.what()}};
         handleCmdResult(resp.dump());
     } catch (const std::exception& ex) {
         json::json resp{
             {"code", StatusCode::CLIENT_ERROR},
-            {"reason", ex.what()}};
+            {"msg", ex.what()}};
         handleCmdResult(resp.dump());
     } catch (...) {
         json::json resp{
             {"code", StatusCode::CLIENT_ERROR},
-            {"reason", "Unknown exception in onReadBody"}};
+            {"msg", "Unknown exception in onReadBody"}};
         handleCmdResult(resp.dump());
     }
     doReadHeader();
