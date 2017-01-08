@@ -1,3 +1,4 @@
+%filenames parser
 %scanner                ../scanner/scanner.h
 %scanner-token-function d_scanner.lex()
 
