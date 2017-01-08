@@ -2,7 +2,7 @@
 %scanner                ../scanner/scanner.h
 %scanner-token-function d_scanner.lex()
 
-%token IDENTIFIER NUMBER CHAR
+%token ID AND OR NOT
 
 %%
 
@@ -20,9 +20,11 @@ tokenshow:
 ;
 
 token:
-    IDENTIFIER
+    ID
 |
-    NUMBER
+    AND
 |
-    CHAR
+    OR
+|
+    NOT
 ;
