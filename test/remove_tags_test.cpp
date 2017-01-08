@@ -23,7 +23,7 @@ public:
     fs::path _workDir;
 
     RemoveTagsTest() :
-    _app(new Application(_port, false)),
+    _app(new Application(_port, 0)),
     _t(&RemoveTagsTest::startReggataApp, this),
     _workDir("./test_data/repo") {
     }

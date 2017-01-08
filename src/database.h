@@ -8,7 +8,7 @@ class Database {
     std::map<std::string, std::unique_ptr<rocksdb::ColumnFamilyHandle>> _handles; // NOTE: should be deleted before the *rocksdb::DB
     
 public:
-    Database(const std::string& dbPath, bool initIfNotExists);
+    Database(const std::string& dbPath, bool initIfNotExists = false);
     virtual ~Database() = default;
    
     rocksdb::DB* getDB() const;

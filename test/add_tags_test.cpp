@@ -22,7 +22,7 @@ public:
     fs::path _workDir;
 
     AddTagsTest() :
-    _app(new Application(_port, false)),
+    _app(new Application(_port, 0)),
     _t(&AddTagsTest::startReggataApp, this),
     _workDir("./test_data/repo") {
     }

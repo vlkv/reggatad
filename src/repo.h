@@ -23,7 +23,7 @@ class Repo {
     std::map<const std::string, std::unique_ptr<Poco::DirectoryWatcher>> _watchers;
     
 public:
-    Repo(const std::string& rootPath, const std::string& dbPath, bool initIfNotExists);
+    Repo(const std::string& rootPath, const std::string& dbPath, bool initIfNotExists = false);
     virtual ~Repo() = default;
     
     void stop();

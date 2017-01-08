@@ -18,7 +18,7 @@ public:
     boost::thread _t;
 
     BadCmdTest() :
-    _app(new Application(_port, false)),
+    _app(new Application(_port, 0)),
     _t(&BadCmdTest::startReggataApp, this) {
     }
 

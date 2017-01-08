@@ -18,9 +18,10 @@ public:
     const int _port = 9100;
     std::unique_ptr<Application> _app;
     boost::thread _t;
+    const int _pingIntervalMs = 500;
 
     PingClientTest() :
-    _app(new Application(_port, true)),
+    _app(new Application(_port, _pingIntervalMs)),
     _t(&PingClientTest::startReggataApp, this) {
     }
 
@@ -41,8 +42,6 @@ public:
     }
 };
 
-// TODO: make this test faster
-
 TEST_F(PingClientTest, Test) {
     Client c(_port);
 
@@ -56,7 +55,7 @@ TEST_F(PingClientTest, Test) {
         };
         c.send(answer.dump());
     }
-    boost::this_thread::sleep(boost::posix_time::seconds(20));
+    boost::this_thread::sleep(boost::posix_time::millisec(4 * _pingIntervalMs));
 
     auto fun = [](Client & c) {
         for (auto i = 0; i < 10; ++i) {

@@ -5,7 +5,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/format.hpp>
 
-Database::Database(const std::string& dbPath, bool initIfNotExists = false) :
+Database::Database(const std::string& dbPath, bool initIfNotExists) :
 _dbPath(dbPath) {
     if (initIfNotExists && !boost::filesystem::exists(dbPath)) {
         auto ok = boost::filesystem::create_directories(dbPath);

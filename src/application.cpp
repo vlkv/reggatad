@@ -2,9 +2,9 @@
 #include "cmd_open_repo.h"
 #include <boost/thread.hpp>
 
-Application::Application(int port, bool pingClients = true) :
+Application::Application(int port, int pingClientsIntervalMs) :
 _proc(new Processor()),
-_service(new Service(port, _proc, pingClients)) {
+_service(new Service(port, _proc, pingClientsIntervalMs)) {
 }
 
 void Application::openRepo(const std::string& repoPath, const std::string& dbPath) {

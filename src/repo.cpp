@@ -10,7 +10,7 @@
 #include <boost/format.hpp>
 #include <iostream>
 
-Repo::Repo(const std::string& rootPath, const std::string& dbPath, bool initIfNotExists = false)
+Repo::Repo(const std::string& rootPath, const std::string& dbPath, bool initIfNotExists)
 : _rootPath(rootPath), _dbPath(dbPath), _db(new Database(dbPath, initIfNotExists)),
 _thread(&Repo::run, this) {
 

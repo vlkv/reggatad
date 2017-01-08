@@ -5,13 +5,15 @@
 int ClientConnection::_nextId = 1;
 
 ClientConnection::ClientConnection(boost::asio::io_service& ioService, std::shared_ptr<Processor> proc,
-        bool pingClient) :
+        int pingIntervalMs) :
 _id(ClientConnection::_nextId++),
 _sock(ioService),
+_pingClient(pingIntervalMs > 0),
+_pingIntervalMs(pingIntervalMs),
 _pingTimer(ioService),
+_autoCloseConnectionIntervalMs(int(1.8 * pingIntervalMs)), // Should be a little less than 2*pingIntervalMs
 _autoCloseConnectionTimer(ioService),
-_proc(proc),
-_pingClient(pingClient) {
+_proc(proc) {
     BOOST_LOG_TRIVIAL(info) << "Created ClientConnection id=" << _id;
 }
 
@@ -37,7 +39,7 @@ void ClientConnection::startPingTimer() {
     if (!_pingClient) {
         return;
     }
-    _pingTimer.expires_from_now(boost::posix_time::seconds(5)); // TODO: parametrize timeout
+    _pingTimer.expires_from_now(boost::posix_time::millisec(_pingIntervalMs));
     _pingTimer.async_wait(boost::bind(&ClientConnection::onPingTimer, this, _1));
 }
 
@@ -50,7 +52,7 @@ void ClientConnection::startAutoCloseConnectionTimer() {
     }
     _autoCloseConnectionTimerIsStarted = true;
 
-    _autoCloseConnectionTimer.expires_from_now(boost::posix_time::seconds(9)); // Should be a little less than 2*ping_timeout
+    _autoCloseConnectionTimer.expires_from_now(boost::posix_time::millisec(_autoCloseConnectionIntervalMs));
     _autoCloseConnectionTimer.async_wait(boost::bind(&ClientConnection::onAutoCloseConnectionTimer, this, _1));
 }
 
@@ -58,7 +60,7 @@ void ClientConnection::restartAutoCloseConnectionTimer() {
     if (!_pingClient) {
         return;
     }
-    if (_autoCloseConnectionTimer.expires_from_now(boost::posix_time::seconds(9)) > 0) {
+    if (_autoCloseConnectionTimer.expires_from_now(boost::posix_time::millisec(_autoCloseConnectionIntervalMs)) > 0) {
         _autoCloseConnectionTimer.async_wait(boost::bind(&ClientConnection::onAutoCloseConnectionTimer, this, _1));
     }
 }

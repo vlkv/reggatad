@@ -24,7 +24,7 @@ public:
 
     OpenCloseRepoTest() :
     _workDir("./test_data/open_close_repo_test"),
-    _app(new Application(_port, false)),
+    _app(new Application(_port, 0)),
     _t(&OpenCloseRepoTest::startReggataApp, this) {
     }
 

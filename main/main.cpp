@@ -1,4 +1,4 @@
-#include "application.h"
+#include <application.h>
 
 #include <boost/log/core.hpp>
 #include <boost/log/utility/setup/console.hpp>
@@ -33,7 +33,7 @@ int MAIN(int argc, char** argv) {
     pt::read_json((executable_path / "reggatad.conf").string(), config);
 
     auto port = config.get<int>("listen_port", 9100);
-    Application app(port, true);
+    Application app(port);
 
     for (auto &repo : config.get_child("repos")) {
         auto rootPath = repo.second.get<std::string>("root_path");
