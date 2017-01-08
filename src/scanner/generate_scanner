@@ -1,0 +1,3 @@
+#!/bin/sh
+
+flexc++ --verbose scanner.g

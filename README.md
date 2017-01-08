@@ -279,3 +279,28 @@ Example of data in form of (column_family, key, value).
 
 When a tag is attached to a file, a pair of key-values (e.g. file_tag and tag_file) should be added atomically with
 WriteBatch operation in rocksDB.
+
+## Flex and Bison C++
+
+From https://fbb-git.github.io/flexcpp/manhtml/flexc++.1.html 
+To generate lexer, execute:
+```
+$ flexc++ scanner.g
+```
+
+This would generate 4 files:
+```
+lex.cc  Scannerbase.h  Scanner.h  Scanner.ih
+```
+
+To generate parser, execute:
+```
+$ bisonc++ parser.g
+```
+
+This would generate 4 files:
+```
+parse.cc  Parserbase.h  Parser.h  Parser.ih
+```
+
+

@@ -47,6 +47,7 @@
       <in>ping_client_test.cpp</in>
       <in>remove_tags_test.cpp</in>
       <in>rocksdb_test.cpp</in>
+      <in>scanner_parser_test.cpp</in>
     </df>
     <df root="test" name="5">
     </df>
@@ -66,6 +67,8 @@
       <itemPath>build/Makefile</itemPath>
       <itemPath>nbproject/private/launcher.properties</itemPath>
     </logicalFolder>
+    <itemPath>src/parser/generate_parser</itemPath>
+    <itemPath>src/scanner/generate_scanner</itemPath>
   </logicalFolder>
   <sourceFolderFilter>^(nbproject)$</sourceFolderFilter>
   <sourceRootList>
@@ -245,6 +248,8 @@
           </preprocessorList>
         </ccTool>
       </item>
+      <item path="src/parser/generate_parser" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/parser/parse.cc" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
@@ -266,6 +271,8 @@
             <pElem>build</pElem>
           </incDir>
         </ccTool>
+      </item>
+      <item path="src/scanner/generate_scanner" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/scanner/lex.cc" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
@@ -331,6 +338,8 @@
       <item path="test/rocksdb_test.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
+      </item>
+      <item path="test/scanner_parser_test.cpp" ex="false" tool="1" flavor2="0">
       </item>
     </conf>
   </confs>
