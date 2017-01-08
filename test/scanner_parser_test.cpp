@@ -1,4 +1,3 @@
-#include <scanner/Scanner.h>
 #include <parser/Parser.h>
 #include <gtest/gtest.h>
 #include <sstream>

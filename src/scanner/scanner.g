@@ -1,3 +1,6 @@
+// %debug // Uncomment to get debugging info on stdout
+%filenames = "scanner"
+
 %%
 
 [ \t\n]+                            // skip white space chars.

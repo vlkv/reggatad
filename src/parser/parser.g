@@ -1,4 +1,4 @@
-%scanner                ../scanner/Scanner.h
+%scanner                ../scanner/scanner.h
 %scanner-token-function d_scanner.lex()
 
 %token IDENTIFIER NUMBER CHAR
