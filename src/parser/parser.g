@@ -1,5 +1,5 @@
 %filenames parser
-%scanner                ../scanner/scanner.h
+%scanner ../scanner/scanner.h
 %scanner-token-function d_scanner.lex()
 
 %token ID AND OR NOT LPAR RPAR
@@ -7,28 +7,34 @@
 %%
 
 startrule:
-    startrule tokenshow
+    expr_and
+;
+
+expr_and:
+    expr_and AND expr_or
 |
-    tokenshow
+    expr_and expr_or
+|
+    expr_or
 ;
 
-tokenshow:
-    token
-    {
-        std::cout << "matched: " << d_scanner.matched() << '\n';
-    }
+expr_or:
+    expr_or OR expr_not
+|
+    expr_not
 ;
 
-token:
+expr_not:
+    NOT oper
+|
+    oper;
+
+oper:
+    tag
+|
+    LPAR expr_and RPAR
+;
+
+tag:
     ID
-|
-    AND
-|
-    OR
-|
-    NOT
-|
-    LPAR
-|
-    RPAR
 ;
