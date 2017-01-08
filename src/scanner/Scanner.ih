@@ -1,5 +1,4 @@
-#include "../parser/Parserbase.h"
+#include "../parser/Parserbase.h" // NOTE: This line is written by hand
 
 // $insert class_h
 #include "Scanner.h"
-
