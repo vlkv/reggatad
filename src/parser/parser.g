@@ -2,7 +2,7 @@
 %scanner                ../scanner/scanner.h
 %scanner-token-function d_scanner.lex()
 
-%token ID AND OR NOT
+%token ID AND OR NOT LPAR RPAR
 
 %%
 
@@ -27,4 +27,8 @@ token:
     OR
 |
     NOT
+|
+    LPAR
+|
+    RPAR
 ;

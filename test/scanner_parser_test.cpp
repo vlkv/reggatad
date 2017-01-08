@@ -4,7 +4,7 @@
 #include <string>
 
 TEST(ScannerParserTest, Simple) {
-    std::istringstream is("tag1 & tag2 | !tag3");
+    std::istringstream is("(Tag1 & Tag2) | !Tag3");
     std::ostringstream os;
     Parser parser(is, os);
     parser.parse();

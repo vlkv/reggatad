@@ -8,3 +8,5 @@
 \&                                   return Parser::AND;
 \|                                   return Parser::OR;
 \!                                   return Parser::NOT;
+\(                                   return Parser::LPAR;
+\)                                   return Parser::RPAR;
