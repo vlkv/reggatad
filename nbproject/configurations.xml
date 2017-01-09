@@ -16,6 +16,13 @@
         <in>cmd_remove_tags.cpp</in>
         <in>cmd_repo.cpp</in>
       </df>
+      <df name="lang">
+        <in>node.cpp</in>
+        <in>oper_and.cpp</in>
+        <in>oper_not.cpp</in>
+        <in>oper_or.cpp</in>
+        <in>tag.cpp</in>
+      </df>
       <df name="parser">
         <in>parse.cc</in>
       </df>
@@ -238,6 +245,44 @@
           </incDir>
         </ccTool>
       </item>
+      <item path="src/lang/node.cpp" ex="false" tool="1" flavor2="4">
+      </item>
+      <item path="src/lang/oper_and.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>third_party</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/lang/oper_not.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>third_party</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/lang/oper_or.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>third_party</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="src/lang/tag.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>third_party</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build</pElem>
+          </incDir>
+        </ccTool>
+      </item>
       <item path="src/main.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
           <incDir>
@@ -247,8 +292,6 @@
             <Elem>UNIT_TESTS</Elem>
           </preprocessorList>
         </ccTool>
-      </item>
-      <item path="src/parser/generate_parser" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/parser/parse.cc" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
@@ -271,8 +314,6 @@
             <pElem>build</pElem>
           </incDir>
         </ccTool>
-      </item>
-      <item path="src/scanner/generate_scanner" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/scanner/lex.cc" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
@@ -300,7 +341,7 @@
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="test/bad_cmd_test.cpp" ex="false" tool="1" flavor2="0">
+      <item path="test/bad_cmd_test.cpp" ex="false" tool="1" flavor2="4">
       </item>
       <item path="test/client.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
@@ -323,13 +364,13 @@
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="test/nlohmann_json_test.cpp" ex="false" tool="1" flavor2="0">
+      <item path="test/nlohmann_json_test.cpp" ex="false" tool="1" flavor2="4">
       </item>
       <item path="test/open_close_repo_test.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="test/ping_client_test.cpp" ex="false" tool="1" flavor2="0">
+      <item path="test/ping_client_test.cpp" ex="false" tool="1" flavor2="4">
       </item>
       <item path="test/remove_tags_test.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
@@ -339,7 +380,7 @@
         <ccTool flags="0">
         </ccTool>
       </item>
-      <item path="test/scanner_parser_test.cpp" ex="false" tool="1" flavor2="0">
+      <item path="test/scanner_parser_test.cpp" ex="false" tool="1" flavor2="4">
       </item>
     </conf>
   </confs>
