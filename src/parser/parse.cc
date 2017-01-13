@@ -3,11 +3,6 @@
 // $insert class.ih
 #include "parser.ih"
 
-// NOTE: This ctor is written by hand
-
-Parser::Parser(std::istream &in, std::ostream &out)
-: d_scanner(in, out) {
-}
 
 // The FIRST element of SR arrays shown below uses `d_type', defining the
 // state's type, and `d_lastIdx' containing the last element's index. If
@@ -118,7 +113,7 @@ namespace // anonymous
     // $insert staticdata
 
     // Productions Info Records:
-    PI__ const s_productionInfo[] ={
+    PI__ const s_productionInfo[] = {
         {0, 0}, // not used: reduction values are negative
         {263, 1}, // 1: startrule ->  expr_and
         {264, 3}, // 2: expr_and (AND) ->  expr_and AND expr_or
@@ -137,7 +132,7 @@ namespace // anonymous
     // State info and SR__ transitions for each state.
 
 
-    SR__ s_0[] ={
+    SR__ s_0[] = {
         {
             { REQ_TOKEN},
             { 10}
@@ -184,7 +179,7 @@ namespace // anonymous
         },
     };
 
-    SR__ s_1[] ={
+    SR__ s_1[] = {
         {
             { REQ_TOKEN},
             { 2}
@@ -199,7 +194,7 @@ namespace // anonymous
         },
     };
 
-    SR__ s_2[] ={
+    SR__ s_2[] = {
         {
             { REQ_DEF},
             { 9}
@@ -242,7 +237,7 @@ namespace // anonymous
         },
     };
 
-    SR__ s_3[] ={
+    SR__ s_3[] = {
         {
             { REQ_DEF},
             { 2}
@@ -257,7 +252,7 @@ namespace // anonymous
         },
     };
 
-    SR__ s_4[] ={
+    SR__ s_4[] = {
         {
             { DEF_RED},
             { 1}
@@ -268,7 +263,7 @@ namespace // anonymous
         },
     };
 
-    SR__ s_5[] ={
+    SR__ s_5[] = {
         {
             { REQ_TOKEN},
             { 5}
@@ -295,7 +290,7 @@ namespace // anonymous
         },
     };
 
-    SR__ s_6[] ={
+    SR__ s_6[] = {
         {
             { DEF_RED},
             { 1}
@@ -306,7 +301,7 @@ namespace // anonymous
         },
     };
 
-    SR__ s_7[] ={
+    SR__ s_7[] = {
         {
             { DEF_RED},
             { 1}
@@ -317,7 +312,7 @@ namespace // anonymous
         },
     };
 
-    SR__ s_8[] ={
+    SR__ s_8[] = {
         {
             { REQ_TOKEN},
             { 9}
@@ -360,7 +355,7 @@ namespace // anonymous
         },
     };
 
-    SR__ s_9[] ={
+    SR__ s_9[] = {
         {
             { DEF_RED},
             { 1}
@@ -371,7 +366,7 @@ namespace // anonymous
         },
     };
 
-    SR__ s_10[] ={
+    SR__ s_10[] = {
         {
             { REQ_TOKEN},
             { 8}
@@ -410,7 +405,7 @@ namespace // anonymous
         },
     };
 
-    SR__ s_11[] ={
+    SR__ s_11[] = {
         {
             { REQ_DEF},
             { 2}
@@ -425,7 +420,7 @@ namespace // anonymous
         },
     };
 
-    SR__ s_12[] ={
+    SR__ s_12[] = {
         {
             { REQ_TOKEN},
             { 7}
@@ -460,7 +455,7 @@ namespace // anonymous
         },
     };
 
-    SR__ s_13[] ={
+    SR__ s_13[] = {
         {
             { DEF_RED},
             { 1}
@@ -471,7 +466,7 @@ namespace // anonymous
         },
     };
 
-    SR__ s_14[] ={
+    SR__ s_14[] = {
         {
             { REQ_TOKEN},
             { 10}
@@ -518,7 +513,7 @@ namespace // anonymous
         },
     };
 
-    SR__ s_15[] ={
+    SR__ s_15[] = {
         {
             { REQ_DEF},
             { 2}
@@ -533,7 +528,7 @@ namespace // anonymous
         },
     };
 
-    SR__ s_16[] ={
+    SR__ s_16[] = {
         {
             { DEF_RED},
             { 1}
@@ -544,7 +539,7 @@ namespace // anonymous
         },
     };
 
-    SR__ s_17[] ={
+    SR__ s_17[] = {
         {
             { DEF_RED},
             { 1}
@@ -557,7 +552,7 @@ namespace // anonymous
 
 
     // State array:
-    SR__ *s_state[] ={
+    SR__ *s_state[] = {
         s_0, s_1, s_2, s_3, s_4, s_5, s_6, s_7, s_8, s_9,
         s_10, s_11, s_12, s_13, s_14, s_15, s_16, s_17,
     };
@@ -862,7 +857,7 @@ try {
             } else
                 ABORT(); // abort when accepting during
             // error recovery
-        }        catch (...) {
+        } catch (...) {
             if (d_token__ == _EOF_)
                 ABORT(); // saw inappropriate _EOF_
 
@@ -926,7 +921,7 @@ try {
                 reduce__(s_productionInfo[-action]);
             } else
                 ACCEPT();
-        }        catch (ErrorRecovery__) {
+        } catch (ErrorRecovery__) {
             errorRecovery();
         }
     }
