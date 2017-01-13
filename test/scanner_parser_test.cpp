@@ -1,4 +1,4 @@
-#include <parser/parser.h>
+#include <parser/parser.ih>
 #include <gtest/gtest.h>
 #include <sstream>
 #include <string>

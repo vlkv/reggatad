@@ -4,6 +4,8 @@
 
 %token ID AND OR NOT LPAR RPAR
 
+%stype std::shared_ptr<Node>
+
 %%
 
 startrule:
@@ -69,6 +71,6 @@ atom:
 tag:
     ID
     {
-        $$ = std::shared_ptr<Node>(new Tag($1));
+        $$ = std::shared_ptr<Node>(new Tag(d_scanner.matched()));
     }
 ;

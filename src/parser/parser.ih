@@ -2,13 +2,11 @@
 
     // Include this file in the sources of the class Parser.
 
+
 // $insert class.h
 #include "parser.h"
 
-// NOTE: This ctor is written by hand
-Parser::Parser(std::istream &in, std::ostream &out)
-: d_scanner(in, out) {
-}
+
 
 inline void Parser::error(char const *msg)
 {
@@ -34,7 +32,6 @@ inline void Parser::exceptionHandler__(std::exception const &exc)
 
     // Add here includes that are only required for the compilation 
     // of Parser's sources.
-
 #include <lang/node.h>
 #include <lang/tag.h>
 #include <lang/oper_not.h>
