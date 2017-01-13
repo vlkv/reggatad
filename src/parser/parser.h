@@ -14,11 +14,13 @@ class Parser: public ParserBase
 {
     // $insert scannerobject
     Scanner d_scanner;
+    std::shared_ptr<Node> _ast;
         
     public:
         // NOTE: this ctor is written by hand
         Parser(std::istream &in, std::ostream &out);
         int parse();
+        std::shared_ptr<Node> ast();
 
     private:
         void error(char const *msg);    // called on (syntax) errors

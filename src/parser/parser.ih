@@ -11,6 +11,10 @@ Parser::Parser(std::istream &in, std::ostream &out)
 : d_scanner(in, out) {
 }
 
+std::shared_ptr<Node> Parser::ast() {
+    return _ast;
+}
+
 inline void Parser::error(char const *msg)
 {
     std::cerr << msg << '\n';

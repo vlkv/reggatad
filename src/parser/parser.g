@@ -11,7 +11,7 @@
 startrule:
     expr_and
     {
-        $$ = $1;
+        _ast = $1;
     }
 ;
 
