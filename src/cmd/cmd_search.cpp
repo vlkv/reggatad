@@ -5,7 +5,7 @@
 #include <parser/parser.h>
 #include <lang/node.h>
 #include <boost/assign.hpp>
-#include <boost/format/format_fwd.hpp>
+#include <boost/format.hpp>
 #include <sstream>
 
 CmdSearch::CmdSearch(const std::string& id, Cmd::SendResult sendResult) :
@@ -34,12 +34,18 @@ json::json CmdSearch::execute() {
         for (auto err : errors) {
             msg = msg + "; ERROR: " + err;
         }
-        throw StatusCodeException(StatusCode::CLIENT_ERROR, msg.str());
+        throw StatusCodeException(StatusCode::CLIENT_ERROR, msg);
     }
     auto relDir = _repo->makeRelativePath(_dir);
     auto fileIds = tree->findFileIdsIn(_repo, relDir);
-    // TODO: convert fileIds to collection of FileInfos
-    // TODO: send results
-
-    return json::json::object();
+    auto fileInfos = _repo->getFileInfos(fileIds);
+    json::json data = json::json::array();
+    for (auto finfo : fileInfos) {
+        data.push_back(finfo.toJson());
+    }
+    json::json res = {
+        {"code", StatusCode::OK},
+        {"data", data}
+    };
+    return res;
 }

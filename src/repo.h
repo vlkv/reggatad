@@ -9,6 +9,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/uuid/random_generator.hpp>
 #include <string>
+#include <unordered_set>
 #include <map>
 #include <memory>
 
@@ -32,8 +33,20 @@ public:
     void enqueueCmd(std::unique_ptr<CmdRepo> cmd);
     
     void addTags(const boost::filesystem::path& fileAbs, const std::vector<std::string>& tags);
+    
     void removeTags(const boost::filesystem::path& fileAbs, const std::vector<std::string>& tags);
+    
     FileInfo getFileInfo(const boost::filesystem::path& fileAbs) const;
+    
+    std::vector<FileInfo> getFileInfos(const std::unordered_set<std::string>& fileIds) const;
+    
+    std::unordered_set<std::string> findFileIds(
+        const std::string& tag, 
+        const boost::filesystem::path& dirRel) const;
+    
+    std::unordered_set<std::string> findAllFileIdsExcept(
+        const std::unordered_set<std::string>& ids, 
+        const boost::filesystem::path& dirRel) const;
     
     boost::filesystem::path makeRelativePath(const boost::filesystem::path& abs) const;
     

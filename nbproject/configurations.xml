@@ -15,6 +15,7 @@
         <in>cmd_proc.cpp</in>
         <in>cmd_remove_tags.cpp</in>
         <in>cmd_repo.cpp</in>
+        <in>cmd_search.cpp</in>
       </df>
       <df name="lang">
         <in>node.cpp</in>
@@ -102,7 +103,7 @@
           <buildCommand>${MAKE} -f Makefile</buildCommand>
           <cleanCommand>${MAKE} -f Makefile clean</cleanCommand>
           <executablePath>build/unit_tests</executablePath>
-          <ccTool>
+          <ccTool flags="0">
             <preprocessorList>
               <Elem>BOOST_LOG_DYN_LINK=1</Elem>
             </preprocessorList>
@@ -132,30 +133,6 @@
             <pElem>src/cmd</pElem>
             <pElem>src/scanner</pElem>
             <pElem>src/parser</pElem>
-          </incDir>
-        </ccTool>
-      </folder>
-      <folder path="2/cmd">
-        <ccTool>
-          <incDir>
-            <pElem>third_party</pElem>
-            <pElem>/usr/local/include</pElem>
-            <pElem>build</pElem>
-          </incDir>
-        </ccTool>
-      </folder>
-      <folder path="2/parser">
-        <ccTool>
-          <incDir>
-            <pElem>third_party</pElem>
-            <pElem>/usr/local/include</pElem>
-            <pElem>build</pElem>
-          </incDir>
-        </ccTool>
-      </folder>
-      <folder path="2/scanner">
-        <ccTool>
-          <incDir>
             <pElem>third_party</pElem>
             <pElem>/usr/local/include</pElem>
             <pElem>build</pElem>
@@ -164,14 +141,6 @@
       </folder>
       <folder path="4">
         <ccTool>
-          <incDir>
-            <pElem>third_party</pElem>
-            <pElem>src</pElem>
-            <pElem>src/cmd</pElem>
-            <pElem>src/scanner</pElem>
-            <pElem>src/parser</pElem>
-            <pElem>build</pElem>
-          </incDir>
           <preprocessorList>
             <Elem>UNIT_TESTS</Elem>
           </preprocessorList>
@@ -183,20 +152,10 @@
       </item>
       <item path="src/application.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
-          <incDir>
-            <pElem>third_party</pElem>
-            <pElem>/usr/local/include</pElem>
-            <pElem>build</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/client_connection.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
-          <incDir>
-            <pElem>third_party</pElem>
-            <pElem>/usr/local/include</pElem>
-            <pElem>build</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/cmd/cmd.cpp" ex="false" tool="1" flavor2="11">
@@ -229,81 +188,36 @@
       </item>
       <item path="src/cmd/cmd_search.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
-          <incDir>
-            <pElem>src</pElem>
-            <pElem>src/cmd</pElem>
-            <pElem>src/scanner</pElem>
-            <pElem>src/parser</pElem>
-            <pElem>third_party</pElem>
-            <pElem>/usr/local/include</pElem>
-            <pElem>build</pElem>
-          </incDir>
-          <preprocessorList>
-            <Elem>BOOST_LOG_DYN_LINK=1</Elem>
-          </preprocessorList>
         </ccTool>
       </item>
       <item path="src/database.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
-          <incDir>
-            <pElem>third_party</pElem>
-            <pElem>/usr/local/include</pElem>
-            <pElem>build</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/db_key.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
-          <incDir>
-            <pElem>third_party</pElem>
-            <pElem>/usr/local/include</pElem>
-            <pElem>build</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/lang/node.cpp" ex="false" tool="1" flavor2="4">
       </item>
       <item path="src/lang/oper_and.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
-          <incDir>
-            <pElem>third_party</pElem>
-            <pElem>/usr/local/include</pElem>
-            <pElem>build</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/lang/oper_not.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
-          <incDir>
-            <pElem>third_party</pElem>
-            <pElem>/usr/local/include</pElem>
-            <pElem>build</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/lang/oper_or.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
-          <incDir>
-            <pElem>third_party</pElem>
-            <pElem>/usr/local/include</pElem>
-            <pElem>build</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/lang/tag.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
-          <incDir>
-            <pElem>third_party</pElem>
-            <pElem>/usr/local/include</pElem>
-            <pElem>build</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/main.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
-          <incDir>
-            <pElem>build</pElem>
-          </incDir>
           <preprocessorList>
             <Elem>UNIT_TESTS</Elem>
           </preprocessorList>
@@ -315,20 +229,10 @@
       </item>
       <item path="src/processor.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
-          <incDir>
-            <pElem>third_party</pElem>
-            <pElem>/usr/local/include</pElem>
-            <pElem>build</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/repo.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
-          <incDir>
-            <pElem>third_party</pElem>
-            <pElem>/usr/local/include</pElem>
-            <pElem>build</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/scanner/lex.cc" ex="false" tool="1" flavor2="11">
@@ -337,66 +241,177 @@
       </item>
       <item path="src/service.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
-          <incDir>
-            <pElem>third_party</pElem>
-            <pElem>/usr/local/include</pElem>
-            <pElem>build</pElem>
-          </incDir>
         </ccTool>
       </item>
       <item path="src/status_code.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
+        </ccTool>
+      </item>
+      <item path="test/add_tags_test.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
           <incDir>
+            <pElem>third_party</pElem>
+            <pElem>src</pElem>
+            <pElem>src/cmd</pElem>
+            <pElem>src/scanner</pElem>
+            <pElem>src/parser</pElem>
+            <pElem>build</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="test/bad_cmd_test.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>third_party</pElem>
+            <pElem>src</pElem>
+            <pElem>src/cmd</pElem>
+            <pElem>src/scanner</pElem>
+            <pElem>src/parser</pElem>
+            <pElem>build</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="test/client.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>src</pElem>
+            <pElem>src/cmd</pElem>
+            <pElem>src/scanner</pElem>
+            <pElem>src/parser</pElem>
             <pElem>third_party</pElem>
             <pElem>/usr/local/include</pElem>
             <pElem>build</pElem>
           </incDir>
         </ccTool>
       </item>
-      <item path="test/add_tags_test.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
-      <item path="test/bad_cmd_test.cpp" ex="false" tool="1" flavor2="4">
-      </item>
-      <item path="test/client.cpp" ex="false" tool="1" flavor2="11">
-        <ccTool flags="0">
-        </ccTool>
-      </item>
       <item path="test/common.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
+          <incDir>
+            <pElem>src</pElem>
+            <pElem>src/cmd</pElem>
+            <pElem>src/scanner</pElem>
+            <pElem>src/parser</pElem>
+            <pElem>third_party</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="test/db_key_test.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+          <incDir>
+            <pElem>src</pElem>
+            <pElem>src/cmd</pElem>
+            <pElem>src/scanner</pElem>
+            <pElem>src/parser</pElem>
+            <pElem>third_party</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build</pElem>
+          </incDir>
+        </ccTool>
       </item>
       <item path="test/first_delim_prefix_transform_test.cpp"
             ex="false"
             tool="1"
             flavor2="11">
         <ccTool flags="0">
+          <incDir>
+            <pElem>src</pElem>
+            <pElem>src/cmd</pElem>
+            <pElem>src/scanner</pElem>
+            <pElem>src/parser</pElem>
+            <pElem>third_party</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="test/g40_esj_test.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
+          <incDir>
+            <pElem>src</pElem>
+            <pElem>src/cmd</pElem>
+            <pElem>src/scanner</pElem>
+            <pElem>src/parser</pElem>
+            <pElem>third_party</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="test/nlohmann_json_test.cpp" ex="false" tool="1" flavor2="4">
+        <ccTool>
+          <incDir>
+            <pElem>src</pElem>
+            <pElem>src/cmd</pElem>
+            <pElem>src/scanner</pElem>
+            <pElem>src/parser</pElem>
+            <pElem>third_party</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build</pElem>
+          </incDir>
+        </ccTool>
       </item>
       <item path="test/open_close_repo_test.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
+          <incDir>
+            <pElem>third_party</pElem>
+            <pElem>src</pElem>
+            <pElem>src/cmd</pElem>
+            <pElem>src/scanner</pElem>
+            <pElem>src/parser</pElem>
+            <pElem>build</pElem>
+          </incDir>
         </ccTool>
       </item>
-      <item path="test/ping_client_test.cpp" ex="false" tool="1" flavor2="4">
+      <item path="test/ping_client_test.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>third_party</pElem>
+            <pElem>src</pElem>
+            <pElem>src/cmd</pElem>
+            <pElem>src/scanner</pElem>
+            <pElem>src/parser</pElem>
+            <pElem>build</pElem>
+          </incDir>
+        </ccTool>
       </item>
       <item path="test/remove_tags_test.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
+          <incDir>
+            <pElem>third_party</pElem>
+            <pElem>src</pElem>
+            <pElem>src/cmd</pElem>
+            <pElem>src/scanner</pElem>
+            <pElem>src/parser</pElem>
+            <pElem>build</pElem>
+          </incDir>
         </ccTool>
       </item>
       <item path="test/rocksdb_test.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
+          <incDir>
+            <pElem>src</pElem>
+            <pElem>src/cmd</pElem>
+            <pElem>src/scanner</pElem>
+            <pElem>src/parser</pElem>
+            <pElem>third_party</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build</pElem>
+          </incDir>
         </ccTool>
       </item>
-      <item path="test/scanner_parser_test.cpp" ex="false" tool="1" flavor2="4">
+      <item path="test/scanner_parser_test.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>third_party</pElem>
+            <pElem>src</pElem>
+            <pElem>src/cmd</pElem>
+            <pElem>src/scanner</pElem>
+            <pElem>src/parser</pElem>
+            <pElem>build</pElem>
+          </incDir>
+        </ccTool>
       </item>
     </conf>
   </confs>

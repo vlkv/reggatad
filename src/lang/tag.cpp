@@ -9,6 +9,6 @@ std::string Tag::str() {
 
 std::unordered_set<std::string> Tag::findFileIdsIn(std::shared_ptr<Repo> repo,
         const boost::filesystem::path& dirRelPath) {
-    // TODO: search in repo for files with tag _name and in dirRelPath
-    return std::unordered_set<std::string>();
+    auto result = repo->findFileIds(_name, dirRelPath);
+    return result;
 }

@@ -11,6 +11,6 @@ std::string OperNot::str() {
 std::unordered_set<std::string> OperNot::findFileIdsIn(std::shared_ptr<Repo> repo,
         const boost::filesystem::path& dirRelPath) {
     auto ids = _node->findFileIdsIn(repo, dirRelPath);
-    // TODO: search for negation in repo, skip files outside the dirRelPath
-    return std::unordered_set<std::string>();
+    auto result = repo->findAllFileIdsExcept(ids, dirRelPath);
+    return result;
 }

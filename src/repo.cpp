@@ -235,6 +235,24 @@ FileInfo Repo::getFileInfo(const boost::filesystem::path& fileAbs) const {
     return res;
 }
 
+std::vector<FileInfo> Repo::getFileInfos(const std::unordered_set<std::string>& fileIds) const {
+    // TODO
+    return std::vector<FileInfo>();
+}
+
+std::unordered_set<std::string> Repo::findFileIds(const std::string& tag,
+        const boost::filesystem::path& dirRel) const {
+    // TODO
+    return std::unordered_set<std::string>();
+}
+
+std::unordered_set<std::string> Repo::findAllFileIdsExcept(
+        const std::unordered_set<std::string>& ids,
+        const boost::filesystem::path& dirRel) const {
+    // TODO
+    return std::unordered_set<std::string>();
+}
+
 void Repo::createDirWatcherIfNeeded(const std::string& dirPath) {
     if (dirPath == _dbPath) {
         BOOST_LOG_TRIVIAL(debug) << "Skipping dir " << dirPath;
