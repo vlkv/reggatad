@@ -137,28 +137,51 @@ Response:
     }
 }
 ```
-TODO: Maybe it's better to put all the response info to `data` subobject 
-(similar to `args` in commands)?..
 
-TODO: We need a command to get many file_infos at once. Maybe extend this command,
-or maybe --- a different command. We could have `file`, `files` and `dir` args in 
-this command. NOTE, if we'd make `files` arg in command,
-how should we handle situations when client asks for info about files from different
-repositories?..
+### get_dir_files_info(dir_path)
+Request:
+```javascript
+{
+    id: "1",
+    cmd: "get_dir_files_info",
+    args: {
+        dir: "/home/user/repo/dir/",
+        recursive: false
+    }
+}
+```
+Response:
+```javascript
+{
+    code: 200,
+    id: "1",
+    data: [{
+            "path": "dir/file1",
+            "size": 4,
+            "tags": ["tag1", "tag2", "tag3"]
+        }, {
+            "path": "dir/file2",
+            "size": 1024,
+            "tags": ["ABC", "DEF"]
+        }
+    ]
+}
+```
 
-
-### search(path, query_string)
+### search(dir_abs_path, query_string)
 Request:
 ```javascript
 {
     id: "1",
     cmd: "search",
     args: {
-        path: "/home/repo/",
+        dir: "/home/repo/",
         query: "tag1 tag2|tag3"
     }
 }
 ```
+
+Response is the same as `get_dir_files_info` response (collection of file_infos).
 
 ### cancel_cmd(cmd_id)
 Client is able to cancel any other long running command.
@@ -182,41 +205,31 @@ Request:
 * dir_removed - remove all files tags and fields from DB recursively. Remove filewathes from dir and subdirs
 * dir_moved (renamed) - update files paths for all files recursively. Remove/Create a filewatcher for the dir
 
-## Query Language
+## Search Query Language
+Operations with tags are: `&` or simply space (AND, conjunction, lowest priority), `|` (OR, disjunction), 
+`!` (NOT, negation), operations with fields (`==`, `!=`, `>`, `>=`, `<`, `<=`, `~=` (like)) 
+and braces `(`, `)` (highest priority).
+
 Fields are just tags with values. Values should be typed. 
 Types supported are: string, number, datetime.
-Operations with tags are: AND (lowest priority), OR, NOT, operations with fields and braces (highest priority).
-Operations with fields are: ==, !=, >, >=, <, <=, ~= (like).
 
 Files which has all three tags: t1 AND t2 AND t3:
-```
-t1 t2 t3
-```
+`t1 t2 t3` equivalent to `t1 & t2 & t3`.
 
 Files with tag t1 AND any of t2 OR t3:
-```
-t1 t2 | t3
-```
+`t1 t2 | t3` it's the same as `t1 (t2 | t3)` because `|` has higher priority than `&`.
 
 Files with tags t1 AND t2 OR just one tag t3:
-```
-(t1 t2) | t3
-```
+`(t1 t2) | t3`.
 
 Files with tag t1 AND field f1>5:
-```
-t1 f1>5
-```
+`t1 f1>5`.
 
 Files with tag t1 OR field f1>5:
-```
-t1 | f1>5
-```
+`t1 | f1>5`.
 
 Files that doesn't have tag t1:
-```
-NOT t1
-```
+`NOT t1`.
 
 The obvious way of executing queries is just filter files by subdir (recursively), then iterate over them and 
 apply query predicate to every file. Very often case is to perform a query in a subdir. The mechanism for executing 
@@ -225,7 +238,10 @@ query in the repo root is just a particular case of "exec query in subdir".
 Another way is to calculate separate sets in memory of file_ids for every tag and field. Then
 calcuate AND/OR/NOT/etc operations on them according to the query structure.
 
-The old grammar of reggata is https://github.com/vlkv/reggata/wiki/Query-language-grammar. In reggatad we should improve it.
+Lexer grammar: https://github.com/vlkv/reggatad/blob/master/src/scanner/scanner.g
+
+Parser grammar: https://github.com/vlkv/reggatad/blob/master/src/parser/parser.g
+
 
 ## Some NOTEs and thoughts
 * Repository should have a list of required fileds. Every file with tags should have these fields set. E.g. 'rating'.
