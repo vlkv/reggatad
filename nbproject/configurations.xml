@@ -227,6 +227,22 @@
         <ccTool flags="0">
         </ccTool>
       </item>
+      <item path="src/cmd/cmd_search.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>src</pElem>
+            <pElem>src/cmd</pElem>
+            <pElem>src/scanner</pElem>
+            <pElem>src/parser</pElem>
+            <pElem>third_party</pElem>
+            <pElem>/usr/local/include</pElem>
+            <pElem>build</pElem>
+          </incDir>
+          <preprocessorList>
+            <Elem>BOOST_LOG_DYN_LINK=1</Elem>
+          </preprocessorList>
+        </ccTool>
+      </item>
       <item path="src/database.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
           <incDir>

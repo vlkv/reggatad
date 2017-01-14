@@ -35,8 +35,9 @@ public:
     void removeTags(const boost::filesystem::path& fileAbs, const std::vector<std::string>& tags);
     FileInfo getFileInfo(const boost::filesystem::path& fileAbs) const;
     
-private:
     boost::filesystem::path makeRelativePath(const boost::filesystem::path& abs) const;
+    
+private:
     std::string getOrCreateFileId(const boost::filesystem::path& fileRel);
     bool getFileId(const boost::filesystem::path& fileRel, std::string* fileId) const;
     std::string createFileId(const boost::filesystem::path& fileRel);

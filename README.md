@@ -200,7 +200,7 @@ Request:
 * file_moved (renamed) - update file path
 * file_modified - do nothing
 * dir_created - create a filewatch for it
-* dir_removed - remove all files tags and fields from DB recursively. Remove filewathes from dir and subdirs
+* dir_removed - remove all files tags and fields from DB recursively. Remove filewatches from dir and subdirs
 * dir_moved (renamed) - update files paths for all files recursively. Remove/Create a filewatcher for the dir
 
 ## Search Query Language
@@ -210,6 +210,8 @@ and braces `(`, `)` (highest priority).
 
 Fields are just tags with values. Values should be typed. 
 Types supported are: string, number, datetime.
+
+Examples:
 
 Files which has all three tags: t1 AND t2 AND t3:
 `t1 t2 t3` equivalent to `t1 & t2 & t3`.
@@ -227,7 +229,7 @@ Files with tag t1 OR field f1>5:
 `t1 | f1>5`.
 
 Files that doesn't have tag t1:
-`NOT t1`.
+`!t1`.
 
 The obvious way of executing queries is just filter files by subdir (recursively), then iterate over them and 
 apply query predicate to every file. Very often case is to perform a query in a subdir. The mechanism for executing 
