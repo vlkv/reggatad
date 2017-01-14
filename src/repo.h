@@ -56,6 +56,7 @@ private:
     std::string createFileId(const boost::filesystem::path& fileRel);
     void addTag(const std::string& fileId, const std::string& tag);
     void removeTag(const std::string& fileId, const std::string& tag);
+    static bool isPrefixOfStr(const std::string& prefix, const std::string& str);
 
 private:
     void run();

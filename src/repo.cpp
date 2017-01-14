@@ -257,15 +257,56 @@ std::vector<FileInfo> Repo::getFileInfos(const std::unordered_set<std::string>& 
 
 std::unordered_set<std::string> Repo::findFileIds(const std::string& tag,
         const boost::filesystem::path& dirRel) const {
-    // TODO
-    return std::unordered_set<std::string>();
+    std::unordered_set<std::string> result;
+    rocksdb::ReadOptions ro;
+    ro.prefix_same_as_start = true;
+    auto db = _db->getDB();
+    auto cfhTagFile = _db->getColumnFamilyHandle(Database::CF_TAG_FILE);
+    auto cfhFile = _db->getColumnFamilyHandle(Database::CF_FILE);
+    std::unique_ptr<rocksdb::Iterator> j(db->NewIterator(ro, cfhTagFile));
+    for (j->Seek(tag); j->Valid(); j->Next()) {
+        auto key = j->key().ToString();
+        auto p = DBKey::split(key);
+
+        std::string path;
+        db->Get(ro, cfhFile, DBKey::join(p.second, "path"), &path);
+        if (!Repo::isPrefixOfStr(dirRel.string(), path)) {
+            continue;
+        }
+        result.insert(p.second);
+    }
+    return result;
 }
 
 std::unordered_set<std::string> Repo::findAllFileIdsExcept(
         const std::unordered_set<std::string>& ids,
         const boost::filesystem::path& dirRel) const {
-    // TODO
-    return std::unordered_set<std::string>();
+    std::unordered_set<std::string> result;
+    rocksdb::ReadOptions ro;
+    auto db = _db->getDB();
+    auto cfhTagFile = _db->getColumnFamilyHandle(Database::CF_TAG_FILE);
+    auto cfhFile = _db->getColumnFamilyHandle(Database::CF_FILE);
+    std::unique_ptr<rocksdb::Iterator> j(db->NewIterator(ro, cfhTagFile));
+    for (j->SeekToFirst(); j->Valid(); j->Next()) {
+        auto key = j->key().ToString();
+        auto p = DBKey::split(key);
+        if (ids.find(p.second) != ids.end()) {
+            continue;
+        }
+
+        std::string path;
+        db->Get(ro, cfhFile, DBKey::join(p.second, "path"), &path);
+        if (!Repo::isPrefixOfStr(dirRel.string(), path)) {
+            continue;
+        }
+        result.insert(p.second);
+    }
+    return result;
+}
+
+bool Repo::isPrefixOfStr(const std::string& prefix, const std::string& str) {
+    auto res = std::mismatch(prefix.begin(), prefix.end(), str.begin());
+    return res.first == prefix.end();
 }
 
 void Repo::createDirWatcherIfNeeded(const std::string& dirPath) {
