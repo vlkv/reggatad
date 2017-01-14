@@ -47,7 +47,7 @@ Responses:
 ```
 NOTE: list of all possible code values is here https://github.com/vlkv/reggatad/blob/master/src/status_code.cpp
 
-### close_repo(root_dir)
+### TODO: close_repo(root_dir)
 Request:
 ```javascript
 {
@@ -59,7 +59,7 @@ Request:
 }
 ```
 
-### get_repos_info()
+### TODO: get_repos_info()
 Request:
 ```javascript
 {
@@ -104,15 +104,13 @@ Request:
 }
 ```
 
-TODO: do we need a request to remove all tags from file?..
+TODO: We need a request to remove all tags/fields from file
 
 TODO: do we need a request to get info about "tag cloud"? It's a N most popular tags with their usage counts.
 
-### add_fields(file_path, field1(key1,val1), field2(key2,val2), ...)
-TODO: implement after tags
+### TODO: add_fields(file_path, field1(key1,val1), field2(key2,val2), ...)
 
-### remove_fields(file_path, field_key1, field_key2, ...)
-TODO: implement after tags
+### TODO: remove_fields(file_path, field_key1, field_key2, ...)
 
 ### get_file_info(file_path)
 Request:
@@ -138,7 +136,7 @@ Response:
 }
 ```
 
-### get_dir_files_info(dir_path)
+### TODO: get_dir_files_info(dir_path)
 Request:
 ```javascript
 {
@@ -168,7 +166,7 @@ Response:
 }
 ```
 
-### search(dir_abs_path, query_string)
+### TODO: search(dir_abs_path, query_string)
 Request:
 ```javascript
 {
@@ -183,7 +181,7 @@ Request:
 
 Response is the same as `get_dir_files_info` response (collection of file_infos).
 
-### cancel_cmd(cmd_id)
+### TODO: cancel_cmd(cmd_id)
 Client is able to cancel any other long running command.
 Request:
 ```javascript
