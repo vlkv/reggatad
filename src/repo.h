@@ -37,7 +37,7 @@ public:
     void removeTags(const boost::filesystem::path& fileAbs, const std::vector<std::string>& tags);
     
     FileInfo getFileInfo(const boost::filesystem::path& fileAbs) const;
-    
+    FileInfo getFileInfoById(const std::string& fileId) const;
     std::vector<FileInfo> getFileInfos(const std::unordered_set<std::string>& fileIds) const;
     
     std::unordered_set<std::string> findFileIds(

@@ -210,18 +210,20 @@ void Repo::removeTag(const std::string& fileId, const std::string& tag) {
 
 FileInfo Repo::getFileInfo(const boost::filesystem::path& fileAbs) const {
     auto fileRel = makeRelativePath(fileAbs);
-
-    FileInfo res;
-    res._path = fileRel.string();
-    res._size = boost::filesystem::file_size(fileAbs); // TODO: size is stored in DB. What should we do in case sizes are different?..
-
     std::string fileId;
     auto found = getFileId(fileRel, &fileId);
     if (!found) {
-        // no info in DB about this file. So, just get file size and return
+        FileInfo res;
+        res._path = fileRel.string();
+        res._size = boost::filesystem::file_size(fileAbs); // TODO: size is stored in DB. What should we do in case sizes are different?..
         return res;
     }
+    auto res = getFileInfoById(fileId);
+    return res;
+}
 
+FileInfo Repo::getFileInfoById(const std::string& fileId) const {
+    FileInfo res;
     rocksdb::ReadOptions ro;
     ro.prefix_same_as_start = true;
     auto db = _db->getDB();
@@ -232,12 +234,25 @@ FileInfo Repo::getFileInfo(const boost::filesystem::path& fileAbs) const {
         auto p = DBKey::split(key);
         res._tags.push_back(p.second);
     }
+
+    auto cfhFile = _db->getColumnFamilyHandle(Database::CF_FILE);
+
+    std::string sizeStr;
+    db->Get(ro, cfhFile, DBKey::join(fileId, "size"), &sizeStr);
+    res._size = std::stoul(sizeStr);
+
+    db->Get(ro, cfhFile, DBKey::join(fileId, "path"), &res._path);
+
     return res;
 }
 
 std::vector<FileInfo> Repo::getFileInfos(const std::unordered_set<std::string>& fileIds) const {
-    // TODO
-    return std::vector<FileInfo>();
+    std::vector<FileInfo> res;
+    for (auto fileId : fileIds) {
+        auto finfo = getFileInfoById(fileId);
+        res.push_back(finfo);
+    }
+    return res;
 }
 
 std::unordered_set<std::string> Repo::findFileIds(const std::string& tag,
