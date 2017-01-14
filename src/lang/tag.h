@@ -8,6 +8,6 @@ class Tag : public Node {
 public:
     Tag(const std::string& name);
     virtual ~Tag() = default;
-private:
-
+    
+    virtual std::string str();
 };

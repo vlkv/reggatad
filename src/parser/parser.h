@@ -14,13 +14,14 @@ class Parser: public ParserBase
 {
     // $insert scannerobject
     Scanner d_scanner;
-    std::shared_ptr<Node> _ast;
+    std::shared_ptr<Node> _tree; // NOTE: this line is written by hand
+    std::vector<std::string> _errors; // NOTE: this line is written by hand
         
     public:
-        // NOTE: this ctor is written by hand
-        Parser(std::istream &in, std::ostream &out);
+        Parser(std::istream &in, std::ostream &out); // NOTE: this line is written by hand
         int parse();
-        std::shared_ptr<Node> ast();
+        std::shared_ptr<Node> getTree() const; // NOTE: this line is written by hand
+        std::vector<std::string> getErrors() const; // NOTE: this line is written by hand
 
     private:
         void error(char const *msg);    // called on (syntax) errors

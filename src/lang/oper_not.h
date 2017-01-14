@@ -8,6 +8,6 @@ class OperNot : public Node {
 public:
     OperNot(std::shared_ptr<Node> node);
     virtual ~OperNot() = default;
-private:
 
+    virtual std::string str();
 };

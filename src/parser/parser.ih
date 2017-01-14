@@ -6,18 +6,21 @@
 // $insert class.h
 #include "parser.h"
 
-// NOTE: This ctor is written by hand
 Parser::Parser(std::istream &in, std::ostream &out)
 : d_scanner(in, out) {
 }
 
-std::shared_ptr<Node> Parser::ast() {
-    return _ast;
+std::shared_ptr<Node> Parser::getTree() const {
+    return _tree;
+}
+
+std::vector<std::string> Parser::getErrors() const {
+    return _errors;
 }
 
 inline void Parser::error(char const *msg)
 {
-    std::cerr << msg << '\n';
+    _errors.push_back(msg);
 }
 
 // $insert lex

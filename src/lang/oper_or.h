@@ -9,6 +9,6 @@ class OperOr : public Node {
 public:
     OperOr(std::shared_ptr<Node> left, std::shared_ptr<Node> right);
     virtual ~OperOr() = default;
-private:
-
+    
+    virtual std::string str();
 };
