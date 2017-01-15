@@ -56,6 +56,7 @@
       <in>remove_tags_test.cpp</in>
       <in>rocksdb_test.cpp</in>
       <in>scanner_parser_test.cpp</in>
+      <in>search_test.cpp</in>
     </df>
     <df root="test" name="5">
     </df>
@@ -402,6 +403,18 @@
         </ccTool>
       </item>
       <item path="test/scanner_parser_test.cpp" ex="false" tool="1" flavor2="11">
+        <ccTool flags="0">
+          <incDir>
+            <pElem>third_party</pElem>
+            <pElem>src</pElem>
+            <pElem>src/cmd</pElem>
+            <pElem>src/scanner</pElem>
+            <pElem>src/parser</pElem>
+            <pElem>build</pElem>
+          </incDir>
+        </ccTool>
+      </item>
+      <item path="test/search_test.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
           <incDir>
             <pElem>third_party</pElem>
