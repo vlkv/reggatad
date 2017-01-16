@@ -1,9 +1,6 @@
 #pragma once
-#include "repo.h"
 #include "client_connection.h"
-#include "processor.h"
 #include "reggata_exceptions.h"
-
 #include <boost/bind.hpp>
 #include <boost/asio.hpp>
 #include <boost/log/trivial.hpp>
@@ -14,6 +11,8 @@
 #include <memory>
 #include <string>
 #include <iostream>
+
+class Processor;
 
 class Service {
     std::shared_ptr<Processor> _proc;

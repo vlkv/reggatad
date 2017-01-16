@@ -14,5 +14,5 @@ struct CmdRemoveTags : public CmdRepo {
 
     virtual json::json execute();
 
-    virtual std::string path() const;
+    virtual boost::filesystem::path path() const;
 };

@@ -30,7 +30,7 @@ public:
     SearchTest() :
     _app(new Application(_port, 0)),
     _t(&SearchTest::startReggataApp, this),
-    _workDir("./test_data/repo"),
+    _workDir(boost::filesystem::canonical("./test_data/repo")),
     _rgen(42),
     _idist(0, _allTags.size() - 1) {
     }

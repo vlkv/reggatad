@@ -1,14 +1,15 @@
 #pragma once
 #include <rocksdb/db.h>
+#include <boost/filesystem.hpp>
 #include <memory>
 
 class Database {
-    std::string _dbPath;
+    boost::filesystem::path _dbPath;
     std::unique_ptr<rocksdb::DB> _db;
     std::map<std::string, std::unique_ptr<rocksdb::ColumnFamilyHandle>> _handles; // NOTE: should be deleted before the *rocksdb::DB
     
 public:
-    Database(const std::string& dbPath, bool initIfNotExists = false);
+    Database(const boost::filesystem::path& dbPath, bool initIfNotExists = false);
     virtual ~Database() = default;
    
     rocksdb::DB* getDB() const;

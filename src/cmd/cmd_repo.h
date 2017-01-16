@@ -1,6 +1,7 @@
 #pragma once
 #include "cmd.h"
 #include <memory>
+#include <boost/filesystem/path.hpp>
 class Repo;
 
 struct CmdRepo : public Cmd {
@@ -10,5 +11,5 @@ struct CmdRepo : public Cmd {
 
     void setContext(std::shared_ptr<Repo> repo);
 
-    virtual std::string path() const = 0; // TODO: use boost::filesystem::path
+    virtual boost::filesystem::path path() const = 0;
 };
