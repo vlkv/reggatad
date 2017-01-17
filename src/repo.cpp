@@ -24,13 +24,9 @@ _thread(&Repo::run, this) {
     }
 
     for (auto&& entry : boost::filesystem::recursive_directory_iterator(_rootPath)) {
-
         auto p = std::mismatch(_dbPath.begin(), _dbPath.end(), entry.path().begin());
         if (p.first == _dbPath.end()) {
-            std::cout << "SKIPPING " << entry.path() << std::endl;
             continue;
-        } else {
-            std::cout << "CREATE WATCHER " << entry.path() << std::endl;
         }
         if (entry.status().type() != boost::filesystem::file_type::directory_file) {
             continue;

@@ -24,15 +24,15 @@ public:
     std::vector<std::string> _allTags{"Sea", "Boat", "Fishing", "Mercury", "Pike",
         "Motor", "Line", "Hook", "Water", "River", "Deep", "Good", "Anchor", "Cool",
         "Don", "Jaw", "Yamaha", "Nissan Marine"};
-    std::mt19937 _rgen;
+    std::default_random_engine _rgen;
     std::uniform_int_distribution<int> _idist;
 
     SearchTest() :
     _app(new Application(_port, 0)),
     _t(&SearchTest::startReggataApp, this),
     _workDir(boost::filesystem::canonical("./test_data/repo")),
-    _rgen(42),
     _idist(0, _allTags.size() - 1) {
+        _rgen.seed(42);
     }
 
     void startReggataApp() {
@@ -93,7 +93,7 @@ TEST_F(SearchTest, Simple) {
             {"args",
                 {
                     {"dir", (_workDir).c_str()},
-                    {"query", "Anchor Sea"}
+                    {"query", "River Boat"}
                 }}
         };
         c.send(cmd.dump());

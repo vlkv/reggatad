@@ -49,6 +49,8 @@ public:
     }
 };
 
+// TODO: Add test that checks that the same tag added many times is added only once
+
 TEST_F(AddTagsTest, Add3Tags) {
     Client c(_port);
     {
