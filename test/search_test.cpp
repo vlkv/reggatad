@@ -93,7 +93,7 @@ TEST_F(SearchTest, Simple) {
             {"args",
                 {
                     {"dir", (_workDir).c_str()},
-                    {"query", "Sea"}
+                    {"query", "Anchor Sea"}
                 }}
         };
         c.send(cmd.dump());
@@ -101,9 +101,11 @@ TEST_F(SearchTest, Simple) {
         auto obj = nlohmann::json::parse(msg);
         ASSERT_EQ("2", obj["id"]);
         ASSERT_EQ(StatusCode::OK, obj["code"]);
+        auto dataObj = obj["data"];
+        ASSERT_EQ(2, dataObj.size());
     }
 
-    {// TODO: check that search results are true
+    {// TODO: check that search results are true with get file info?..
 
     }
 }

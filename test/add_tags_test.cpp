@@ -24,7 +24,7 @@ public:
     AddTagsTest() :
     _app(new Application(_port, 0)),
     _t(&AddTagsTest::startReggataApp, this),
-    _workDir("./test_data/repo") {
+    _workDir(boost::filesystem::canonical("./test_data/repo")) {
     }
 
     void startReggataApp() {
@@ -112,5 +112,5 @@ TEST_F(AddTagsTest, TryAddTagsToNonexistentFile) {
     auto obj2 = nlohmann::json::parse(msg2);
     ASSERT_EQ("124", obj2["id"]);
     ASSERT_EQ(StatusCode::CLIENT_ERROR, obj2["code"]);
-    ASSERT_EQ("Could not add tags, reason: file \"./test_data/repo/nonexistent_file\" does not exists", obj2["msg"]);
+    ASSERT_EQ("Could not add tags, reason: file \"/home/vitvlkv/dev/reggatad/test_data/repo/nonexistent_file\" does not exists", obj2["msg"]);
 }

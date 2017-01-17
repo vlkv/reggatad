@@ -119,6 +119,17 @@ boost::filesystem::path Repo::makeRelativePath(const boost::filesystem::path& ab
     if (ec.value() != boost::system::errc::success) {
         throw ReggataException(ec.message());
     }
+    // TODO: Maybe use std::copy?..
+    if (!rel.empty() && rel.begin()->string() == ".") {
+        boost::filesystem::path p;
+        for (auto it = rel.begin(); it != rel.end(); ++it) {
+            if (it == rel.begin()) {
+                continue;
+            }
+            p += *it;
+        }
+        rel = p;
+    }
     return rel;
 }
 
