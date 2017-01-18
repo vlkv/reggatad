@@ -11,6 +11,6 @@ struct CmdGetFileInfo : public CmdRepo {
     CmdGetFileInfo(const std::string& id, Cmd::SendResult sendResult);
     virtual ~CmdGetFileInfo() = default;
     
-    virtual std::string path() const;
+    virtual boost::filesystem::path path() const;
     virtual json::json execute();
 };

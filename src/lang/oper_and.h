@@ -11,6 +11,6 @@ public:
     virtual ~OperAnd() = default;
 
     virtual std::string str();
-    virtual std::unordered_set<std::string> findFileIdsIn(std::shared_ptr<Repo> repo, 
+    virtual std::set<std::string> findFileIdsIn(std::shared_ptr<Repo> repo, 
         const boost::filesystem::path& dirRelPath);
 };

@@ -1,9 +1,9 @@
 #pragma once
-#include "repo.h"
 #include "safe_queue.h"
-#include <boost/log/trivial.hpp>
 #include <boost/thread.hpp>
+#include <boost/filesystem/path.hpp>
 
+class Repo;
 class Cmd;
 class CmdRepo;
 class CmdProc;
@@ -24,10 +24,11 @@ public:
     void routeCmd(std::unique_ptr<Cmd> cmd);
 
 public:
-    void openRepo(const std::string& repoRootDir, const std::string& repoDbDir, bool initIfNotExists);
+    void openRepo(const boost::filesystem::path& repoRootDir, 
+            const boost::filesystem::path& repoDbDir, bool initIfNotExists);
 
 private:
     void run();
     void enqueueCmd(std::unique_ptr<CmdProc> cmd);
-    std::shared_ptr<Repo> findRepo(const std::string& path);
+    std::shared_ptr<Repo> findRepo(const boost::filesystem::path& path);
 };

@@ -1,8 +1,10 @@
 #pragma once
-#include "processor.h"
 #include "service.h"
 #include <string>
 #include <vector>
+#include <memory>
+
+class Processor;
 
 class Application {
     std::shared_ptr<Processor> _proc;

@@ -12,6 +12,6 @@ struct CmdSearch : public CmdRepo {
     CmdSearch(const std::string& id, Cmd::SendResult sendResult);
     virtual ~CmdSearch() = default;
     
-    virtual std::string path() const;
+    virtual boost::filesystem::path path() const;
     virtual json::json execute();
 };

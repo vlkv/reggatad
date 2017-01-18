@@ -10,22 +10,28 @@
 #include <boost/format.hpp>
 #include <iostream>
 
-Repo::Repo(const std::string& rootPath, const std::string& dbPath, bool initIfNotExists)
+Repo::Repo(const boost::filesystem::path& rootPath, const boost::filesystem::path& dbPath, bool initIfNotExists)
 : _rootPath(rootPath), _dbPath(dbPath), _db(new Database(dbPath, initIfNotExists)),
 _thread(&Repo::run, this) {
-
+    if (!rootPath.is_absolute()) {
+        throw ReggataException(boost::format("rootPath=%1% is not absolute") % rootPath);
+    }
+    if (!dbPath.is_absolute()) {
+        throw ReggataException(boost::format("dbPath=%1% is not absolute") % dbPath);
+    }
     if (initIfNotExists && !boost::filesystem::exists(rootPath)) {
-        auto ok = boost::filesystem::create_directories(rootPath);
-        if (!ok) {
-            throw ReggataException(std::string("Could not create directory ") + rootPath);
-        }
+        boost::filesystem::create_directories(rootPath);
     }
 
     for (auto&& entry : boost::filesystem::recursive_directory_iterator(_rootPath)) {
+        auto p = std::mismatch(_dbPath.begin(), _dbPath.end(), entry.path().begin());
+        if (p.first == _dbPath.end()) {
+            continue;
+        }
         if (entry.status().type() != boost::filesystem::file_type::directory_file) {
             continue;
         }
-        createDirWatcherIfNeeded(entry.path().string());
+        createDirWatcherIfNeeded(entry.path());
     }
     createDirWatcherIfNeeded(rootPath);
 }
@@ -69,7 +75,7 @@ void Repo::run() {
     BOOST_LOG_TRIVIAL(info) << "Repo::run exited " << _rootPath;
 }
 
-std::string Repo::rootPath() const {
+boost::filesystem::path Repo::rootPath() const {
     return _rootPath;
 }
 
@@ -108,6 +114,17 @@ boost::filesystem::path Repo::makeRelativePath(const boost::filesystem::path& ab
     auto rel = boost::filesystem::relative(abs, _rootPath, ec);
     if (ec.value() != boost::system::errc::success) {
         throw ReggataException(ec.message());
+    }
+    // TODO: Maybe use std::copy?..
+    if (!rel.empty() && rel.begin()->string() == ".") {
+        boost::filesystem::path p;
+        for (auto it = rel.begin(); it != rel.end(); ++it) {
+            if (it == rel.begin()) {
+                continue;
+            }
+            p += *it;
+        }
+        rel = p;
     }
     return rel;
 }
@@ -246,7 +263,7 @@ FileInfo Repo::getFileInfoById(const std::string& fileId) const {
     return res;
 }
 
-std::vector<FileInfo> Repo::getFileInfos(const std::unordered_set<std::string>& fileIds) const {
+std::vector<FileInfo> Repo::getFileInfos(const std::set<std::string>& fileIds) const {
     std::vector<FileInfo> res;
     for (auto fileId : fileIds) {
         auto finfo = getFileInfoById(fileId);
@@ -255,9 +272,9 @@ std::vector<FileInfo> Repo::getFileInfos(const std::unordered_set<std::string>& 
     return res;
 }
 
-std::unordered_set<std::string> Repo::findFileIds(const std::string& tag,
+std::set<std::string> Repo::findFileIds(const std::string& tag,
         const boost::filesystem::path& dirRel) const {
-    std::unordered_set<std::string> result;
+    std::set<std::string> result;
     rocksdb::ReadOptions ro;
     ro.prefix_same_as_start = true;
     auto db = _db->getDB();
@@ -278,10 +295,10 @@ std::unordered_set<std::string> Repo::findFileIds(const std::string& tag,
     return result;
 }
 
-std::unordered_set<std::string> Repo::findAllFileIdsExcept(
-        const std::unordered_set<std::string>& ids,
+std::set<std::string> Repo::findAllFileIdsExcept(
+        const std::set<std::string>& ids,
         const boost::filesystem::path& dirRel) const {
-    std::unordered_set<std::string> result;
+    std::set<std::string> result;
     rocksdb::ReadOptions ro;
     auto db = _db->getDB();
     auto cfhTagFile = _db->getColumnFamilyHandle(Database::CF_TAG_FILE);
@@ -309,7 +326,7 @@ bool Repo::isPrefixOfStr(const std::string& prefix, const std::string& str) {
     return res.first == prefix.end();
 }
 
-void Repo::createDirWatcherIfNeeded(const std::string& dirPath) {
+void Repo::createDirWatcherIfNeeded(const boost::filesystem::path& dirPath) {
     if (dirPath == _dbPath) {
         BOOST_LOG_TRIVIAL(debug) << "Skipping dir " << dirPath;
 
@@ -318,9 +335,9 @@ void Repo::createDirWatcherIfNeeded(const std::string& dirPath) {
     createDirWatcher(dirPath);
 }
 
-void Repo::createDirWatcher(const std::string& dirPath) {
+void Repo::createDirWatcher(const boost::filesystem::path& dirPath) {
 
-    std::unique_ptr<Poco::DirectoryWatcher> watcher(new Poco::DirectoryWatcher(dirPath,
+    std::unique_ptr<Poco::DirectoryWatcher> watcher(new Poco::DirectoryWatcher(dirPath.string(),
             Poco::DirectoryWatcher::DW_FILTER_ENABLE_ALL, 2));
     watcher->itemAdded += Poco::delegate(this, &Repo::onFileAdded);
     watcher->itemRemoved += Poco::delegate(this, &Repo::onFileRemoved);
@@ -328,12 +345,12 @@ void Repo::createDirWatcher(const std::string& dirPath) {
     watcher->itemMovedFrom += Poco::delegate(this, &Repo::onFileMovedFrom);
     watcher->itemMovedTo += Poco::delegate(this, &Repo::onFileMovedTo);
     watcher->scanError += Poco::delegate(this, &Repo::onScanError);
-    _watchers[dirPath] = std::move(watcher);
+    _watchers[dirPath.string()] = std::move(watcher);
     BOOST_LOG_TRIVIAL(debug) << "DirWatcher created for " << dirPath;
 }
 
-void Repo::destroyDirWatcherIfExists(const std::string& dirPath) {
-    auto f = _watchers.find(dirPath);
+void Repo::destroyDirWatcherIfExists(const boost::filesystem::path& dirPath) {
+    auto f = _watchers.find(dirPath.string());
     if (f != _watchers.end()) {
 
         _watchers.erase(f);

@@ -1,5 +1,5 @@
 #include "cmd_search.h"
-#include "reggata_exceptions.h"
+#include <reggata_exceptions.h>
 #include <status_code.h>
 #include <repo.h>
 #include <parser/parser.h>
@@ -12,17 +12,23 @@ CmdSearch::CmdSearch(const std::string& id, Cmd::SendResult sendResult) :
 CmdRepo(id, sendResult) {
 }
 
-const std::string CmdSearch::_name = "cmd_search";
+const std::string CmdSearch::_name = "search";
 
 const JsonMap::ParseMap<CmdSearch> CmdSearch::_parseMap = boost::assign::list_of
         (JsonMap::mapValue("dir", &CmdSearch::_dir))
 (JsonMap::mapValue("query", &CmdSearch::_query));
 
-std::string CmdSearch::path() const {
+boost::filesystem::path CmdSearch::path() const {
     return _dir;
 }
 
 json::json CmdSearch::execute() {
+    boost::filesystem::path dirPath(_dir);
+    if (!dirPath.is_absolute()) {
+        throw StatusCodeException(StatusCode::CLIENT_ERROR,
+                boost::format("dir=%1% must be an absolute path") % _dir);
+    }
+
     std::istringstream iss(_query);
     std::ostringstream oss;
     Parser p(iss, oss);
@@ -36,7 +42,7 @@ json::json CmdSearch::execute() {
         }
         throw StatusCodeException(StatusCode::CLIENT_ERROR, msg);
     }
-    auto relDir = _repo->makeRelativePath(_dir);
+    auto relDir = _repo->makeRelativePath(dirPath);
     auto fileIds = tree->findFileIdsIn(_repo, relDir);
     auto fileInfos = _repo->getFileInfos(fileIds);
     json::json data = json::json::array();

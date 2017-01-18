@@ -1,5 +1,6 @@
 #include "client_connection.h"
 #include "status_code.h"
+#include <cmd/cmd.h>
 #include <boost/format.hpp>
 
 int ClientConnection::_nextId = 1;

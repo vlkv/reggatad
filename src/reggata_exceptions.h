@@ -1,4 +1,5 @@
 #pragma once
+#include <boost/format.hpp>
 #include <string>
 #include <exception>
 
@@ -8,6 +9,10 @@ class ReggataException : public std::exception {
 public:
     explicit ReggataException(const std::string& msg) :
     _msg(msg) {
+    }
+    
+    explicit ReggataException(const boost::format& msg) :
+    _msg(msg.str()) {
     }
 
     virtual const char* what() const throw () {
@@ -22,6 +27,11 @@ class ConnException : public ReggataException {
 
 public:
     explicit ConnException(const std::string& msg, int clientId) :
+    ReggataException(msg),
+    _clientId(clientId) {
+    }
+    
+    explicit ConnException(const boost::format& msg, int clientId) :
     ReggataException(msg),
     _clientId(clientId) {
     }
@@ -40,6 +50,11 @@ public:
     ReggataException(msg),
     _statusCode(statusCode) {
     }
+    
+    explicit StatusCodeException(int statusCode, const boost::format& msg) :
+    ReggataException(msg),
+    _statusCode(statusCode) {
+    }
 
     int statusCode() const {
         return _statusCode;
@@ -52,6 +67,11 @@ class ParseCmdException : public ReggataException {
 
 public:
     explicit ParseCmdException(const std::string& cmdId, const std::string& msg) :
+    ReggataException(msg),
+    _cmdId(cmdId) {
+    }
+    
+    explicit ParseCmdException(const std::string& cmdId, const boost::format& msg) :
     ReggataException(msg),
     _cmdId(cmdId) {
     }

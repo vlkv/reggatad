@@ -1,4 +1,6 @@
 #include "service.h"
+#include "processor.h"
+#include "client_connection.h"
 #include <boost/format.hpp>
 
 Service::Service(int port, std::shared_ptr<Processor> proc, int pingClientsIntervalMs) :

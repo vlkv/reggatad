@@ -3,7 +3,6 @@
 #include "reggata_exceptions.h"
 class Service;
 #include "processor.h"
-#include "cmds.h"
 #include <nlohmann/json.hpp>
 namespace json = nlohmann;
 #include <boost/asio.hpp>

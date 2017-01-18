@@ -5,7 +5,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/format.hpp>
 
-Database::Database(const std::string& dbPath, bool initIfNotExists) :
+Database::Database(const boost::filesystem::path& dbPath, bool initIfNotExists) :
 _dbPath(dbPath) {
     if (initIfNotExists && !boost::filesystem::exists(dbPath)) {
         auto ok = boost::filesystem::create_directories(dbPath);
@@ -24,7 +24,7 @@ _dbPath(dbPath) {
     auto families = columnFamilies();
     rocksdb::DB* db;
     std::vector<rocksdb::ColumnFamilyHandle*> handles;
-    auto status = rocksdb::DB::Open(opts, _dbPath, families, &handles, &db);
+    auto status = rocksdb::DB::Open(opts, _dbPath.string(), families, &handles, &db);
     _db.reset(db);
     if (!status.ok()) {
         throw StatusCodeException(StatusCode::SERVER_ERROR,

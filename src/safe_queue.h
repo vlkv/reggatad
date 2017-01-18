@@ -1,9 +1,11 @@
 // Taken from http://stackoverflow.com/a/16075550
 #pragma once
+#include <boost/thread.hpp>
 #include <queue>
 #include <mutex>
 #include <condition_variable>
-#include <boost/thread.hpp>
+#include <memory>
+
 
 template<class T>
 class SafeQueue {

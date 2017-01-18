@@ -24,15 +24,15 @@ public:
     std::vector<std::string> _allTags{"Sea", "Boat", "Fishing", "Mercury", "Pike",
         "Motor", "Line", "Hook", "Water", "River", "Deep", "Good", "Anchor", "Cool",
         "Don", "Jaw", "Yamaha", "Nissan Marine"};
-    std::mt19937 _rgen;
+    std::default_random_engine _rgen;
     std::uniform_int_distribution<int> _idist;
 
     SearchTest() :
     _app(new Application(_port, 0)),
     _t(&SearchTest::startReggataApp, this),
-    _workDir("./test_data/repo"),
-    _rgen(42),
+    _workDir(boost::filesystem::canonical("./test_data/repo")),
     _idist(0, _allTags.size() - 1) {
+        _rgen.seed(42); // NOTE: seed with constant gives us the same random sequence at every tests run
     }
 
     void startReggataApp() {
@@ -93,7 +93,7 @@ TEST_F(SearchTest, Simple) {
             {"args",
                 {
                     {"dir", (_workDir).c_str()},
-                    {"query", "Sea"}
+                    {"query", "River & Boat"}
                 }}
         };
         c.send(cmd.dump());
@@ -101,9 +101,13 @@ TEST_F(SearchTest, Simple) {
         auto obj = nlohmann::json::parse(msg);
         ASSERT_EQ("2", obj["id"]);
         ASSERT_EQ(StatusCode::OK, obj["code"]);
-    }
-
-    {// TODO: check that search results are true
-
+        auto dataObj = obj["data"];
+        ASSERT_EQ(4, dataObj.size());
+        /* TODO: assert that we have these results:
+        [{"path":"foo/baz/three/3","size":2,"tags":["Boat","Nissan Marine","River"]},
+        {"path":".gitignore","size":10,"tags":["Boat","Nissan Marine","River"]},
+        {"path":"foo/1","size":1,"tags":["Boat","Cool","Fishing","Jaw","River","Water"]},
+        {"path":"foo/bar/1","size":2,"tags":["Boat","Cool","Line","Mercury","Nissan Marine","Pike","River"]}]
+         */
     }
 }

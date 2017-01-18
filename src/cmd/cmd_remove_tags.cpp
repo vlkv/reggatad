@@ -1,6 +1,8 @@
 #include "cmd_remove_tags.h"
+#include <reggata_exceptions.h>
 #include <status_code.h>
 #include <repo.h>
+#include <boost/format.hpp>
 #include <boost/assign.hpp>
 
 CmdRemoveTags::CmdRemoveTags(const std::string& id, Cmd::SendResult sendResult) :
@@ -13,12 +15,17 @@ const JsonMap::ParseMap<CmdRemoveTags> CmdRemoveTags::_parseMap = boost::assign:
         (JsonMap::mapValue("file", &CmdRemoveTags::_file))
 (JsonMap::mapArray("tags", &CmdRemoveTags::_tags));
 
-std::string CmdRemoveTags::path() const {
+boost::filesystem::path CmdRemoveTags::path() const {
     return _file;
 }
 
 json::json CmdRemoveTags::execute() {
-    _repo->removeTags(_file, _tags);
+    boost::filesystem::path filePath(_file);
+    if (!filePath.is_absolute()) {
+        throw StatusCodeException(StatusCode::CLIENT_ERROR,
+                boost::format("file=%1% must be an absolute path") % _file);
+    }
+    _repo->removeTags(filePath, _tags);
     return json::json{
         {"code", StatusCode::OK}};
 }

@@ -1,7 +1,10 @@
 #include "processor.h"
+#include "repo.h"
 #include "reggata_exceptions.h"
-#include "cmds.h"
 #include "status_code.h"
+#include <cmd/cmd_proc.h>
+#include <boost/format.hpp>
+#include <boost/log/trivial.hpp>
 
 Processor::Processor() {
 }
@@ -52,11 +55,11 @@ void Processor::run() {
     BOOST_LOG_TRIVIAL(info) << "Processor:run exited";
 }
 
-void Processor::openRepo(const std::string& repoRootDir, const std::string& repoDbDir, bool initIfNotExists = false) {
+void Processor::openRepo(const boost::filesystem::path& repoRootDir, const boost::filesystem::path& repoDbDir, bool initIfNotExists = false) {
     // TODO: forbid open nested repos
     BOOST_LOG_TRIVIAL(info) << "Open repo, rootDir=" << repoRootDir << " dbDir=" << repoDbDir;
     auto repo = std::make_shared<Repo>(repoRootDir, repoDbDir, initIfNotExists);
-    _repos.insert(Repos::value_type(repoRootDir, repo));
+    _repos.insert(Repos::value_type(repoRootDir.string(), repo));
 }
 
 void Processor::routeCmd(std::unique_ptr<Cmd> cmd) {
@@ -67,7 +70,7 @@ void Processor::routeCmd(std::unique_ptr<Cmd> cmd) {
         auto p = cmdRepo1->path();
         auto repo = findRepo(p);
         if (repo.use_count() == 0) {
-            throw ReggataException(std::string("Could not find repo for path=") + p);
+            throw ReggataException((boost::format("Could not find repo for path %1%") % p).str());
         }
         cmdRepo1->setContext(repo);
         repo->enqueueCmd(std::move(cmdRepo1));
@@ -86,9 +89,10 @@ void Processor::routeCmd(std::unique_ptr<Cmd> cmd) {
     throw ReggataException(std::string("Unknown command") + cmd->_id);
 }
 
-std::shared_ptr<Repo> Processor::findRepo(const std::string& path) {
+std::shared_ptr<Repo> Processor::findRepo(const boost::filesystem::path& path) {
+    auto pathStr = path.string();
     for (Repos::iterator kv = _repos.begin(); kv != _repos.end(); ++kv) {
-        if (path.find(kv->first) == 0) {
+        if (pathStr.find(kv->first) == 0) {
             return kv->second;
         }
     }

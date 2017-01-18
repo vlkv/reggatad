@@ -1,5 +1,7 @@
 #include "application.h"
 #include "cmd_open_repo.h"
+#include "processor.h"
+#include "service.h"
 #include <boost/thread.hpp>
 
 Application::Application(int port, int pingClientsIntervalMs) :
