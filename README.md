@@ -166,7 +166,7 @@ Response:
 }
 ```
 
-### TODO: search(dir_abs_path, query_string)
+### search(dir_abs_path, query_string)
 Request:
 ```javascript
 {
