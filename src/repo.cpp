@@ -263,7 +263,7 @@ FileInfo Repo::getFileInfoById(const std::string& fileId) const {
     return res;
 }
 
-std::vector<FileInfo> Repo::getFileInfos(const std::unordered_set<std::string>& fileIds) const {
+std::vector<FileInfo> Repo::getFileInfos(const std::set<std::string>& fileIds) const {
     std::vector<FileInfo> res;
     for (auto fileId : fileIds) {
         auto finfo = getFileInfoById(fileId);
@@ -272,9 +272,9 @@ std::vector<FileInfo> Repo::getFileInfos(const std::unordered_set<std::string>& 
     return res;
 }
 
-std::unordered_set<std::string> Repo::findFileIds(const std::string& tag,
+std::set<std::string> Repo::findFileIds(const std::string& tag,
         const boost::filesystem::path& dirRel) const {
-    std::unordered_set<std::string> result;
+    std::set<std::string> result;
     rocksdb::ReadOptions ro;
     ro.prefix_same_as_start = true;
     auto db = _db->getDB();
@@ -295,10 +295,10 @@ std::unordered_set<std::string> Repo::findFileIds(const std::string& tag,
     return result;
 }
 
-std::unordered_set<std::string> Repo::findAllFileIdsExcept(
-        const std::unordered_set<std::string>& ids,
+std::set<std::string> Repo::findAllFileIdsExcept(
+        const std::set<std::string>& ids,
         const boost::filesystem::path& dirRel) const {
-    std::unordered_set<std::string> result;
+    std::set<std::string> result;
     rocksdb::ReadOptions ro;
     auto db = _db->getDB();
     auto cfhTagFile = _db->getColumnFamilyHandle(Database::CF_TAG_FILE);

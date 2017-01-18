@@ -9,7 +9,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/uuid/random_generator.hpp>
 #include <string>
-#include <unordered_set>
+#include <set>
 #include <map>
 #include <memory>
 
@@ -38,14 +38,14 @@ public:
     
     FileInfo getFileInfo(const boost::filesystem::path& fileAbs) const;
     FileInfo getFileInfoById(const std::string& fileId) const;
-    std::vector<FileInfo> getFileInfos(const std::unordered_set<std::string>& fileIds) const;
+    std::vector<FileInfo> getFileInfos(const std::set<std::string>& fileIds) const;
     
-    std::unordered_set<std::string> findFileIds(
+    std::set<std::string> findFileIds(
         const std::string& tag, 
         const boost::filesystem::path& dirRel) const;
     
-    std::unordered_set<std::string> findAllFileIdsExcept(
-        const std::unordered_set<std::string>& ids, 
+    std::set<std::string> findAllFileIdsExcept(
+        const std::set<std::string>& ids, 
         const boost::filesystem::path& dirRel) const;
     
     boost::filesystem::path makeRelativePath(const boost::filesystem::path& abs) const;

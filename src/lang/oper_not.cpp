@@ -8,7 +8,9 @@ std::string OperNot::str() {
     return (boost::format("(NOT %1%)") % _node->str()).str();
 }
 
-std::unordered_set<std::string> OperNot::findFileIdsIn(std::shared_ptr<Repo> repo,
+// TODO: Most of the time users would search for "TagX AND NOT TagY", "AND NOT" combination could be optimized
+
+std::set<std::string> OperNot::findFileIdsIn(std::shared_ptr<Repo> repo,
         const boost::filesystem::path& dirRelPath) {
     auto ids = _node->findFileIdsIn(repo, dirRelPath);
     auto result = repo->findAllFileIdsExcept(ids, dirRelPath);

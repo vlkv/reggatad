@@ -32,7 +32,7 @@ public:
     _t(&SearchTest::startReggataApp, this),
     _workDir(boost::filesystem::canonical("./test_data/repo")),
     _idist(0, _allTags.size() - 1) {
-        _rgen.seed(42);
+        _rgen.seed(42); // NOTE: seed with constant gives us the same random sequence at every tests run
     }
 
     void startReggataApp() {
@@ -93,7 +93,7 @@ TEST_F(SearchTest, Simple) {
             {"args",
                 {
                     {"dir", (_workDir).c_str()},
-                    {"query", "River Boat"}
+                    {"query", "River & Boat"}
                 }}
         };
         c.send(cmd.dump());
@@ -102,10 +102,12 @@ TEST_F(SearchTest, Simple) {
         ASSERT_EQ("2", obj["id"]);
         ASSERT_EQ(StatusCode::OK, obj["code"]);
         auto dataObj = obj["data"];
-        ASSERT_EQ(2, dataObj.size());
-    }
-
-    {// TODO: check that search results are true with get file info?..
-
+        ASSERT_EQ(4, dataObj.size());
+        /* TODO: assert that we have these results:
+        [{"path":"foo/baz/three/3","size":2,"tags":["Boat","Nissan Marine","River"]},
+        {"path":".gitignore","size":10,"tags":["Boat","Nissan Marine","River"]},
+        {"path":"foo/1","size":1,"tags":["Boat","Cool","Fishing","Jaw","River","Water"]},
+        {"path":"foo/bar/1","size":2,"tags":["Boat","Cool","Line","Mercury","Nissan Marine","Pike","River"]}]
+         */
     }
 }
