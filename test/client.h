@@ -26,6 +26,7 @@ public:
     nlohmann::json addTags(const boost::filesystem::path& absFile, const std::vector<std::string>& tags);
     nlohmann::json removeTags(const boost::filesystem::path& absFile, const std::vector<std::string>& tags);
     nlohmann::json getFileInfo(const boost::filesystem::path& absFile);
+    nlohmann::json search(const boost::filesystem::path& absFile, const std::string& query);
     
 private:
     std::string nextCmdId();

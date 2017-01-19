@@ -95,7 +95,7 @@ public:
     }
 };
 
-TEST_F(SearchTest, Simple) {
+TEST_F(SearchTest, Tag1AndTag2) {
     Client c(_port);
     {
         json::json cmd = {
@@ -137,3 +137,27 @@ TEST_F(SearchTest, Simple) {
     }
 }
 
+TEST_F(SearchTest, Tag1AndTag2InSubDir) {
+    Client c(_port);
+    {
+        auto obj = c.search(_workDir / "foo", "River Boat");
+        ASSERT_EQ(StatusCode::OK, obj["code"]);
+        auto dataObj = obj["data"];
+        ASSERT_EQ(3, dataObj.size());
+        {
+            FileInfo fi = findAndCreate("foo/baz/three/3", dataObj);
+            std::set<std::string> tagsExpected{"Boat", "Nissan Marine", "River"};
+            ASSERT_EQ(tagsExpected, fi._tags);
+        }
+        {
+            FileInfo fi = findAndCreate("foo/1", dataObj);
+            std::set<std::string> tagsExpected{"Boat", "Cool", "Fishing", "Jaw", "River", "Water"};
+            ASSERT_EQ(tagsExpected, fi._tags);
+        }
+        {
+            FileInfo fi = findAndCreate("foo/bar/1", dataObj);
+            std::set<std::string> tagsExpected{"Boat", "Cool", "Line", "Mercury", "Nissan Marine", "Pike", "River"};
+            ASSERT_EQ(tagsExpected, fi._tags);
+        }
+    }
+}

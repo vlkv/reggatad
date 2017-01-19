@@ -135,3 +135,23 @@ nlohmann::json Client::getFileInfo(const boost::filesystem::path & absFile) {
     }
     return obj;
 }
+
+nlohmann::json Client::search(const boost::filesystem::path& absFile, const std::string& query) {
+    auto cmdId = nextCmdId();
+    nlohmann::json cmd = {
+        {"id", cmdId},
+        {"cmd", "search"},
+        {"args",
+            {
+                {"dir", absFile.c_str()},
+                {"query", query},
+            }}
+    };
+    send(cmd.dump());
+    auto msg = recv();
+    auto obj = nlohmann::json::parse(msg);
+    if (cmdId != obj["id"]) {
+        throw ReggataException((boost::format("Command id %1% != response id %2%") % cmdId % obj["id"]).str());
+    }
+    return obj;
+}
