@@ -97,67 +97,164 @@ public:
 
 TEST_F(SearchTest, Tag1AndTag2) {
     Client c(_port);
+
+    json::json cmd = {
+        {"id", "2"},
+        {"cmd", "search"},
+        {"args",
+            {
+                {"dir", (_workDir).c_str()},
+                {"query", "River & Boat"}
+            }}
+    };
+    c.send(cmd.dump());
+    auto msg = c.recv();
+    auto obj = nlohmann::json::parse(msg);
+    ASSERT_EQ("2", obj["id"]);
+    ASSERT_EQ(StatusCode::OK, obj["code"]);
+    auto dataObj = obj["data"];
+    ASSERT_EQ(4, dataObj.size());
     {
-        json::json cmd = {
-            {"id", "2"},
-            {"cmd", "search"},
-            {"args",
-                {
-                    {"dir", (_workDir).c_str()},
-                    {"query", "River & Boat"}
-                }}
-        };
-        c.send(cmd.dump());
-        auto msg = c.recv();
-        auto obj = nlohmann::json::parse(msg);
-        ASSERT_EQ("2", obj["id"]);
-        ASSERT_EQ(StatusCode::OK, obj["code"]);
-        auto dataObj = obj["data"];
-        ASSERT_EQ(4, dataObj.size());
-        {
-            FileInfo fi = findAndCreate("foo/baz/three/3", dataObj);
-            std::set<std::string> tagsExpected{"Boat", "Nissan Marine", "River"};
-            ASSERT_EQ(tagsExpected, fi._tags);
-        }
-        {
-            FileInfo fi = findAndCreate(".gitignore", dataObj);
-            std::set<std::string> tagsExpected{"Boat", "Nissan Marine", "River"};
-            ASSERT_EQ(tagsExpected, fi._tags);
-        }
-        {
-            FileInfo fi = findAndCreate("foo/1", dataObj);
-            std::set<std::string> tagsExpected{"Boat", "Cool", "Fishing", "Jaw", "River", "Water"};
-            ASSERT_EQ(tagsExpected, fi._tags);
-        }
-        {
-            FileInfo fi = findAndCreate("foo/bar/1", dataObj);
-            std::set<std::string> tagsExpected{"Boat", "Cool", "Line", "Mercury", "Nissan Marine", "Pike", "River"};
-            ASSERT_EQ(tagsExpected, fi._tags);
-        }
+        FileInfo fi = findAndCreate("foo/baz/three/3", dataObj);
+        std::set<std::string> tagsExpected{"Boat", "Nissan Marine", "River"};
+        ASSERT_EQ(tagsExpected, fi._tags);
+    }
+    {
+        FileInfo fi = findAndCreate(".gitignore", dataObj);
+        std::set<std::string> tagsExpected{"Boat", "Nissan Marine", "River"};
+        ASSERT_EQ(tagsExpected, fi._tags);
+    }
+    {
+        FileInfo fi = findAndCreate("foo/1", dataObj);
+        std::set<std::string> tagsExpected{"Boat", "Cool", "Fishing", "Jaw", "River", "Water"};
+        ASSERT_EQ(tagsExpected, fi._tags);
+    }
+    {
+        FileInfo fi = findAndCreate("foo/bar/1", dataObj);
+        std::set<std::string> tagsExpected{"Boat", "Cool", "Line", "Mercury", "Nissan Marine", "Pike", "River"};
+        ASSERT_EQ(tagsExpected, fi._tags);
     }
 }
 
 TEST_F(SearchTest, Tag1AndTag2InSubDir) {
     Client c(_port);
+
+    auto obj = c.search(_workDir / "foo", "River Boat");
+    ASSERT_EQ(StatusCode::OK, obj["code"]);
+    auto dataObj = obj["data"];
+    ASSERT_EQ(3, dataObj.size());
     {
-        auto obj = c.search(_workDir / "foo", "River Boat");
-        ASSERT_EQ(StatusCode::OK, obj["code"]);
-        auto dataObj = obj["data"];
-        ASSERT_EQ(3, dataObj.size());
-        {
-            FileInfo fi = findAndCreate("foo/baz/three/3", dataObj);
-            std::set<std::string> tagsExpected{"Boat", "Nissan Marine", "River"};
-            ASSERT_EQ(tagsExpected, fi._tags);
-        }
-        {
-            FileInfo fi = findAndCreate("foo/1", dataObj);
-            std::set<std::string> tagsExpected{"Boat", "Cool", "Fishing", "Jaw", "River", "Water"};
-            ASSERT_EQ(tagsExpected, fi._tags);
-        }
-        {
-            FileInfo fi = findAndCreate("foo/bar/1", dataObj);
-            std::set<std::string> tagsExpected{"Boat", "Cool", "Line", "Mercury", "Nissan Marine", "Pike", "River"};
-            ASSERT_EQ(tagsExpected, fi._tags);
-        }
+        FileInfo fi = findAndCreate("foo/baz/three/3", dataObj);
+        std::set<std::string> tagsExpected{"Boat", "Nissan Marine", "River"};
+        ASSERT_EQ(tagsExpected, fi._tags);
+    }
+    {
+        FileInfo fi = findAndCreate("foo/1", dataObj);
+        std::set<std::string> tagsExpected{"Boat", "Cool", "Fishing", "Jaw", "River", "Water"};
+        ASSERT_EQ(tagsExpected, fi._tags);
+    }
+    {
+        FileInfo fi = findAndCreate("foo/bar/1", dataObj);
+        std::set<std::string> tagsExpected{"Boat", "Cool", "Line", "Mercury", "Nissan Marine", "Pike", "River"};
+        ASSERT_EQ(tagsExpected, fi._tags);
+    }
+}
+
+TEST_F(SearchTest, NotNonExistingTag) {
+    Client c(_port);
+
+    auto obj = c.search(_workDir, "!NonExistingTag"); // NOTE: it queries all the files in database
+    ASSERT_EQ(StatusCode::OK, obj["code"]);
+    auto dataObj = obj["data"];
+    ASSERT_EQ(14, dataObj.size());
+    {
+        FileInfo fi = findAndCreate("foo/baz/one/1", dataObj);
+        std::set<std::string> tagsExpected{"Good", "Line", "Pike", "River", "Sea"};
+        ASSERT_EQ(tagsExpected, fi._tags);
+    }
+    {
+        FileInfo fi = findAndCreate("foo/bar/3", dataObj);
+        std::set<std::string> tagsExpected{"Pike", "Water", "Yamaha"};
+        ASSERT_EQ(tagsExpected, fi._tags);
+    }
+    {
+        FileInfo fi = findAndCreate("foo/baz/three/2", dataObj);
+        std::set<std::string> tagsExpected{"Anchor", "Hook", "Mercury", "Nissan Marine", "River"};
+        ASSERT_EQ(tagsExpected, fi._tags);
+    }
+    {
+        FileInfo fi = findAndCreate("foo/2", dataObj);
+        std::set<std::string> tagsExpected{"Boat", "Cool", "Don", "Fishing", "Mercury", "Sea"};
+        ASSERT_EQ(tagsExpected, fi._tags);
+    }
+    {
+        FileInfo fi = findAndCreate("foo/bar/2", dataObj);
+        std::set<std::string> tagsExpected{"Boat", "Don", "Motor"};
+        ASSERT_EQ(tagsExpected, fi._tags);
+    }
+    {
+        FileInfo fi = findAndCreate("foo/baz/three/3", dataObj);
+        std::set<std::string> tagsExpected{"Boat", "Nissan Marine", "River"};
+        ASSERT_EQ(tagsExpected, fi._tags);
+    }
+    {
+        FileInfo fi = findAndCreate("foo/bar/1", dataObj);
+        std::set<std::string> tagsExpected{"Boat", "Cool", "Line", "Mercury", "Nissan Marine", "Pike", "River"};
+        ASSERT_EQ(tagsExpected, fi._tags);
+    }
+    {
+        FileInfo fi = findAndCreate("foo/baz/two/2", dataObj);
+        std::set<std::string> tagsExpected{"Cool", "Deep", "Good", "Line"};
+        ASSERT_EQ(tagsExpected, fi._tags);
+    }
+    {
+        FileInfo fi = findAndCreate(".gitignore", dataObj);
+        std::set<std::string> tagsExpected{"Boat", "Nissan Marine", "River"};
+        ASSERT_EQ(tagsExpected, fi._tags);
+    }
+    {
+        FileInfo fi = findAndCreate("foo/1", dataObj);
+        std::set<std::string> tagsExpected{"Boat", "Cool", "Fishing", "Jaw", "River", "Water"};
+        ASSERT_EQ(tagsExpected, fi._tags);
+    }
+    {
+        FileInfo fi = findAndCreate("foo/baz/three/1", dataObj);
+        std::set<std::string> tagsExpected{"Motor", "Water"};
+        ASSERT_EQ(tagsExpected, fi._tags);
+    }
+    {
+        FileInfo fi = findAndCreate("foo/baz/three/4", dataObj);
+        std::set<std::string> tagsExpected{"Nissan Marine"};
+        ASSERT_EQ(tagsExpected, fi._tags);
+    }
+    {
+        FileInfo fi = findAndCreate("foo/baz/two/1", dataObj);
+        std::set<std::string> tagsExpected{"Nissan Marine", "Sea", "Yamaha"};
+        ASSERT_EQ(tagsExpected, fi._tags);
+    }
+    {
+        FileInfo fi = findAndCreate("file", dataObj);
+        std::set<std::string> tagsExpected{"Line"};
+        ASSERT_EQ(tagsExpected, fi._tags);
+    }
+
+}
+
+TEST_F(SearchTest, ComplexQuery) {
+    Client c(_port);
+
+    auto obj = c.search(_workDir / "foo", "Yamaha | Mercury !Jaw Sea");
+    ASSERT_EQ(StatusCode::OK, obj["code"]);
+    auto dataObj = obj["data"];
+    ASSERT_EQ(2, dataObj.size());
+    {
+        FileInfo fi = findAndCreate("foo/2", dataObj);
+        std::set<std::string> tagsExpected{"Boat", "Cool", "Don", "Fishing", "Mercury", "Sea"};
+        ASSERT_EQ(tagsExpected, fi._tags);
+    }
+    {
+        FileInfo fi = findAndCreate("foo/baz/two/1", dataObj);
+        std::set<std::string> tagsExpected{"Nissan Marine", "Sea", "Yamaha"};
+        ASSERT_EQ(tagsExpected, fi._tags);
     }
 }
