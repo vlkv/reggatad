@@ -249,7 +249,7 @@ FileInfo Repo::getFileInfoById(const std::string& fileId) const {
     for (j->Seek(fileId); j->Valid(); j->Next()) {
         auto key = j->key().ToString();
         auto p = DBKey::split(key);
-        res._tags.push_back(p.second);
+        res._tags.insert(p.second);
     }
 
     auto cfhFile = _db->getColumnFamilyHandle(Database::CF_FILE);

@@ -1,5 +1,6 @@
 #include "client.h"
 #include "common.h"
+#include "file_info.h"
 #include <status_code.h>
 #include <application.h>
 #include <nlohmann/json.hpp>
@@ -64,6 +65,16 @@ public:
         }
     }
 
+    FileInfo findAndCreate(const std::string& path, const nlohmann::json& fileInfos) {
+        auto fileInfoIt = std::find_if(fileInfos.begin(), fileInfos.end(),
+                [path](const nlohmann::json & elem) -> bool {
+                    return elem.at("path") == path;
+                });
+        FileInfo result;
+        result.fromJson(*fileInfoIt);
+        return result;
+    }
+
     std::vector<std::string> getNRandomTags(size_t n) {
         std::vector<std::string> result;
         for (size_t i = 0; i < n; ++i) {
@@ -103,11 +114,26 @@ TEST_F(SearchTest, Simple) {
         ASSERT_EQ(StatusCode::OK, obj["code"]);
         auto dataObj = obj["data"];
         ASSERT_EQ(4, dataObj.size());
-        /* TODO: assert that we have these results:
-        [{"path":"foo/baz/three/3","size":2,"tags":["Boat","Nissan Marine","River"]},
-        {"path":".gitignore","size":10,"tags":["Boat","Nissan Marine","River"]},
-        {"path":"foo/1","size":1,"tags":["Boat","Cool","Fishing","Jaw","River","Water"]},
-        {"path":"foo/bar/1","size":2,"tags":["Boat","Cool","Line","Mercury","Nissan Marine","Pike","River"]}]
-         */
+        {
+            FileInfo fi = findAndCreate("foo/baz/three/3", dataObj);
+            std::set<std::string> tagsExpected{"Boat", "Nissan Marine", "River"};
+            ASSERT_EQ(tagsExpected, fi._tags);
+        }
+        {
+            FileInfo fi = findAndCreate(".gitignore", dataObj);
+            std::set<std::string> tagsExpected{"Boat", "Nissan Marine", "River"};
+            ASSERT_EQ(tagsExpected, fi._tags);
+        }
+        {
+            FileInfo fi = findAndCreate("foo/1", dataObj);
+            std::set<std::string> tagsExpected{"Boat", "Cool", "Fishing", "Jaw", "River", "Water"};
+            ASSERT_EQ(tagsExpected, fi._tags);
+        }
+        {
+            FileInfo fi = findAndCreate("foo/bar/1", dataObj);
+            std::set<std::string> tagsExpected{"Boat", "Cool", "Line", "Mercury", "Nissan Marine", "Pike", "River"};
+            ASSERT_EQ(tagsExpected, fi._tags);
+        }
     }
 }
+
