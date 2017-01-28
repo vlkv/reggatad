@@ -11,6 +11,8 @@
         <in>cmd.cpp</in>
         <in>cmd_add_tags.cpp</in>
         <in>cmd_get_file_info.cpp</in>
+        <in>cmd_get_repos_info.cpp</in>
+        <in>cmd_get_repos_info.h</in>
         <in>cmd_open_repo.cpp</in>
         <in>cmd_proc.cpp</in>
         <in>cmd_remove_tags.cpp</in>
@@ -37,6 +39,7 @@
       <in>main.cpp</in>
       <in>processor.cpp</in>
       <in>repo.cpp</in>
+      <in>repo_info.h</in>
       <in>service.cpp</in>
       <in>status_code.cpp</in>
     </df>
@@ -172,6 +175,10 @@
         <ccTool flags="0">
         </ccTool>
       </item>
+      <item path="src/cmd/cmd_get_repos_info.cpp" ex="false" tool="1" flavor2="0">
+      </item>
+      <item path="src/cmd/cmd_get_repos_info.h" ex="false" tool="3" flavor2="0">
+      </item>
       <item path="src/cmd/cmd_open_repo.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
@@ -236,6 +243,8 @@
       <item path="src/repo.cpp" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">
         </ccTool>
+      </item>
+      <item path="src/repo_info.h" ex="false" tool="3" flavor2="0">
       </item>
       <item path="src/scanner/lex.cc" ex="false" tool="1" flavor2="11">
         <ccTool flags="0">

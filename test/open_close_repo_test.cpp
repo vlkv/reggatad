@@ -50,6 +50,7 @@ public:
 
 TEST_F(OpenCloseRepoTest, InitRepoThenCloseThenOpen) {
     fs::path repoDir(_workDir / "repo");
+    fs::path dbDir(repoDir / ".reggata");
     ASSERT_FALSE(fs::exists(repoDir));
     Client c(_port);
     json::json cmd = {
@@ -58,7 +59,7 @@ TEST_F(OpenCloseRepoTest, InitRepoThenCloseThenOpen) {
         {"args",
             {
                 {"root_dir", repoDir.c_str()},
-                {"db_dir", (repoDir / ".reggata").c_str()},
+                {"db_dir", dbDir.c_str()},
                 {"init_if_not_exists", true}
             }}
     };
@@ -67,6 +68,14 @@ TEST_F(OpenCloseRepoTest, InitRepoThenCloseThenOpen) {
     auto obj = json::json::parse(msg);
     ASSERT_EQ("42", obj["id"]);
     ASSERT_EQ(StatusCode::OK, obj["code"]);
+
+
+    auto obj2 = c.getReposInfo();
+    ASSERT_EQ(1, obj2["data"].size());
+    RepoInfo ri;
+    ri.fromJson(obj2["data"][0]);
+    ASSERT_EQ(repoDir.string(), ri._rootDir);
+    ASSERT_EQ(dbDir.string(), ri._dbDir);
 
     // TODO: close this repo
 
@@ -92,7 +101,6 @@ TEST_F(OpenCloseRepoTest, TryOpenNonExistentRepo) {
     ASSERT_EQ("123", obj["id"]);
     ASSERT_EQ(StatusCode::CLIENT_ERROR, obj["code"]);
     ASSERT_EQ("Database directory \"/home/vitvlkv/dev/reggatad/test_data/open_close_repo_test/non_existent_repo/.reggata\" doesn't exist", obj["msg"]);
-
 }
 
 /* TODO: Add tests:

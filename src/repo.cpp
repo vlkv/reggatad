@@ -79,6 +79,10 @@ boost::filesystem::path Repo::rootPath() const {
     return _rootPath;
 }
 
+boost::filesystem::path Repo::dbPath() const {
+    return _dbPath;
+}
+
 void Repo::enqueueCmd(std::unique_ptr<CmdRepo> cmd) {
     _queue.enqueue(std::move(cmd));
 }

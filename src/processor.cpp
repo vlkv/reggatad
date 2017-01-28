@@ -62,6 +62,17 @@ void Processor::openRepo(const boost::filesystem::path& repoRootDir, const boost
     _repos.insert(Repos::value_type(repoRootDir.string(), repo));
 }
 
+std::vector<RepoInfo> Processor::getReposInfo() const {
+    std::vector<RepoInfo> res;
+    for (auto repo : _repos) {
+        RepoInfo ri;
+        ri._rootDir = repo.second->rootPath().string();
+        ri._dbDir = repo.second->dbPath().string();
+        res.push_back(ri);
+    }
+    return res;
+}
+
 void Processor::routeCmd(std::unique_ptr<Cmd> cmd) {
     auto* cmdRepo = dynamic_cast<CmdRepo*> (cmd.get());
     if (cmdRepo != nullptr) {

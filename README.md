@@ -37,8 +37,6 @@ Request:
     }
 }
 ```
-TODO: At the moment `db_dir` is absolute path. Let client to use relative path 
-for `db_dir`. Make argument `db_dir` optional.
 
 Responses:
 ```javascript
@@ -59,7 +57,7 @@ Request:
 }
 ```
 
-### TODO: get_repos_info()
+### get_repos_info()
 Request:
 ```javascript
 {
@@ -73,8 +71,8 @@ Response:
     code: 200,
     id: "1",
     data: [
-        {root_dir:"/home/repo1/"},
-        {root_dir:"/home/repo2/"}
+        {root_dir:"/home/repo1/", db_dir:"/home/repo1/.reggata"},
+        {root_dir:"/home/repo2/", db_dir:"/opt/var/repo2_reggata"}
     ]
 }
 ```

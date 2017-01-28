@@ -30,6 +30,7 @@ public:
     void stop();
     
     boost::filesystem::path rootPath() const;
+    boost::filesystem::path dbPath() const;
     void enqueueCmd(std::unique_ptr<CmdRepo> cmd);
     
     void addTags(const boost::filesystem::path& fileAbs, const std::vector<std::string>& tags);

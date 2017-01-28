@@ -77,6 +77,21 @@ nlohmann::json Client::openRepo(const boost::filesystem::path& rootDir, const bo
     return obj;
 }
 
+nlohmann::json Client::getReposInfo() {
+    auto cmdId = nextCmdId();
+    nlohmann::json cmd = {
+        {"id", cmdId},
+        {"cmd", "get_repos_info"}
+    };
+    send(cmd.dump());
+    auto msg = recv();
+    auto obj = nlohmann::json::parse(msg);
+    if (cmdId != obj["id"]) {
+        throw ReggataException((boost::format("Command id %1% != response id %2%") % cmdId % obj["id"]).str());
+    }
+    return obj;
+}
+
 nlohmann::json Client::addTags(const boost::filesystem::path& absFile, const std::vector<std::string>& tags) {
     auto cmdId = nextCmdId();
     nlohmann::json cmd = {
@@ -136,7 +151,7 @@ nlohmann::json Client::getFileInfo(const boost::filesystem::path & absFile) {
     return obj;
 }
 
-nlohmann::json Client::search(const boost::filesystem::path& absFile, const std::string& query) {
+nlohmann::json Client::search(const boost::filesystem::path& absFile, const std::string & query) {
     auto cmdId = nextCmdId();
     nlohmann::json cmd = {
         {"id", cmdId},

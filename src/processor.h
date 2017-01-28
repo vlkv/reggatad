@@ -1,5 +1,6 @@
 #pragma once
 #include "safe_queue.h"
+#include "repo_info.h"
 #include <boost/thread.hpp>
 #include <boost/filesystem/path.hpp>
 
@@ -26,6 +27,7 @@ public:
 public:
     void openRepo(const boost::filesystem::path& repoRootDir, 
             const boost::filesystem::path& repoDbDir, bool initIfNotExists);
+    std::vector<RepoInfo> getReposInfo() const;
 
 private:
     void run();
