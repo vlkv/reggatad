@@ -5,7 +5,6 @@
 #include <rocksdb/db.h>
 #include <rocksdb/slice_transform.h>
 #include <nlohmann/json.hpp>
-namespace json = nlohmann;
 
 #include <gtest/gtest.h>
 #include <boost/thread.hpp>
@@ -14,14 +13,13 @@ namespace json = nlohmann;
 #include <boost/date_time/posix_time/posix_time.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/path.hpp>
-namespace fs = boost::filesystem;
 #include <memory>
 #include <iostream>
 #include <sstream>
 
 class RocksDBTest : public testing::Test {
 public:
-    fs::path DB_PATH;
+    boost::filesystem::path DB_PATH;
 
     RocksDBTest() :
     DB_PATH("./test_data/rocksdb_test") {
@@ -29,7 +27,7 @@ public:
 
     void SetUp() {
         boost::system::error_code ec;
-        fs::remove_all(DB_PATH, ec);
+        boost::filesystem::remove_all(DB_PATH, ec);
         ASSERT_EQ(boost::system::errc::success, ec.value()) << "Could not remove_all in " << DB_PATH;
     }
 

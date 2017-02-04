@@ -12,5 +12,5 @@ struct CmdGetFileInfo : public CmdRepo {
     virtual ~CmdGetFileInfo() = default;
     
     virtual boost::filesystem::path path() const;
-    virtual json::json execute();
+    virtual nlohmann::json execute();
 };

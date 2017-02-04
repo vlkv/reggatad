@@ -76,7 +76,7 @@ void ClientConnection::onPingTimer(const boost::system::error_code& err) {
                 % err % err.message() % _id).str(), _id);
     }
     BOOST_LOG_TRIVIAL(debug) << "onPingTimer";
-    json::json pingMsg{
+    nlohmann::json pingMsg{
         {"question", "Are you alive? Respond with {\"answer\": \"Yes\"} otherwise server would close the connection"}};
     doWrite(pingMsg.dump(), boost::bind(&ClientConnection::onPingSent, this, _1, _2));
 }
@@ -156,18 +156,18 @@ void ClientConnection::onReadBody(const boost::system::error_code& err) {
     try {
         handleMsg(msg);
     } catch (const ParseCmdException& ex) {
-        json::json resp{
+        nlohmann::json resp{
             {"id", ex.cmdId()},
             {"code", StatusCode::CLIENT_ERROR},
             {"msg", ex.what()}};
         handleCmdResult(resp.dump());
     } catch (const std::exception& ex) {
-        json::json resp{
+        nlohmann::json resp{
             {"code", StatusCode::CLIENT_ERROR},
             {"msg", ex.what()}};
         handleCmdResult(resp.dump());
     } catch (...) {
-        json::json resp{
+        nlohmann::json resp{
             {"code", StatusCode::CLIENT_ERROR},
             {"msg", "Unknown exception in onReadBody"}};
         handleCmdResult(resp.dump());
@@ -176,7 +176,7 @@ void ClientConnection::onReadBody(const boost::system::error_code& err) {
 }
 
 void ClientConnection::handleMsg(const std::string &msg) {
-    auto j = json::json::parse(msg);
+    auto j = nlohmann::json::parse(msg);
     auto cmdId = j.value("id", std::string()); // We'd like to put 'id' to response if it presents in case of errors
     try {
         if (_pingClient && j.count("cmd") == 0 && j.value("answer", std::string("No")) == "Yes") {

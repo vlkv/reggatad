@@ -12,7 +12,7 @@ struct CmdRemoveTags : public CmdRepo {
     CmdRemoveTags(const std::string& id, Cmd::SendResult sendResult);
     virtual ~CmdRemoveTags() = default;
 
-    virtual json::json execute();
+    virtual nlohmann::json execute();
 
     virtual boost::filesystem::path path() const;
 };

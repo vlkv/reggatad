@@ -50,7 +50,7 @@ void Repo::run() {
     while (!_stopCalled && !_thread.interruption_requested()) {
         try {
             auto cmd = _queue.dequeue();
-            json::json result;
+            nlohmann::json result;
             try {
                 result = cmd->execute();
             } catch (const StatusCodeException& ex) {

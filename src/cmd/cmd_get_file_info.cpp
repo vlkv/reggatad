@@ -18,7 +18,7 @@ boost::filesystem::path CmdGetFileInfo::path() const {
     return _file;
 }
 
-json::json CmdGetFileInfo::execute() {
+nlohmann::json CmdGetFileInfo::execute() {
     boost::filesystem::path filePath(_file);
     if (!filePath.is_absolute()) {
         throw StatusCodeException(StatusCode::CLIENT_ERROR,
@@ -26,7 +26,7 @@ json::json CmdGetFileInfo::execute() {
     }
     auto fi = _repo->getFileInfo(filePath);
     auto fiJson = fi.toJson();
-    json::json res = {
+    nlohmann::json res = {
         {"code", StatusCode::OK},
         {"data", fiJson}
     };

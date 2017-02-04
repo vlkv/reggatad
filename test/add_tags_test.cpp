@@ -19,7 +19,7 @@ public:
     const int _port = 9100;
     std::unique_ptr<Application> _app;
     boost::thread _t;
-    fs::path _workDir;
+    boost::filesystem::path _workDir;
 
     AddTagsTest() :
     _app(new Application(_port, 0)),
@@ -33,8 +33,8 @@ public:
 
     void SetUp() {
         Client c(_port);
-        fs::path dbDir(_workDir / ".reggata");
-        fs::remove_all(dbDir);
+        boost::filesystem::path dbDir(_workDir / ".reggata");
+        boost::filesystem::remove_all(dbDir);
         auto r1 = c.initRepo(_workDir, dbDir);
         ASSERT_EQ(StatusCode::OK, r1["code"]);
     }

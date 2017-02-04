@@ -13,5 +13,5 @@ struct CmdSearch : public CmdRepo {
     virtual ~CmdSearch() = default;
     
     virtual boost::filesystem::path path() const;
-    virtual json::json execute();
+    virtual nlohmann::json execute();
 };

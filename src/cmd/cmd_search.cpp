@@ -22,7 +22,7 @@ boost::filesystem::path CmdSearch::path() const {
     return _dir;
 }
 
-json::json CmdSearch::execute() {
+nlohmann::json CmdSearch::execute() {
     boost::filesystem::path dirPath(_dir);
     if (!dirPath.is_absolute()) {
         throw StatusCodeException(StatusCode::CLIENT_ERROR,
@@ -45,11 +45,11 @@ json::json CmdSearch::execute() {
     auto relDir = _repo->makeRelativePath(dirPath);
     auto fileIds = tree->findFileIdsIn(_repo, relDir);
     auto fileInfos = _repo->getFileInfos(fileIds);
-    json::json data = json::json::array();
+    nlohmann::json data = nlohmann::json::array();
     for (auto finfo : fileInfos) {
         data.push_back(finfo.toJson());
     }
-    json::json res = {
+    nlohmann::json res = {
         {"code", StatusCode::OK},
         {"data", data}
     };

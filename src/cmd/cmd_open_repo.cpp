@@ -18,7 +18,7 @@ const JsonMap::ParseMap<CmdOpenRepo> CmdOpenRepo::_parseMap = boost::assign::lis
 (JsonMap::mapValue("db_dir", &CmdOpenRepo::_dbDir, std::string(".reggata")))
 (JsonMap::mapValue("init_if_not_exists", &CmdOpenRepo::_initIfNotExists, false));
 
-json::json CmdOpenRepo::execute() {
+nlohmann::json CmdOpenRepo::execute() {
     boost::filesystem::path rootDirPath(_rootDir);
     if (!rootDirPath.is_absolute()) {
         throw StatusCodeException(StatusCode::CLIENT_ERROR,
@@ -31,7 +31,7 @@ json::json CmdOpenRepo::execute() {
     }
 
     _proc->openRepo(rootDirPath, dbDirPath, _initIfNotExists);
-    json::json res = {
+    nlohmann::json res = {
         {"code", StatusCode::OK}
     };
     return res;

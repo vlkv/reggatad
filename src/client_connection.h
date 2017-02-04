@@ -4,7 +4,6 @@
 class Service;
 #include "processor.h"
 #include <nlohmann/json.hpp>
-namespace json = nlohmann;
 #include <boost/asio.hpp>
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/weak_ptr.hpp>

@@ -15,7 +15,7 @@ _id(id),
 _sendResult(sendResult) {
 }
 
-std::unique_ptr<Cmd> Cmd::fromJson(const json::json& j, Cmd::SendResult sendResult) {
+std::unique_ptr<Cmd> Cmd::fromJson(const nlohmann::json& j, Cmd::SendResult sendResult) {
     std::string cmdStr = j.at("cmd");
 
     if (cmdStr == CmdAddTags::_name) {
@@ -44,7 +44,7 @@ std::unique_ptr<Cmd> Cmd::fromJson(const json::json& j, Cmd::SendResult sendResu
     }
 }
 
-void Cmd::sendResult(json::json& result) {
+void Cmd::sendResult(nlohmann::json& result) {
     result["id"] = _id;
     auto str = result.dump();
     _sendResult(str);

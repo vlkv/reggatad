@@ -9,5 +9,5 @@ struct CmdGetReposInfo  : public CmdProc {
     CmdGetReposInfo(const std::string& id, Cmd::SendResult sendResult);
     virtual ~CmdGetReposInfo() = default;
 
-    virtual json::json execute();
+    virtual nlohmann::json execute();
 };

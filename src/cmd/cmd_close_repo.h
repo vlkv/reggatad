@@ -11,5 +11,5 @@ struct CmdCloseRepo : public CmdProc {
     CmdCloseRepo(const std::string& id, Cmd::SendResult sendResult);
     virtual ~CmdCloseRepo() = default;
 
-    virtual json::json execute();
+    virtual nlohmann::json execute();
 };

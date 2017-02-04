@@ -19,13 +19,13 @@ boost::filesystem::path CmdAddTags::path() const {
     return _file;
 }
 
-json::json CmdAddTags::execute() {
+nlohmann::json CmdAddTags::execute() {
     boost::filesystem::path filePath(_file);
     if (!filePath.is_absolute()) {
         throw StatusCodeException(StatusCode::CLIENT_ERROR,
                 boost::format("file=%1% must be an absolute path") % _file);
     }
     _repo->addTags(filePath, _tags);
-    return json::json{
+    return nlohmann::json{
         {"code", StatusCode::OK}};
 }

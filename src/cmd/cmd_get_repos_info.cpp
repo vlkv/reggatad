@@ -11,13 +11,13 @@ const std::string CmdGetReposInfo::_name = "get_repos_info";
 const JsonMap::ParseMap<CmdGetReposInfo> CmdGetReposInfo::_parseMap =
         JsonMap::ParseMap<CmdGetReposInfo>();
 
-json::json CmdGetReposInfo::execute() {
+nlohmann::json CmdGetReposInfo::execute() {
     auto reposInfo = _proc->getReposInfo();
-    auto riJson = json::json::array();
+    auto riJson = nlohmann::json::array();
     for (auto ri : reposInfo) {
         riJson.push_back(ri.toJson());
     }
-    json::json res = {
+    nlohmann::json res = {
         {"code", StatusCode::OK},
         {"data", riJson}
     };

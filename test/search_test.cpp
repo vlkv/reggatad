@@ -98,7 +98,7 @@ public:
 TEST_F(SearchTest, Tag1AndTag2) {
     Client c(_port);
 
-    json::json cmd = {
+    nlohmann::json cmd = {
         {"id", "2"},
         {"cmd", "search"},
         {"args",

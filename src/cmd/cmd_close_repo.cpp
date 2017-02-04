@@ -16,7 +16,7 @@ const std::string CmdCloseRepo::_name = "close_repo";
 const JsonMap::ParseMap<CmdCloseRepo> CmdCloseRepo::_parseMap = boost::assign::list_of
         (JsonMap::mapValue("root_dir", &CmdCloseRepo::_rootDir));
 
-json::json CmdCloseRepo::execute() {
+nlohmann::json CmdCloseRepo::execute() {
     boost::filesystem::path rootDirPath(_rootDir);
     if (!rootDirPath.is_absolute()) {
         throw StatusCodeException(StatusCode::CLIENT_ERROR,
@@ -24,7 +24,7 @@ json::json CmdCloseRepo::execute() {
     }
 
     _proc->closeRepo(rootDirPath);
-    json::json res = {
+    nlohmann::json res = {
         {"code", StatusCode::OK}
     };
     return res;

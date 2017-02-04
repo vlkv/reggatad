@@ -13,5 +13,5 @@ struct CmdOpenRepo : public CmdProc {
     CmdOpenRepo(const std::string& id, Cmd::SendResult sendResult);
     virtual ~CmdOpenRepo() = default;
 
-    virtual json::json execute();
+    virtual nlohmann::json execute();
 };

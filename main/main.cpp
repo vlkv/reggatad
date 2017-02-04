@@ -28,7 +28,7 @@ int MAIN(int argc, char** argv) {
     boost::log::add_console_log();
     BOOST_LOG_TRIVIAL(info) << "=== Reggata Daemon start ===";
 
-    auto executable_path = fs::absolute(argv[0]).parent_path();
+    auto executable_path = boost::filesystem::absolute(argv[0]).parent_path();
     pt::ptree config;
     pt::read_json((executable_path / "reggatad.conf").string(), config);
 
@@ -38,7 +38,7 @@ int MAIN(int argc, char** argv) {
     for (auto &repo : config.get_child("repos")) {
         auto rootPath = repo.second.get<std::string>("root_path");
         auto dbPath = repo.second.get<std::string>("db_path", std::string(".reggata"));
-        app.openRepo(rootPath, fs::absolute(dbPath, rootPath).string());
+        app.openRepo(rootPath, boost::filesystem::absolute(dbPath, rootPath).string());
     }
     app.start();
     // TODO: implement a way to gracefully stop application

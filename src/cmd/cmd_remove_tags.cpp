@@ -19,13 +19,13 @@ boost::filesystem::path CmdRemoveTags::path() const {
     return _file;
 }
 
-json::json CmdRemoveTags::execute() {
+nlohmann::json CmdRemoveTags::execute() {
     boost::filesystem::path filePath(_file);
     if (!filePath.is_absolute()) {
         throw StatusCodeException(StatusCode::CLIENT_ERROR,
                 boost::format("file=%1% must be an absolute path") % _file);
     }
     _repo->removeTags(filePath, _tags);
-    return json::json{
+    return nlohmann::json{
         {"code", StatusCode::OK}};
 }

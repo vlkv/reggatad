@@ -3,21 +3,19 @@
 #include "status_code.h"
 #include <application.h>
 #include <nlohmann/json.hpp>
-namespace json = nlohmann;
 #include <gtest/gtest.h>
 #include <boost/thread.hpp>
 #include <boost/bind.hpp>
 #include <boost/timer.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/path.hpp>
-namespace fs = boost::filesystem;
 #include <memory>
 #include <iostream>
 #include <sstream>
 
 class OpenCloseRepoTest : public testing::Test {
 public:
-    fs::path _workDir;
+    boost::filesystem::path _workDir;
     const int _port = 9100;
     std::unique_ptr<Application> _app;
     boost::thread _t;
@@ -40,7 +38,7 @@ public:
     void TearDown() {
         _app->stop();
         _t.join();
-        fs::remove_all(_workDir);
+        boost::filesystem::remove_all(_workDir);
     }
 
     ~OpenCloseRepoTest() {
@@ -49,9 +47,9 @@ public:
 };
 
 TEST_F(OpenCloseRepoTest, InitRepoThenCloseThenOpen) {
-    fs::path repoDir(_workDir / "repo");
-    fs::path dbDir(repoDir / ".reggata");
-    ASSERT_FALSE(fs::exists(repoDir));
+    boost::filesystem::path repoDir(_workDir / "repo");
+    boost::filesystem::path dbDir(repoDir / ".reggata");
+    ASSERT_FALSE(boost::filesystem::exists(repoDir));
     Client c(_port);
     auto obj = c.initRepo(repoDir, dbDir);
     ASSERT_EQ(StatusCode::OK, obj["code"]);
@@ -72,9 +70,9 @@ TEST_F(OpenCloseRepoTest, InitRepoThenCloseThenOpen) {
 }
 
 TEST_F(OpenCloseRepoTest, TryOpenNonExistentRepo) {
-    fs::path repoDir(_workDir / "non_existent_repo");
-    ASSERT_FALSE(fs::exists(repoDir));
-    json::json cmd = {
+    boost::filesystem::path repoDir(_workDir / "non_existent_repo");
+    ASSERT_FALSE(boost::filesystem::exists(repoDir));
+    nlohmann::json cmd = {
         {"id", "123"},
         {"cmd", "open_repo"},
         {"args",
@@ -86,7 +84,7 @@ TEST_F(OpenCloseRepoTest, TryOpenNonExistentRepo) {
     Client c(_port);
     c.send(cmd.dump());
     auto msg = c.recv();
-    auto obj = json::json::parse(msg);
+    auto obj = nlohmann::json::parse(msg);
     ASSERT_EQ("123", obj["id"]);
     ASSERT_EQ(StatusCode::CLIENT_ERROR, obj["code"]);
     ASSERT_EQ("Database directory \"/home/vitvlkv/dev/reggatad/test_data/open_close_repo_test/non_existent_repo/.reggata\" doesn't exist", obj["msg"]);
