@@ -24,7 +24,7 @@ All commands are divided into two categories:
 * operations with files withing one repo (add_tags/remove_tags/get_file_info/search with 'path').
 
 
-### open_repo(root_dir, db_dir, init_if_not_exists)
+### open_repo
 Request:
 ```javascript
 {
@@ -45,7 +45,7 @@ Responses:
 ```
 NOTE: list of all possible code values is here https://github.com/vlkv/reggatad/blob/master/src/status_code.cpp
 
-### TODO: close_repo(root_dir)
+### close_repo
 Request:
 ```javascript
 {
@@ -57,7 +57,7 @@ Request:
 }
 ```
 
-### get_repos_info()
+### get_repos_info
 Request:
 ```javascript
 {
@@ -77,7 +77,7 @@ Response:
 }
 ```
 	
-### add_tags(file_path, tag1, tag2, ...)
+### add_tags
 Request:
 ```javascript
 {
@@ -89,7 +89,7 @@ Request:
     }
 }
 ```
-### remove_tags(file_path, tag1, tag2, ...)
+### remove_tags
 Request:
 ```javascript
 {
@@ -110,7 +110,7 @@ TODO: do we need a request to get info about "tag cloud"? It's a N most popular 
 
 ### TODO: remove_fields(file_path, field_key1, field_key2, ...)
 
-### get_file_info(file_path)
+### get_file_info
 Request:
 ```javascript
 {
@@ -134,7 +134,7 @@ Response:
 }
 ```
 
-### TODO: get_dir_files_info(dir_path)
+### TODO: get_dir_files_info
 Request:
 ```javascript
 {
@@ -164,7 +164,7 @@ Response:
 }
 ```
 
-### search(dir_abs_path, query_string)
+### search
 Request:
 ```javascript
 {
@@ -179,7 +179,7 @@ Request:
 
 Response is the same as `get_dir_files_info` response (collection of file_infos).
 
-### TODO: cancel_cmd(cmd_id)
+### TODO: cancel_cmd
 Client is able to cancel any other long running command.
 Request:
 ```javascript

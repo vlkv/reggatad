@@ -27,6 +27,7 @@ public:
 public:
     void openRepo(const boost::filesystem::path& repoRootDir, 
             const boost::filesystem::path& repoDbDir, bool initIfNotExists);
+    void closeRepo(const boost::filesystem::path& repoRootDir);
     std::vector<RepoInfo> getReposInfo() const;
 
 private:

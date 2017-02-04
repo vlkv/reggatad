@@ -22,7 +22,8 @@ public:
     std::string recv();
     
     nlohmann::json initRepo(const boost::filesystem::path& rootDir, const boost::filesystem::path& dbDir);
-    nlohmann::json openRepo(const boost::filesystem::path& rootDir, const boost::filesystem::path& dbDir, bool initIfNotExists);
+    nlohmann::json openRepo(const boost::filesystem::path& rootDir, const boost::filesystem::path& dbDir, bool initIfNotExists = false);
+    nlohmann::json closeRepo(const boost::filesystem::path& rootDir);
     nlohmann::json getReposInfo();
     nlohmann::json addTags(const boost::filesystem::path& absFile, const std::vector<std::string>& tags);
     nlohmann::json removeTags(const boost::filesystem::path& absFile, const std::vector<std::string>& tags);

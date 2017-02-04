@@ -53,31 +53,20 @@ TEST_F(OpenCloseRepoTest, InitRepoThenCloseThenOpen) {
     fs::path dbDir(repoDir / ".reggata");
     ASSERT_FALSE(fs::exists(repoDir));
     Client c(_port);
-    json::json cmd = {
-        {"id", "42"},
-        {"cmd", "open_repo"},
-        {"args",
-            {
-                {"root_dir", repoDir.c_str()},
-                {"db_dir", dbDir.c_str()},
-                {"init_if_not_exists", true}
-            }}
-    };
-    c.send(cmd.dump());
-    auto msg = c.recv();
-    auto obj = json::json::parse(msg);
-    ASSERT_EQ("42", obj["id"]);
+    auto obj = c.initRepo(repoDir, dbDir);
     ASSERT_EQ(StatusCode::OK, obj["code"]);
-
 
     auto obj2 = c.getReposInfo();
     ASSERT_EQ(1, obj2["data"].size());
-    RepoInfo ri;
-    ri.fromJson(obj2["data"][0]);
+    auto ri = RepoInfo::fromJson(obj2["data"][0]);
     ASSERT_EQ(repoDir.string(), ri._rootDir);
     ASSERT_EQ(dbDir.string(), ri._dbDir);
 
-    // TODO: close this repo
+    auto obj3 = c.closeRepo(repoDir);
+    ASSERT_EQ(StatusCode::OK, obj3["code"]);
+
+    auto obj4 = c.getReposInfo();
+    ASSERT_EQ(0, obj4["data"].size());
 
     // TODO: open this repo without flag init_if_not_exists
 }

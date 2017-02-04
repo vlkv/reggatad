@@ -62,6 +62,12 @@ void Processor::openRepo(const boost::filesystem::path& repoRootDir, const boost
     _repos.insert(Repos::value_type(repoRootDir.string(), repo));
 }
 
+void Processor::closeRepo(const boost::filesystem::path& repoRootDir) {
+    auto repo = _repos.at(repoRootDir.string());
+    _repos.erase(repoRootDir.string());
+    repo->stop();
+}
+
 std::vector<RepoInfo> Processor::getReposInfo() const {
     std::vector<RepoInfo> res;
     for (auto repo : _repos) {

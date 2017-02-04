@@ -41,6 +41,7 @@ void Repo::stop() {
     _stopCalled = true;
     _thread.interrupt();
     _thread.join();
+    // TODO: if there are commands in the queue - send cancel response to the clients
     BOOST_LOG_TRIVIAL(info) << "Repo stopped " << _rootPath;
 }
 

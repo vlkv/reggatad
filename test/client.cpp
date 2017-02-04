@@ -56,7 +56,7 @@ nlohmann::json Client::initRepo(const boost::filesystem::path& rootDir, const bo
     return openRepo(rootDir, dbDir, true);
 }
 
-nlohmann::json Client::openRepo(const boost::filesystem::path& rootDir, const boost::filesystem::path& dbDir, bool initIfNotExists = false) {
+nlohmann::json Client::openRepo(const boost::filesystem::path& rootDir, const boost::filesystem::path& dbDir, bool initIfNotExists) {
     auto cmdId = nextCmdId();
     nlohmann::json cmd = {
         {"id", cmdId},
@@ -66,6 +66,25 @@ nlohmann::json Client::openRepo(const boost::filesystem::path& rootDir, const bo
                 {"root_dir", rootDir.c_str()},
                 {"db_dir", dbDir.c_str()},
                 {"init_if_not_exists", initIfNotExists}
+            }}
+    };
+    send(cmd.dump());
+    auto msg = recv();
+    auto obj = nlohmann::json::parse(msg);
+    if (cmdId != obj["id"]) {
+        throw ReggataException((boost::format("Command id %1% != response id %2%") % cmdId % obj["id"]).str());
+    }
+    return obj;
+}
+
+nlohmann::json Client::closeRepo(const boost::filesystem::path& rootDir) {
+    auto cmdId = nextCmdId();
+    nlohmann::json cmd = {
+        {"id", cmdId},
+        {"cmd", "close_repo"},
+        {"args",
+            {
+                {"root_dir", rootDir.c_str()},
             }}
     };
     send(cmd.dump());
