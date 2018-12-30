@@ -21,7 +21,7 @@ Every message has an 'id' member. This 'id' is always inserted in the response.
 All commands are divided into two categories:
 * operations with the repos as a whole (open_repo/close_repo), search across the all opened repos 
 (search without 'path' param), cancellation of another command (cancel_cmd).
-* operations with files withing one repo (add_tags/remove_tags/get_file_info/search with 'path').
+* operations with files within one repo (add_tags/remove_tags/get_file_info/search with 'path').
 
 
 ### open_repo
