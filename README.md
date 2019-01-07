@@ -104,7 +104,7 @@ Request:
 
 TODO: We need a request to remove all tags/fields from file
 
-TODO: do we need a request to get info about "tag cloud"? It's a N most popular tags with their usage counts.
+TODO: Do we need a request to get info about "tag cloud"? It's a N most popular tags with their usage counts.
 
 ### TODO: add_fields(file_path, field1(key1,val1), field2(key2,val2), ...)
 
