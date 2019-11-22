@@ -37,21 +37,26 @@ file(COPY test_data DESTINATION ".")
 find_package(Boost 1.61.0 COMPONENTS filesystem system log REQUIRED)
 add_definitions(-DBOOST_LOG_DYN_LINK=1)
 
-set(POCO_PREFIX      "/usr/local")
+find_package(ZLIB REQUIRED)
+if (ZLIB_FOUND)
+    include_directories(${ZLIB_INCLUDE_DIRS})
+endif()
+
+set(POCO_PREFIX      "/usr")
 set(POCO_INCLUDE_DIR "${POCO_PREFIX}/include")
 set(POCO_LIB_DIR     "${POCO_PREFIX}/lib")
-set(POCO_LIBS        "${POCO_LIB_DIR}/libPocoNetd.so"
-                     "${POCO_LIB_DIR}/libPocoUtild.so"
-                     "${POCO_LIB_DIR}/libPocoJSONd.so"
-                     "${POCO_LIB_DIR}/libPocoXMLd.so"
-                     "${POCO_LIB_DIR}/libPocoFoundationd.so"
+set(POCO_LIBS        "${POCO_LIB_DIR}/libPocoUtil.so"
+                     "${POCO_LIB_DIR}/libPocoNet.so"
+                     "${POCO_LIB_DIR}/libPocoXML.so"
+                     "${POCO_LIB_DIR}/libPocoJSON.so"
+                     "${POCO_LIB_DIR}/libPocoFoundation.so"
                      "pthread")
 target_include_directories(reggata_lib PRIVATE "${POCO_INCLUDE_DIR}")
 
 set(ROCKSDB_INCLUDE_DIR "/usr/local/include")
 target_include_directories(reggata_lib PRIVATE "${ROCKSDB_INCLUDE_DIR}")
 
-set(ROCKSDB_LIBS "/usr/local/lib/librocksdb.a"
+set(ROCKSDB_LIBS "/usr/lib/librocksdb.a"
 		"/usr/lib/x86_64-linux-gnu/libsnappy.a"
 		"/usr/lib/x86_64-linux-gnu/libbz2.a")
 
@@ -62,11 +67,13 @@ target_link_libraries(reggata_lib PUBLIC
   ${Boost_LIBRARIES}
   ${POCO_LIBS}
   ${ROCKSDB_LIBS}
+  ${ZLIB_LIBRARIES}
 )
 
 target_link_libraries(reggatad PUBLIC
     reggata_lib
     ${Boost_LIBRARIES}
+    ${ZLIB_LIBRARIES}
 )
 
 
