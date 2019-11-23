@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8)
+cmake_minimum_required(VERSION 3.1)
 project(ReggataDaemon)
 
 file(GLOB_RECURSE sources_lib 
@@ -38,22 +38,15 @@ find_package(Boost 1.61.0 COMPONENTS filesystem system log REQUIRED)
 add_definitions(-DBOOST_LOG_DYN_LINK=1)
 
 find_package(ZLIB REQUIRED)
-if (ZLIB_FOUND)
-    include_directories(${ZLIB_INCLUDE_DIRS})
-endif()
+include_directories(${ZLIB_INCLUDE_DIRS})
 
-set(POCO_PREFIX      "/usr")
-set(POCO_INCLUDE_DIR "${POCO_PREFIX}/include")
-set(POCO_LIB_DIR     "${POCO_PREFIX}/lib")
-set(POCO_LIBS        "${POCO_LIB_DIR}/libPocoUtil.so"
-                     "${POCO_LIB_DIR}/libPocoNet.so"
-                     "${POCO_LIB_DIR}/libPocoXML.so"
-                     "${POCO_LIB_DIR}/libPocoJSON.so"
-                     "${POCO_LIB_DIR}/libPocoFoundation.so"
-                     "pthread")
-target_include_directories(reggata_lib PRIVATE "${POCO_INCLUDE_DIR}")
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
 
-set(ROCKSDB_INCLUDE_DIR "/usr/local/include")
+find_package(Poco 1.8.0 COMPONENTS Util Net XML JSON Foundation REQUIRED)
+include_directories(${Poco_INCLUDE_DIRS})
+
+set(ROCKSDB_INCLUDE_DIR "/usr/lib/include")
 target_include_directories(reggata_lib PRIVATE "${ROCKSDB_INCLUDE_DIR}")
 
 set(ROCKSDB_LIBS "/usr/lib/librocksdb.a"
@@ -65,9 +58,10 @@ target_include_directories(reggata_lib PRIVATE "${USR_INCLUDE_DIR}")
 
 target_link_libraries(reggata_lib PUBLIC
   ${Boost_LIBRARIES}
-  ${POCO_LIBS}
+  PocoUtil PocoNet PocoXML PocoJSON PocoFoundation
   ${ROCKSDB_LIBS}
   ${ZLIB_LIBRARIES}
+  Threads::Threads
 )
 
 target_link_libraries(reggatad PUBLIC
@@ -96,7 +90,7 @@ if(GTEST_FOUND)
   set_target_properties(reggata_lib PROPERTIES ENABLE_EXPORTS on)
 
   target_link_libraries(unit_tests PUBLIC
-    reggata_lib    
+    reggata_lib
     ${GTEST_BOTH_LIBRARIES}
   )
 
