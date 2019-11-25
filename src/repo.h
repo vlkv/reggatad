@@ -61,7 +61,6 @@ private:
 
 private:
     void run();
-    void start();
     
     void createDirWatcherIfNeeded(const boost::filesystem::path& dirPath);
     void createDirWatcher(const boost::filesystem::path& dirPath);
