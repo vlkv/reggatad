@@ -20,8 +20,8 @@ class Repo {
     boost::uuids::random_generator _uuidGenerator;
     SafeQueue<std::unique_ptr<CmdRepo>> _queue;
     volatile bool _stopCalled = false;
-    boost::thread _thread;
     std::map<const std::string, std::unique_ptr<Poco::DirectoryWatcher>> _watchers;
+    boost::thread _thread;
     
 public:
     Repo(const boost::filesystem::path& rootAbsPath, const boost::filesystem::path& dbPath, bool initIfNotExists = false);

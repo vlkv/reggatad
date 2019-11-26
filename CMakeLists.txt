@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.1)
 project(ReggataDaemon)
 
+set(CMAKE_BUILD_TYPE Debug)
+
 file(GLOB_RECURSE sources_lib 
     src/*.cpp 
     src/cmd/*.cpp 
@@ -97,6 +99,7 @@ if(GTEST_FOUND)
   target_include_directories(unit_tests PUBLIC
     ${GTEST_INCLUDE_DIRS} # doesn't do anything on linux
     third_party
+    test
   )
   
 endif()

@@ -10,10 +10,12 @@
 #include <boost/timer.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/filesystem/path.hpp>
+#include <testing.h>
 #include <memory>
 #include <iostream>
 #include <sstream>
-#include <random>
+
+using namespace reggatad::testing;
 
 class SearchTest : public testing::Test {
 public:
@@ -22,18 +24,11 @@ public:
     boost::thread _t;
     boost::filesystem::path _workDir;
 
-    std::vector<std::string> _allTags{"Sea", "Boat", "Fishing", "Mercury", "Pike",
-        "Motor", "Line", "Hook", "Water", "River", "Deep", "Good", "Anchor", "Cool",
-        "Don", "Jaw", "Yamaha", "Nissan Marine"};
-    std::default_random_engine _rgen;
-    std::uniform_int_distribution<int> _idist;
-
     SearchTest() :
     _app(new Application(_port, 0)),
     _t(&SearchTest::startReggataApp, this),
-    _workDir(boost::filesystem::canonical("./test_data/repo")),
-    _idist(0, _allTags.size() - 1) {
-        _rgen.seed(42); // NOTE: seed with constant gives us the same random sequence at every tests run
+    _workDir(boost::filesystem::canonical("./test_data/repo")) 
+    {
     }
 
     void startReggataApp() {
@@ -43,26 +38,8 @@ public:
     void SetUp() {
         Client c(_port);
         boost::filesystem::path dbDir(_workDir / ".reggata");
-        boost::filesystem::remove_all(dbDir);
-
-        auto r1 = c.initRepo(_workDir, dbDir);
-        ASSERT_EQ(StatusCode::OK, r1["code"]);
-
-        for (auto&& entry : boost::filesystem::recursive_directory_iterator(_workDir)) {
-            //std::cout << "FILE: " << entry.path() << std::endl;
-            auto p = std::mismatch(dbDir.begin(), dbDir.end(), entry.path().begin());
-            if (p.first == dbDir.end()) {
-                //std::cout << "SKIPPING" << std::endl;
-                continue;
-            }
-            if (entry.status().type() != boost::filesystem::file_type::regular_file) {
-                continue;
-            }
-            auto n = _idist(_rgen) % 10;
-            auto tags = getNRandomTags(n);
-            auto r2 = c.addTags(entry.path(), tags);
-            ASSERT_EQ(StatusCode::OK, r2["code"]);
-        }
+        initTestingRepo(_workDir);
+        c.openRepo(_workDir, dbDir);
     }
 
     FileInfo findAndCreate(const std::string& path, const nlohmann::json& fileInfos) {
@@ -72,16 +49,6 @@ public:
                 });
         FileInfo result;
         result.fromJson(*fileInfoIt);
-        return result;
-    }
-
-    std::vector<std::string> getNRandomTags(size_t n) {
-        std::vector<std::string> result;
-        for (size_t i = 0; i < n; ++i) {
-            auto num = _idist(_rgen);
-            auto index = num % _allTags.size();
-            result.push_back(_allTags.at(index));
-        }
         return result;
     }
 
