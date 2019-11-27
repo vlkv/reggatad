@@ -19,15 +19,17 @@ using namespace reggatad::testing;
 
 class SearchTest : public testing::Test {
 public:
+    boost::filesystem::path _testDataDir;
+    boost::filesystem::path _workDir;
     const int _port = 9100;
     std::unique_ptr<Application> _app;
     boost::thread _t;
-    boost::filesystem::path _workDir;
 
-    SearchTest() :
-    _app(new Application(_port, 0)),
-    _t(&SearchTest::startReggataApp, this),
-    _workDir(boost::filesystem::canonical("./test_data/repo")) 
+    SearchTest()
+        : _testDataDir(boost::filesystem::canonical("./test_data"))
+        , _workDir(_testDataDir / "repo")
+        , _app(new Application(_port, 0))
+        , _t(&SearchTest::startReggataApp, this)
     {
     }
 
@@ -38,7 +40,7 @@ public:
     void SetUp() {
         Client c(_port);
         boost::filesystem::path dbDir(_workDir / ".reggata");
-        initTestingRepo(_workDir);
+        initTestingRepo(_workDir, _testDataDir / "repo.meta.json");
         c.openRepo(_workDir, dbDir);
     }
 

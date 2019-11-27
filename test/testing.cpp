@@ -1,32 +1,23 @@
 #include "testing.h"
 #include <boost/filesystem/path.hpp>
-#include <random>
+#include <boost/format.hpp>
+#include <reggata_exceptions.h>
 
 namespace {
-
-std::vector<std::string> allTags{"Sea", "Boat", "Fishing", "Mercury", "Pike",
-    "Motor", "Line", "Hook", "Water", "River", "Deep", "Good", "Anchor", "Cool",
-    "Don", "Jaw", "Yamaha", "Nissan Marine"};
-std::default_random_engine rgen{42}; // NOTE: seed with constant gives us the same random sequence at every tests run
-std::uniform_int_distribution<int> idist;
-
-std::vector<std::string> getNRandomTags(size_t n) {
-    std::vector<std::string> result;
-    for (size_t i = 0; i < n; ++i) {
-        auto num = idist(rgen);
-        auto index = num % allTags.size();
-        result.push_back(allTags.at(index));
-    }
-    return result;
-}
 
 } // namespace
 
 namespace reggatad::testing {
 
-void initTestingRepo(const boost::filesystem::path& repoRootDir) {
+void initTestingRepo(const boost::filesystem::path& repoRootDir, const boost::filesystem::path& repoMetaFile) {
     const auto& dbDir(repoRootDir / ".reggata");
     
+    std::ifstream t(repoMetaFile.string());
+    std::stringstream buffer;
+    buffer << t.rdbuf();
+    const auto repoMetaJson = buffer.str();
+    const auto repoMeta = nlohmann::json::parse(repoMetaJson);
+
     boost::filesystem::remove_all(dbDir);
     Repo repo(repoRootDir, dbDir, true);
     
@@ -41,11 +32,15 @@ void initTestingRepo(const boost::filesystem::path& repoRootDir) {
         }
         paths.push_back(entry.path().string());
     }
-    std::sort(paths.begin(), paths.end()); // Need a deterministic order of files traversal
+
     for (const auto& path : paths) {
-        auto n = idist(rgen) % 10;
-        auto tags = getNRandomTags(n);
-        repo.addTags(path, tags);
+        auto relPath = repo.makeRelativePath(path);
+        const auto elem = repoMeta.find(relPath.string());
+        if (elem != repoMeta.cend()) {
+            repo.addTags(path, elem.value()["tags"]);
+        } else {
+            throw ReggataException((boost::format("Could not find meta info about path: %1%") % path).str());
+        }
     }
     repo.stop();
 }

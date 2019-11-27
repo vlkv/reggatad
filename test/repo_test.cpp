@@ -20,15 +20,17 @@ using namespace reggatad::testing;
 class RepoTest : public testing::Test {
 public:
     std::unique_ptr<Repo> _repo;
+    boost::filesystem::path _testDataDir;
     boost::filesystem::path _workDir;
 
     RepoTest()
-        : _workDir(boost::filesystem::canonical("./test_data/repo"))
+        : _testDataDir(boost::filesystem::canonical("./test_data"))
+        , _workDir(_testDataDir / "repo")
     {
     }
 
     void SetUp() {
-        initTestingRepo(_workDir);
+        initTestingRepo(_workDir, _testDataDir / "repo.meta.json");
         _repo.reset(new Repo(_workDir, _workDir / ".reggata"));
     }
 

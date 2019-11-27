@@ -4,6 +4,7 @@
 
 namespace reggatad::testing {
 
-void initTestingRepo(const boost::filesystem::path& repoRootDir);
+void initTestingRepo(const boost::filesystem::path& repoRootDir, 
+                     const boost::filesystem::path& repoMetaFile);
 
 }

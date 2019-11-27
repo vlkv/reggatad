@@ -1,0 +1,50 @@
+{
+    ".gitignore": {
+        "tags": ["Boat", "Nissan Marine", "River"]
+    },
+    "dir/file": {
+        "tags": []
+    },
+    "file": {
+        "tags": ["Line"]
+    },
+    "foo/1": {
+        "tags": ["Boat", "Cool", "Fishing", "Jaw", "River", "Water"]
+    },
+    "foo/2": {
+        "tags": ["Boat", "Cool", "Don", "Fishing", "Mercury", "Sea"]
+    },
+    "foo/bar/1": {
+        "tags": ["Boat", "Cool", "Line", "Mercury", "Nissan Marine", "Pike", "River"]
+    },
+    "foo/bar/2": {
+        "tags": ["Boat", "Don", "Motor"]
+    },
+    "foo/bar/3": {
+        "tags": ["Pike", "Water", "Yamaha"]
+    },
+    "foo/baz/one/1": {
+        "tags": ["Good", "Line", "Pike", "River", "Sea"]
+    },
+    "foo/baz/three/1": {
+        "tags": ["Motor", "Water"]
+    },
+    "foo/baz/three/2": {
+        "tags": ["Anchor", "Hook", "Mercury", "Nissan Marine", "River"]
+    },
+    "foo/baz/three/3": {
+        "tags": ["Boat", "Nissan Marine", "River"]
+    },
+    "foo/baz/three/4": {
+        "tags": ["Nissan Marine"]
+    },
+    "foo/baz/two/1": {
+        "tags": ["Nissan Marine", "Sea", "Yamaha"]
+    },
+    "foo/baz/two/2": {
+        "tags": ["Cool", "Deep", "Good", "Line"]
+    },
+    "test.txt": {
+        "tags": []
+    }
+}
