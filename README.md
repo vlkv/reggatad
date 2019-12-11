@@ -3,9 +3,10 @@
 *tags* to regular files and search by those tags. Beside the tags there are *fields* 
 (key-value pairs) that are also searchable. Reggatad also watches for changes in filesystem 
 and updates tags database correspondingly. It stores all tags/fields information in database 
-and provides an API (TCP sockets) for all operations with tags/fields. This API uses reggata_client 
-(https://github.com/av-elier/reggata-scala-client). This project is a second try of 
-https://github.com/vlkv/reggata. At the moment, reggatad is a **work in progress**.
+and provides an API (protocol over TCP sockets) for all operations with tags/fields. 
+This API uses reggata_client (https://github.com/av-elier/reggata-scala-client). 
+This project is a second try of https://github.com/vlkv/reggata. 
+At the moment, reggatad is a **work in progress**.
 
 It uses
 - Flexc++ and Bisonc++ to implement query language parsing https://fbb-git.github.io/flexcpp/ https://github.com/fbb-git/bisoncpp
@@ -41,7 +42,8 @@ Request:
 Responses:
 ```javascript
 {code: 200, id: "1"}
-{code: 400, msg: "Reason", id: "1"}
+{code: 400, msg: "Bad input error", id: "1"}
+{code: 500, msg: "Server error", id: "1"}
 ```
 NOTE: list of all possible code values is here https://github.com/vlkv/reggatad/blob/master/src/status_code.cpp
 
