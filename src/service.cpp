@@ -53,7 +53,7 @@ void Service::acceptClient() {
     auto conn = std::unique_ptr<ClientConnection>(new ClientConnection(_ioService, _proc, _pingClientsIntervalMs));
     auto connId = conn->id();
     _clients.insert(ClientConnections::value_type(connId, std::move(conn)));
-    auto client = _clients.at(connId).get();
+    auto* client = _clients.at(connId).get();
     _acceptor.async_accept(client->sock(), boost::bind(&Service::onAccept, this, client, _1));
 }
 

@@ -16,9 +16,9 @@
 class PingClientTest : public testing::Test {
 public:
     const int _port = 9100;
+    const int _pingIntervalMs = 500;
     std::unique_ptr<Application> _app;
     boost::thread _t;
-    const int _pingIntervalMs = 500;
 
     PingClientTest() :
     _app(new Application(_port, _pingIntervalMs)),
@@ -46,6 +46,7 @@ TEST_F(PingClientTest, Test) {
     Client c(_port);
 
     for (auto i = 0; i < 3; ++i) {
+        BOOST_LOG_TRIVIAL(info) << "Client waits for the ping #" << i;
         auto msg = c.recv();
         auto obj = nlohmann::json::parse(msg);
         std::string question = obj["question"];
